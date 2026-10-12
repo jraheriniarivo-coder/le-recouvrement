@@ -186,6 +186,28 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKrkXsdPw3a7Nk
 const NEXT_PAGE = "pre-quiz.html"; // page vers laquelle rediriger après soumission
 
 /* --------------------------------------------------------- */
+/* =========================================================
+   BLOCAGE : si déjà rempli, on refuse
+   ========================================================= */
+(function checkAlreadyDone() {
+  if (localStorage.getItem('connecteo_diagnostic_done') === 'true') {
+    const formCard = document.getElementById('form-card');
+    if (formCard) {
+      formCard.innerHTML = `
+        <div style="text-align:center;padding:40px 20px">
+          <i class="fas fa-check-circle" style="font-size:70px;color:var(--success);margin-bottom:20px;display:block"></i>
+          <h2 style="color:var(--success);margin-bottom:12px">Fiche déjà remplie</h2>
+          <p style="color:var(--text-medium);font-size:16px;line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto">
+            Une seule soumission par apprenant. Si vous devez corriger une information, contactez votre formateur.
+          </p>
+          <a href="pre-quiz.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--primary);color:white;padding:14px 32px;border-radius:50px;text-decoration:none;font-weight:700;font-family:inherit;font-size:16px">
+            Aller au pré-quiz <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      `;
+    }
+  }
+})();
 
 let selectedWave = "";
 
@@ -251,18 +273,33 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
   btn.innerHTML = '<span class="spinner"></span> Envoi en cours…';
   showStatus('Envoi en cours…', '');
 
-  try {
-    // text/plain évite les problèmes de CORS preflight avec Apps Script
+    try {
     const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-    // mode: 'no-cors' → response illisible, on considère l'envoi comme OK
-    showStatus('✅ Fiche enregistrée. Redirection vers le pré-quiz…', 'ok');
-    btn.innerHTML = '<i class="fas fa-check"></i> Envoyé';
-    setTimeout(() => redirectToNext(name, email), 1200);
+    const data = await res.json();
+
+    if (data.success) {
+      // Succès — nouvelle ligne créée
+      localStorage.setItem('connecteo_diagnostic_done', 'true');
+      localStorage.setItem('connecteo_diagnostic_name', name);
+      localStorage.setItem('connecteo_diagnostic_email', email);
+      showStatus('✅ Fiche enregistrée. Redirection vers le pré-quiz…', 'ok');
+      btn.innerHTML = '<i class="fas fa-check"></i> Envoyé';
+      setTimeout(() => redirectToNext(name, email), 1200);
+    } else if (data.error === 'already_exists') {
+      // Doublon détecté côté serveur
+      localStorage.setItem('connecteo_diagnostic_done', 'true');
+      showStatus('Vous avez déjà rempli cette fiche. Contactez votre formateur si besoin.', 'err');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-info-circle"></i> Retour';
+    } else {
+      showStatus('Erreur : ' + (data.error || 'inconnue'), 'err');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Réessayer';
+    }
   } catch (err) {
     console.error(err);
     showStatus('❌ Erreur réseau. Vérifiez votre connexion.', 'err');

@@ -243,6 +243,33 @@ const QUESTIONS = [
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKrkXsdPw3a7Nk6rCtOwscO6z8pvGXM0aROmih_GrvacbG45Nr3zZPUi2ZZcKuCDJpvA/exec";
 
 /* =========================================================
+   BLOCAGE : si déjà fait, on refuse
+   ========================================================= */
+(function checkAlreadyDone() {
+  if (localStorage.getItem('connecteo_prequiz_done') === 'true') {
+    const welcome = document.querySelector('.welcome');
+    if (welcome) {
+      const score = localStorage.getItem('connecteo_prequiz_score') || '—';
+      welcome.innerHTML = `
+        <i class="fas fa-check-circle" style="font-size:60px;color:var(--success);margin-bottom:18px;display:block"></i>
+        <h2 style="color:var(--success);margin-bottom:12px">Pré-quiz déjà complété</h2>
+        <p style="color:var(--text-medium);font-size:16px;line-height:1.6;margin-bottom:20px">
+          Vous avez déjà répondu à ce pré-quiz sur cet appareil.<br>
+          Votre score de positionnement : <strong style="color:var(--sapphire);font-size:20px">${score}</strong>
+        </p>
+        <p style="color:var(--text-light);font-size:13px">
+          Une seule soumission par apprenant pour garantir la fiabilité des analyses.
+        </p>
+      `;
+      // Cacher le bouton "Démarrer"
+      const startBtn = document.getElementById('btn-start');
+      if (startBtn) startBtn.style.display = 'none';
+      // Cacher les champs de saisie
+      document.querySelectorAll('.form-field').forEach(f => f.style.display = 'none');
+    }
+  }
+})();
+/* =========================================================
    ÉTAT
    ========================================================= */
 let state = {name:"",email:"",current:0,answers:[],selected:null};
@@ -320,17 +347,35 @@ function renderQuestion(){
    SÉLECTION OPTION
    ========================================================= */
 function selectOption(idx){
-  if(state.selected!==null)return;
-  state.selected=idx;
-  const q=QUESTIONS[state.current];
-  const opt=q.opts[idx];
-  document.querySelectorAll('.option').forEach((btn,i)=>{
-    if(i===idx)btn.classList.add('selected');
-    btn.style.pointerEvents='none';
+  const q = QUESTIONS[state.current];
+  const opt = q.opts[idx];
+
+  // Mise à jour ou remplacement de la réponse
+  const existingIdx = state.answers.findIndex(a => a.q === state.current);
+  const newAnswer = {
+    q: state.current,
+    choice: idx,
+    weight: opt.w,
+    gap: opt.g,
+    tag: q.tag
+  };
+
+  if (existingIdx >= 0) {
+    state.answers[existingIdx] = newAnswer;
+  } else {
+    state.answers.push(newAnswer);
+  }
+
+  state.selected = idx;
+
+  // Mise à jour visuelle : on retire l'ancien "selected" et on met le nouveau
+  document.querySelectorAll('.option').forEach((btn, i) => {
+    btn.classList.toggle('selected', i === idx);
   });
-  state.answers.push({q:state.current,choice:idx,weight:opt.w,gap:opt.g,tag:q.tag});
-  document.getElementById('btn-next').style.display='inline-flex';
-  document.getElementById('btn-next').textContent=(state.current<QUESTIONS.length-1)?'Suivant':'Voir mon profil';
+
+  // Afficher le bouton suivant
+  document.getElementById('btn-next').style.display = 'inline-flex';
+  document.getElementById('btn-next').textContent = (state.current < QUESTIONS.length - 1) ? 'Suivant' : 'Voir mon profil';
 }
 
 document.getElementById('btn-next').addEventListener('click',()=>{
@@ -404,7 +449,6 @@ function showResults(){
 
     <div class="actions">
       <button class="btn sapphire" onclick="sendResults()"><i class="fas fa-paper-plane"></i> Enregistrer mon profil</button>
-      <button class="btn ghost" style="color:var(--sapphire);border-color:var(--sapphire)" onclick="location.reload()"><i class="fas fa-redo"></i> Recommencer</button>
     </div>
     <p style="text-align:center;font-size:12px;color:var(--text-light);margin-top:16px" id="send-status"></p>
   `;
@@ -418,24 +462,37 @@ function showResults(){
    ========================================================= */
 async function sendResults(){
   const payload = buildPayload();
-  
+
   if (APPS_SCRIPT_URL === "REMPLACE_PAR_TON_URL_APPS_SCRIPT") {
     console.log("⚠️ Mode démo — Payload:", payload);
     document.getElementById('send-status').innerHTML = '⚠️ Apps Script non configuré — voir console.';
     return;
   }
-  
+
   document.getElementById('send-status').textContent = 'Envoi en cours…';
-  
+
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-    document.getElementById('send-status').innerHTML = '✅ Profil enregistré. Merci !';
+    const data = await res.json();
+
+    if (data.success) {
+      // Marquer comme fait
+      localStorage.setItem('connecteo_prequiz_done', 'true');
+      localStorage.setItem('connecteo_prequiz_score', payload.pre_score_pct + '%');
+      localStorage.setItem('connecteo_prequiz_name', state.name);
+      localStorage.setItem('connecteo_prequiz_email', state.email);
+
+      const action = data.action === 'updated' ? 'mis à jour' : 'enregistré';
+      document.getElementById('send-status').innerHTML = '✅ Profil ' + action + '. Merci !';
+    } else {
+      document.getElementById('send-status').innerHTML = '❌ Erreur : ' + (data.error || 'inconnue');
+    }
   } catch (err) {
+    console.error(err);
     document.getElementById('send-status').innerHTML = '❌ Erreur réseau.';
   }
 }
