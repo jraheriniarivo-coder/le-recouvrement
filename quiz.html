@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Formation Recouvrement</title>
+<link href="https://fonts.googleapis.com/css2?family=Mada:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--primary:#00afa9;--accent:#ffa900;--sapphire:#0d47a1;--violet:#7c4dff;--success:#096475;--danger:#c62828;--warning:#f52900;--text-dark:#212121;--text-medium:#424242;--text-light:#757575}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:'Mada',sans-serif}
+body{background:linear-gradient(135deg,#0d47a1 0%,#00afa9 100%);display:flex;flex-direction:column;color:var(--text-dark)}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;padding:40px 30px;overflow-y:auto}
+.screen.active{display:flex}
+
+/* HEADER */
+.q-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;color:#fff}
+.q-header svg{height:40px}
+.q-header .info{flex:1}
+.q-header h1{font-size:20px;font-weight:900}
+.q-header .sub{font-size:12px;opacity:.8}
+.q-header .right{font-size:14px;font-weight:700;background:rgba(255,255,255,.15);padding:8px 16px;border-radius:20px}
+
+/* WELCOME */
+.welcome{max-width:600px;margin:0 auto;background:#fff;border-radius:24px;padding:50px 44px;box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center}
+.welcome h2{font-size:32px;font-weight:900;color:var(--sapphire);margin-bottom:12px}
+.welcome p{font-size:17px;color:var(--text-medium);line-height:1.6;margin-bottom:24px}
+.welcome .meta{display:flex;justify-content:center;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.welcome .meta span{background:rgba(0,175,169,.12);color:var(--success);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700}
+.form-field{text-align:left;margin-bottom:16px}
+.form-field label{display:block;font-size:13px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.form-field input{width:100%;padding:14px 18px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;font-size:16px;transition:.3s}
+.form-field input:focus{outline:none;border-color:var(--primary)}
+.btn{background:var(--primary);color:#fff;border:none;border-radius:50px;padding:16px 40px;font-family:inherit;font-size:17px;font-weight:900;cursor:pointer;transition:.3s;display:inline-flex;align-items:center;gap:10px}
+.btn:hover{transform:scale(1.03);filter:brightness(1.05)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.ghost{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4)}
+.btn.ghost:hover{background:rgba(255,255,255,.25)}
+
+/* QUIZ CARD */
+.quiz-wrap{max-width:900px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;justify-content:center}
+.progress{background:rgba(255,255,255,.2);height:8px;border-radius:8px;margin-bottom:22px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:8px;transition:width .5s ease}
+.q-card{background:#fff;border-radius:24px;padding:40px 44px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.q-tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:16px;margin-bottom:18px}
+.q-tag.j1{background:rgba(13,71,161,.12);color:var(--sapphire)}
+.q-tag.j2{background:rgba(255,169,0,.2);color:#a06000}
+.q-tag.j3{background:rgba(9,100,117,.15);color:var(--success)}
+.q-tag.j4{background:rgba(124,77,255,.15);color:var(--violet)}
+.q-text{font-size:26px;font-weight:700;color:var(--sapphire);line-height:1.35;margin-bottom:26px}
+.options{display:flex;flex-direction:column;gap:12px}
+.option{background:#f9f9f9;border:2px solid #e5e5e5;border-radius:14px;padding:18px 22px;font-family:inherit;font-size:17px;text-align:left;cursor:pointer;transition:.2s;display:flex;gap:16px;align-items:flex-start;color:var(--text-dark);font-weight:500}
+.option:hover{border-color:var(--primary);background:#f0fbfb}
+.option.selected{border-color:var(--primary);background:#e6f7f7}
+.option .letter{width:32px;height:32px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0}
+.option.selected .letter{background:var(--accent)}
+.option .txt{flex:1;line-height:1.5}
+
+/* REASONING */
+.reasoning{margin-top:20px;background:linear-gradient(135deg,#fff8e1,#fff);border-left:5px solid var(--accent);border-radius:0 14px 14px 0;padding:20px 24px;animation:fade .4s ease}
+.reasoning h4{font-size:15px;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.reasoning p{font-size:16px;color:var(--text-medium);line-height:1.6}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.q-nav{display:flex;justify-content:space-between;margin-top:26px;align-items:center}
+.q-nav .info{color:rgba(255,255,255,.85);font-size:14px;font-weight:600}
+.q-nav .info strong{color:var(--accent)}
+
+/* RESULT */
+.result{max-width:900px;margin:0 auto;background:#fff;border-radius:24px;padding:50px 44px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;overflow-y:auto;max-height:90vh}
+.result h2{font-size:36px;font-weight:900;color:var(--sapphire);margin-bottom:8px;text-align:center}
+.result .verdict{text-align:center;font-size:22px;font-weight:700;margin-bottom:26px}
+.result .verdict.expert{color:var(--success)}
+.result .verdict.maitrise{color:var(--primary)}
+.result .verdict.consolidation{color:var(--accent)}
+.result .verdict.renforcer{color:var(--danger)}
+.score-big{text-align:center;font-size:72px;font-weight:900;color:var(--sapphire);line-height:1;margin-bottom:8px}
+.score-big small{font-size:24px;color:var(--text-light);font-weight:500}
+.domains{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:26px 0}
+.domain{background:#f9f9f9;border-radius:14px;padding:18px;text-align:center}
+.domain h4{font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);margin-bottom:8px}
+.domain .bar{height:8px;background:#e5e5e5;border-radius:8px;overflow:hidden;margin:8px 0}
+.domain .bar-fill{height:100%;border-radius:8px;transition:width 1s ease}
+.domain .val{font-size:22px;font-weight:900}
+.axes{background:linear-gradient(135deg,#fff8e1,#fff);border-radius:16px;padding:26px;margin-top:20px;border-left:5px solid var(--accent)}
+.axes h3{font-size:19px;font-weight:900;color:var(--accent);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
+.axes ul{list-style:none}
+.axes li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:16px;color:var(--text-medium);align-items:flex-start}
+.axes li:last-child{border-bottom:none}
+.axes li i{color:var(--accent);font-size:18px;margin-top:2px}
+.actions{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.btn.sapphire{background:var(--sapphire)}
+
+@media(max-width:768px){
+  .screen{padding:20px 16px}
+  .q-card{padding:26px 22px}
+  .q-text{font-size:20px}
+  .option{font-size:15px;padding:14px 16px}
+  .result{padding:30px 22px}
+  .score-big{font-size:54px}
+  .result h2{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- SCREEN: WELCOME -->
+<!-- ============================================ -->
+<div class="screen active" id="screen-welcome">
+  <div class="q-header">
+    <svg viewBox="96 369.65 808 200.67"><use href="#logo-connecteo-cursive"></use></svg>
+    <div class="info">
+      <h1>Quiz d'évaluation</h1>
+      <div class="sub">Formation Recouvrement — Connecteo 2026</div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center">
+    <div class="welcome">
+      <i class="fas fa-brain" style="font-size:54px;color:var(--primary);margin-bottom:18px"></i>
+      <h2>Évaluation des acquis</h2>
+      <p>Ce quiz ne teste pas seulement ce que vous savez — il identifie <strong>comment vous raisonnez</strong> pour vous proposer des axes d'amélioration personnalisés.</p>
+      <div class="meta">
+        <span>❓ 20 questions</span>
+        <span>⏱️ ~15 minutes</span>
+        <span>🎯 4 domaines</span>
+      </div>
+      <div class="form-field">
+        <label>Prénom et Nom</label>
+        <input type="text" id="input-name" placeholder="Ex. Rakoto Andrianina" autocomplete="name">
+      </div>
+      <div class="form-field">
+        <label>Adresse email</label>
+        <input type="email" id="input-email" placeholder="vous@exemple.com" autocomplete="email">
+      </div>
+      <button class="btn" id="btn-start" style="margin-top:16px">
+        Commencer <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SCREEN: QUIZ -->
+<!-- ============================================ -->
+<div class="screen" id="screen-quiz">
+  <div class="q-header">
+    <svg viewBox="96 369.65 808 200.67"><use href="#logo-connecteo-cursive"></use></svg>
+    <div class="info">
+      <h1>Quiz en cours</h1>
+      <div class="sub" id="quiz-learner"></div>
+    </div>
+    <div class="right" id="quiz-counter">1 / 20</div>
+  </div>
+  <div class="quiz-wrap">
+    <div class="progress"><div class="progress-fill" id="q-progress" style="width:0%"></div></div>
+    <div class="q-card">
+      <span class="q-tag" id="q-tag">Jour 1</span>
+      <h3 class="q-text" id="q-text"></h3>
+      <div class="options" id="q-options"></div>
+      <div id="q-reasoning"></div>
+      <div class="q-nav">
+        <div class="info">Question <strong id="q-num">1</strong> sur <strong>20</strong></div>
+        <button class="btn" id="btn-next" style="display:none">Question suivante <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SCREEN: RESULT -->
+<!-- ============================================ -->
+<div class="screen" id="screen-result">
+  <div class="q-header">
+    <svg viewBox="96 369.65 808 200.67"><use href="#logo-connecteo-cursive"></use></svg>
+    <div class="info">
+      <h1>Résultats</h1>
+      <div class="sub">Votre évaluation personnalisée</div>
+    </div>
+  </div>
+  <div class="result" id="result-card"></div>
+</div>
+
+<!-- LOGO SVG -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <symbol id="logo-connecteo-cursive" viewBox="96 369.65 808 200.67">
+    <defs><style>.lcc-1{fill:#fff}.lcc-3{fill:#878587}.lcc-4{fill:#cce1e1}.lcc-5{fill:#00aea9}.lcc-6{clip-path:url(#lcc-clip)}</style><clipPath id="lcc-clip"><polyline points="118.25 555.34 888.98 555.34 888.98 390.35 118.25 390.35 118.25 555.34"/></clipPath></defs>
+    <g class="lcc-6"><path class="lcc-4" d="M328.26,509.27c.04-.06.07-.12.11-.18-.04.17-.07.17-.11.18M430.4,509.27c.04-.06.07-.12.11-.18-.04.17-.07.17-.11.18M168.52,511.85c0-3.81,1.39-8.68,4-14.08.27-.56.55-1.12.84-1.67,3.68,3.53,8.25,5.8,13.26,6.56-2.95,2.67-6.01,4.82-9.14,6.4-3.26,1.65-6.33,2.61-8.96,2.78M597.82,511.85c0-3.81,1.39-8.68,4.01-14.08.27-.56.55-1.12.83-1.67,3.67,3.52,8.23,5.78,13.22,6.56-2.96,2.68-6.01,4.83-9.13,6.41-3.3,1.68-6.3,2.61-8.93,2.78M671.95,511.33c.26-4.91,1.63-12.62,5.98-24.12,3.69-.13,7.58-.32,11.64-.57-2.4,4.92-4.16,9.78-5.29,14.55-1.97,2.28-3.99,4.29-6.04,5.99-2.2,1.82-4.32,3.23-6.28,4.16M692.66,390.35h-.84c-13.99.25-24.24,12.99-31.63,24.1-6.09,9.16-11.92,19.77-17.39,31.63l-8.02-.87c-4.57-3.18-11.45-6.03-21.43-6.03-11.39,0-22.52,3.74-33.06,11.11-2.14,1.49-4.18,3.09-6.15,4.78-2.25-4.64-5.48-7.78-8.39-9.84-5.93-4.18-13.03-6.31-21.09-6.31-12.12,0-24.18,4.22-35.85,12.56-8.47,6.04-15.84,13.41-21.92,21.9-.86-7.1-3.16-13.56-6.85-19.28-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-3.88,2.4-7.09,5.35-9.54,8.75l-1.69,2.36-.47,2.83c-.21,1.27-.44,2.64-.69,4.1-1.06-2.7-2.39-5.28-3.97-7.73-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-1.21.75-2.58,1.77-3.91,2.85-4.77-4.24-12.25-8.15-23.71-8.48-.32,0-.64-.01-.95-.01-9.45,0-17.61,3.04-23.71,8.95-2.28,2.22-4.22,4.79-5.78,7.68-.31,0-.62-.01-.93-.01-3.09,0-6.29.36-9.43,1.35-2.65.83-5.09,1.92-7.34,3.21-1.51-4.13-3.93-7.88-7.22-11.11-4.2-4.11-11.96-9.02-25.06-9.02-11.39,0-22.51,3.74-33.06,11.11-9.68,6.77-17.62,15.63-23.58,26.34-6.07,10.9-9.15,22.33-9.15,33.96,0,13.4,4,24.15,11.89,31.94,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,2.02-1.03,4.01-2.13,5.96-3.32,4.38,4.84,10.17,8.24,17.05,9.85,2.79.66,5.76.99,8.82.99,13.84,0,29.38-6.93,41.33-17.8l.66,3.63c6.16,10.03,14.07,15.16,25.8,15.21h13.32l4.41-9.04c6.86-13.93,13.3-27.07,19.23-36.87,0,0,0,.01,0,.02-.87,4.07-1.31,7.53-1.31,10.89,0,9.26,2.95,17.3,8.53,23.53,6.22,6.95,14.99,10.55,25.36,10.55,6.77,0,8.99-1.6,14.85-4.77,4.77,2.63,14.11,5.65,19.96,5.69h11.15l4.39-9.05c6.86-13.93,13.3-27.07,19.23-36.87,0,0,0,.01,0,.02-.87,4.07-1.31,7.53-1.31,10.89,0,9.26,2.95,17.3,8.53,23.53,6.22,6.95,14.99,10.55,25.36,10.55,6.83,0,15.91-1.81,24.9-8.89,7.82,5.92,17.77,8.9,29.65,8.9,14.26,0,28.03-4.36,40.98-12.94.34.36.68.71,1.03,1.05,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,3-1.52,5.92-3.22,8.75-5.11.86,1.08,1.79,2.12,2.79,3.1,6.87,6.69,16.35,10.23,27.4,10.23,12.44,0,24.34-4.14,35.46-12.32l.1.09c8.22,7.64,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.22-17.41l6.99-43.29-22.21,14.88c-1.1-3.34,3.35-15.84-13.8-24.64-5.61-2.88-11.4-4-16.88-4-11.29,0-21.24,4.78-25.48,8.89-2.28,2.22-4.22,4.8-5.79,7.68-.36-.01-.72-.02-1.09-.02-3.04,0-6.19.38-9.27,1.35-2.79.87-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.55-6.31-21.62-6.31-9.76,0-18.74,2.74-29.53,8.17v-2.39s-7.11.86-14.52,1.52c-7.41.66-12.06,1.01-12.06,1.01.22-.36.58-.72.8-1.08,4.83-7.95,8.28-13.71,10.41-17.63,3.34-6.16,4.92-11.31,4.92-16.2,0-6.15-2.49-11.79-7.05-15.92-4.17-3.75-9.53-5.85-15.15-5.95"/></g>
+    <path class="lcc-1" d="M859.54,461.16c-1.1-3.34,3.35-15.84-13.8-24.64-17.16-8.8-36.07-1.22-42.37,4.89-2.28,2.22-4.22,4.8-5.79,7.68-3.37-.1-6.91.25-10.36,1.33-2.79.87-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.71-6.31-21.78-6.31-9.76,0-19.98,2.74-29.69,8.17v-2.39s-6.95.86-14.36,1.52c-7.41.66-11.98,1.01-11.98,1.01.22-.36.62-.72.84-1.08,4.83-7.95,8.3-13.71,10.43-17.63,3.34-6.16,4.94-11.31,4.94-16.2,0-6.15-2.48-11.79-7.05-15.92-4.28-3.84-9.8-5.96-15.57-5.96-14.21,0-24.59,12.88-32.05,24.1-6.09,9.16-11.92,19.77-17.39,31.63l-8.02-.87c-4.57-3.18-11.45-6.03-21.43-6.03-11.39,0-22.52,3.74-33.06,11.11-2.14,1.49-4.18,3.09-6.15,4.78-2.25-4.64-5.48-7.78-8.39-9.84-5.93-4.18-13.03-6.31-21.09-6.31-12.12,0-24.18,4.22-35.85,12.56-8.47,6.04-15.84,13.41-21.92,21.9-.86-7.1-3.16-13.56-6.85-19.28-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-3.88,2.4-7.09,5.35-9.54,8.75l-1.69,2.36-.47,2.83c-.21,1.27-.44,2.64-.69,4.1-1.06-2.7-2.39-5.28-3.97-7.73-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-1.21.75-2.58,1.77-3.91,2.85-4.78-4.24-12.25-8.15-23.71-8.48-9.85-.21-18.36,2.83-24.66,8.94-2.28,2.22-4.22,4.79-5.78,7.68-3.38-.08-6.91.25-10.36,1.34-2.65.83-5.09,1.92-7.34,3.21-1.51-4.13-3.93-7.88-7.22-11.11-4.2-4.12-11.96-9.02-25.06-9.02-11.39,0-22.51,3.74-33.06,11.11-9.68,6.77-17.61,15.63-23.58,26.34-6.07,10.9-9.15,22.33-9.15,33.96,0,13.41,4,24.15,11.89,31.94,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,2.02-1.03,4.01-2.13,5.96-3.32,4.38,4.84,10.17,8.24,17.05,9.85,2.79.66,5.76.99,8.82.99,13.84,0,29.38-6.93,41.33-17.8l.66,1.16c6.19,10.09,16.53,15.81,28.36,15.81h11.03l4.14-9.65c6.94-14.09,13.45-26.13,19.43-35.97-.07.32-.14.65-.21.97-.87,4.07-1.31,7.84-1.31,11.2,0,9.26,2.95,17.45,8.53,23.68,6.22,6.95,14.99,10.63,25.36,10.63,6.77,0,13.21-1.7,19.06-4.87,4.8,2.65,10.27,4,16.1,4h11.03l4.14-9.65c6.94-14.09,13.45-26.13,19.43-35.96-.07.32-.14.65-.21.97-.87,4.07-1.31,7.84-1.31,11.2,0,9.26,2.95,17.45,8.53,23.68,6.22,6.95,14.99,10.63,25.36,10.63,6.83,0,15.91-1.77,24.9-8.86,7.82,5.92,17.77,8.92,29.65,8.92,14.26,0,28.03-4.35,40.98-12.93.34.36.68.71,1.03,1.06,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,3-1.52,5.92-3.22,8.75-5.11.86,1.09,1.79,2.12,2.79,3.1,6.87,6.69,16.35,10.23,27.4,10.23,12.44,0,24.34-4.14,35.46-12.32.03.03.07.06.1.09,8.22,7.64,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.23-17.41l6.99-43.29-22.21,14.88ZM590.58,506.16c0-3.81,1.39-8.68,4.01-14.09.27-.56.55-1.12.83-1.67,3.67,3.52,8.23,5.78,13.22,6.56-2.96,2.68-6.01,4.83-9.13,6.41-3.3,1.68-6.3,2.61-8.93,2.78M677.04,495.5c-1.97,2.28-3.99,4.29-6.04,5.99-2.2,1.82-4.32,3.23-6.28,4.16.26-4.91,1.63-12.62,5.98-24.12,3.69-.13,7.58-.32,11.64-.57-2.4,4.92-4.16,9.78-5.29,14.55M161.29,506.16c0-3.81,1.39-8.68,4-14.08.27-.56.55-1.12.84-1.67,3.68,3.53,8.25,5.8,13.26,6.56-2.95,2.67-6.01,4.82-9.14,6.4-3.26,1.65-6.33,2.61-8.96,2.78"/>
+    <path class="lcc-3" d="M845.74,436.52c-17.16-8.8-36.07-1.22-42.37,4.89-2.28,2.22-4.22,4.8-5.79,7.68-3.37-.1-6.91.25-10.36,1.33-2.79.88-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.7-6.31-21.77-6.31-1.75,0-3.53.12-5.32.29l-11.08.74s-32.34,4.43-48.71,46.91c-15.57,40.38,3.72,54.65,5.66,55.96.02-.02.04-.03.07-.05.03.03-7.03-5.5.1.09,7.13,5.59,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.23-17.41l6.99-43.29-22.2,14.88c-1.1-3.34,3.35-15.84-13.8-24.64"/>
+    <path class="lcc-5" d="M677.37,519.44c-.34-2.26-.56-4.32-.71-6.11-5.84,4.18-11.52,6.31-16.93,6.31-2.94,0-4.95-.73-6.16-2.24-.96-1.2-2.11-3.91-2.11-10.01,0-9.85,3.4-22.72,10.1-38.3,11.57-.1,26.94-1.16,26.94-1.16,0,0,.4-1.06,4.59-7.23,3.71-4.83,5.94-7.39,5.94-7.39,0,0-16.24,1.3-30.04,1.4,3.25-5.88,7.24-12.82,12.15-20.72,4.59-7.54,7.9-13.29,9.96-17.09,2.29-4.23,3.38-7.63,3.38-10.38s-1.02-4.99-2.92-6.71c-1.85-1.66-4.12-2.54-6.55-2.54-5.99,0-12.64,5.8-20.91,18.25-7.13,10.73-13.92,23.63-20.19,38.39-2.56-.23-5.09-.5-7.68-.81l-3.76-.46v12.21l1.96.86c1,.43,2.41.85,4.39,1.3-2.47,6.68-4.58,13.13-6.32,19.29-2.77,5.81-6.28,11.1-10.54,15.68-5.02,5.41-10.48,9.63-16.22,12.53-5.61,2.84-11,4.29-16.02,4.29-4.6,0-7.78-1.09-9.46-3.25-1.93-2.48-2.87-5.55-2.87-9.39,0-5.72,1.76-12.24,5.22-19.4,3.51-7.25,7.91-13.51,13.09-18.6,4.77-4.69,9.1-7.07,12.85-7.07.4,0,.65.04.79.07,0,.07.02.16.02.28,0,3.28-.62,6.15-1.86,8.51-1.19,2.27-2.47,3.89-3.72,4.67l-2.77,1.76,1.77,2.69c3.02,4.58,6.97,5.54,9.74,5.54,3.03,0,7.36-1.22,10.82-7.05,2.43-4.09,3.66-8.58,3.66-13.37,0-5.09-1.78-9.42-5.29-12.87-3.53-3.46-8.79-5.22-15.62-5.22-8.53,0-17.03,2.92-25.27,8.68-8.07,5.64-14.7,13.07-19.72,22.08-3.66,6.57-5.99,13.34-7.01,20.2-4.15,5.32-8.95,10.02-14.36,14.06-8.49,6.33-16.84,9.54-24.81,9.54-5.56,0-9.1-1.25-10.53-3.7-1.79-3.07-2.7-6.15-2.7-9.16,0-.65.02-1.27.06-1.85,8.2-1.15,16.33-3.5,24.21-6.97,8.83-3.9,16.15-9.01,21.77-15.18,5.86-6.44,8.83-13.45,8.83-20.84,0-6.03-1.99-10.49-5.92-13.26-3.61-2.55-8.07-3.84-13.26-3.84-9.21,0-18.62,3.38-27.96,10.05-7.65,5.46-14.19,12.11-19.54,19.79l-1.74,2.61c-.41.64-.84,1.28-1.24,1.93-3.45,5.72-5.88,11.26-7.32,16.6-2.18,4.05-4.46,7.83-6.83,11.3-4.71,6.89-9.19,10.68-12.6,10.68-.2,0-.49,0-.99-.61-.24-.29-.8-1.26-.8-3.88,0-3.4,1.18-8.73,3.49-15.78,1.62-4.55,2.86-8.72,3.67-12.39.84-3.77,1.26-7.77,1.26-11.89,0-7.34-1.77-13.8-5.26-19.2-3.76-5.81-9.4-8.89-16.29-8.89-7.68,0-15.44,3.74-23.05,11.12-3.63,3.52-7.22,7.58-10.73,12.15,1.04-5.13,1.75-9.41,1.75-12,0-3.28-.93-5.97-2.78-8.02-1.35-1.48-3.87-3.25-8.18-3.25-2.68,0-5.41.85-8.11,2.52-2.53,1.57-4.42,3.35-5.82,5.3,0,0-4.51,27.4-6.5,34.33-2,6.93-7.19,14.02-11.14,19.81-4.71,6.89-9.21,10.68-12.63,10.68-.2,0-.51,0-1-.61-.24-.29-.8-1.26-.8-3.88,0-3.4,1.18-8.73,3.49-15.78,1.62-4.55,2.85-8.72,3.67-12.39.84-3.77,1.26-7.77,1.26-11.89,0-7.34-1.77-13.8-5.26-19.2-3.76-5.81-9.4-8.89-16.29-8.89-7.68,0-15.44,3.74-23.05,11.12-3.63,3.52-7.22,7.58-10.73,12.15,1.04-5.13,1.75-9.41,1.75-12,0-3.28-.93-5.97-2.78-8.02-1.35-1.48-3.87-3.25-8.18-3.25-2.68,0-5.41.85-8.11,2.52-2.53,1.57-7.4,6.13-7.4,6.13,0,0-.82,14.44-3.18,24.44,0,0-1.63,1.11-3.17,1.63-1.64.56-3.25.16-3.25.16.48-1.39,1.02-2.95,1.36-4.17,2.83-10.21,2-18.91-2.35-24.49-3.62-4.64-9.39-7.11-17.17-7.33-6.14-.16-11.16,1.57-14.89,5.18-4.09,3.97-5.64,9.34-6.22,13.19-4.09-1.33-10.13-2.64-15.2-1.05-14.48,4.55-20.78,21.69-24.21,35.21-1.16,1.52-2.39,2.98-3.69,4.37-5.02,5.41-10.48,9.63-16.22,12.53-5.61,2.84-11,4.29-16.02,4.29-4.6,0-7.78-1.09-9.46-3.25-1.93-2.48-2.87-5.55-2.87-9.39,0-5.72,1.76-12.24,5.22-19.4,3.51-7.25,7.91-13.51,13.09-18.6,4.77-4.69,9.1-7.07,12.85-7.07.4,0,.65.04.79.07,0,.07.02.16.02.28,0,3.28-.62,6.15-1.86,8.51-1.19,2.27-2.47,3.88-3.72,4.68l-2.77,1.76,1.77,2.69c3.02,4.58,6.97,5.54,9.74,5.54,3.02,0,7.36-1.22,10.82-7.05,2.43-4.09,3.66-8.58,3.66-13.37,0-5.09-1.78-9.42-5.29-12.87-3.53-3.46-8.79-5.22-15.62-5.22-8.53,0-17.03,2.92-25.27,8.68-8.06,5.64-14.7,13.07-19.72,22.08-5.04,9.05-6.9,18.48-6.9,28.02,0,10.01,3.47,17.8,8.86,23.14h0c6.48,5.37,12.01,8.09,20.9,8.09,7.91,0,15.69-2.09,23.84-6.2,5.98-3.03,11.43-6.94,16.61-11.65,1.77,8.9,7.08,15.11,15.45,17.07,1.8.42,3.66.62,5.64.62,13.61,0,30.61-9.61,40.41-23.55,2.31-3.29,9.1-13.99,12-18.57,1.44.27,3.38.51,5.8.51,1.29,0,2.45-.07,3.54-.16-1.94,6.79-4.21,14.14-6.82,21.94l-2.33,8.01.73,1.26c3.76,6.12,9.63,9.42,16.98,9.42h2.16l.92-1.94c8.82-17.95,17.19-33,24.86-44.69,7.08-10.77,13.89-16.25,20.24-16.25,1.14,0,1.96.39,2.76,1.33.64.75,1.4,2.37,1.4,5.82,0,3.65-.99,9.5-2.94,17.44-.73,3.05-1.42,6.1-2.07,9.15-.69,3.23-1.04,6.15-1.04,8.66,0,6.3,1.8,11.5,5.35,15.47,3.69,4.12,8.85,6.21,15.33,6.21,7.19,0,13.74-2.89,19.56-8.66,3.75,4.84,9.09,7.46,15.61,7.46h2.16l.92-1.94c8.82-17.95,17.19-33,24.86-44.69,7.08-10.77,13.88-16.25,20.23-16.25,1.14,0,1.96.39,2.76,1.33.64.75,1.4,2.37,1.4,5.82,0,3.65-.99,9.5-2.94,17.44-.73,3.05-1.42,6.1-2.07,9.15-.69,3.23-1.04,6.15-1.04,8.66,0,6.3,1.8,11.5,5.35,15.47,3.69,4.12,8.85,6.21,15.33,6.21,9.2,0,17.37-4.78,24.28-14.2.32-.44.64-.92.96-1.38,1.41,2.84,3.31,5.42,5.76,7.7,5.68,5.27,13.6,7.95,23.54,7.95,12.2,0,24.12-4.04,35.4-12,3.36-2.37,6.79-5.02,9.7-7.86,1.33,4.74,3.79,8.71,7.02,11.83h0c5.4,5.37,12.4,8.09,21.29,8.09,7.91,0,15.89-2.09,24.03-6.2,7.51-3.8,14.36-9,20.57-15.43.46,6.69,2.6,11.98,6.45,15.74,4.39,4.28,10.42,6.45,17.96,6.45,9.34,0,18.44-3.21,27.13-9.52-.94-1.89-1.88-4.45-2.38-7.72M513.2,480.1c3.96-5.49,8.35-10.18,13.04-13.76,4.33-3.3,8.23-5.02,11.6-5.02.09,0,.17-.02.24-.02.02.17.03.37.03.66,0,4-1.98,8.63-5.89,13.03-4.18,4.71-9.36,8.03-15.39,12.34h0c-3.63,1.08-7.06,3.04-10.24,4,1.74-3.68,3.95-7.57,6.6-11.24M220.69,517.18c-1.28-.52-2.17-1.52-2.72-3.06-1.71-4.76.27-13.58,4.82-21.43,4.25-7.34,10.48-13.74,14.44-17.41,1.27,2.34,3.43,5.12,7.11,7.84,3.9,2.87,7.16,4.65,9.52,5.73-6.95,11.26-22.77,32.56-33.17,28.33M260.33,475.77c-1.54-.91-3.54-2.42-5.36-4.81-2.06-2.69-2.97-5.86-2.33-8.08.34-1.18,1.09-2,2.3-2.49.68-.28,1.35-.41,1.99-.41.78,0,1.52.2,2.19.61,1.73,1.04,2.84,3.23,2.98,5.88.2,3.83-.81,7.07-1.77,9.31"/>
+  </symbol>
+</svg>
+
+<script>
+/* ============================================ */
+/* DONNÉES DU QUIZ                              */
+/* ============================================ */
+// Structure : chaque option a {t: texte, w: poids 0-3, r: raisonnement, g: axe d'amélioration|null}
+const QUESTIONS = [
+  // ---- JOUR 1 — RELATION CLIENT ----
+  {day:1, tag:"Jour 1 — Relation Client", q:"Selon la définition de référence, la relation client est...",
+    opts:[
+      {t:"Le service après-vente de l'entreprise", w:1, r:"Vous réduisez la relation client à sa dimension corrective. C'est une vision partielle qui exclut l'accueil, le conseil et la fidélisation.", g:"Élargir la vision au-delà du SAV"},
+      {t:"L'ensemble des échanges entre une entreprise et son public, sur tous les modes de communication", w:3, r:"Exacte. La relation client englobe TOUS les points de contact — appels, emails, courriers, face-à-face.", g:null},
+      {t:"Un coût à minimiser pour l'entreprise", w:0, r:"Vision court-termiste. La relation client est un actif stratégique, pas une charge.", g:"Reconnaître la relation client comme un actif"},
+      {t:"Uniquement les réclamations clients", w:1, r:"Vision partielle : la relation client se joue aussi en dehors des réclamations.", g:"Élargir le périmètre au-delà des réclamations"}
+    ]},
+  {day:1, tag:"Jour 1 — Relation Client", q:"Un client appelle pour une réclamation. Selon les 3 piliers, votre mission est...",
+    opts:[
+      {t:"Informer uniquement", w:1, r:"Informer seul = robot. Vous oubliez le conseil et la relation.", g:"Intégrer les 3 piliers simultanément"},
+      {t:"Conseiller uniquement", w:1, r:"Conseiller sans informer = amateur. Il manque la base factuelle.", g:"Intégrer les 3 piliers simultanément"},
+      {t:"Informer, conseiller ET établir une relation de qualité", w:3, r:"Exacte. Les 3 piliers sont indissociables.", g:null},
+      {t:"Résoudre le problème le plus vite possible", w:2, r:"Important mais insuffisant : la vitesse sans relation ne crée pas la fidélité.", g:"Ajouter la dimension relationnelle à la résolution"}
+    ]},
+  {day:1, tag:"Jour 1 — Relation Client", q:"« Sans le client, la production s'arrête. » Cette phrase signifie...",
+    opts:[
+      {t:"Le client est un roi qu'il faut satisfaire coûte que coûte", w:1, r:"Vision extrême : le client n'est pas un roi à servir, c'est un partenaire.", g:"Nuancer la posture client — ni servile ni distante"},
+      {t:"Le client est la raison d'être de l'entreprise", w:3, r:"Exacte. Sans client, pas de production, pas de salaire, pas d'entreprise.", g:null},
+      {t:"Le client est un moyen de faire du chiffre", w:1, r:"Vision instrumentale : le client est une finalité, pas un moyen.", g:"Reconsidérer le client comme finalité"},
+      {t:"Le client doit être géré comme une ressource", w:2, r:"En partie vrai (il faut le gérer) mais incomplet : c'est un être humain, pas une ressource interchangeable.", g:"Humaniser la relation client"}
+    ]},
+  {day:1, tag:"Jour 1 — Relation Client", q:"La satisfaction et la fidélisation...",
+    opts:[
+      {t:"Sont synonymes", w:0, r:"Faux. Un client satisfait peut partir. La fidélisation est durable.", g:"Distinguer satisfaction ponctuelle et fidélisation durable"},
+      {t:"La satisfaction est ponctuelle, la fidélisation durable", w:3, r:"Exacte. La satisfaction est un ressenti ; la fidélisation est un comportement dans le temps.", g:null},
+      {t:"La fidélisation entraîne automatiquement la satisfaction", w:1, r:"Logique inversée. C'est la satisfaction répétée qui construit la fidélisation.", g:"Comprendre la chaîne satisfaction → fidélisation"},
+      {t:"Ce sont uniquement des indicateurs financiers", w:1, r:"Réducteur. Ce sont des indicateurs d'expérience, pas seulement financiers.", g:"Voir les indicateurs comme des leviers d'expérience"}
+    ]},
+  {day:1, tag:"Jour 1 — Relation Client", q:"Un client est satisfait d'un appel mais ne revient pas. Pourquoi ?",
+    opts:[
+      {t:"La satisfaction ne suffit pas — il faut aussi l'image de marque", w:3, r:"Exacte. Fidélisation = satisfaction + image + cohérence dans le temps.", g:null},
+      {t:"Le client est de mauvaise foi", w:0, r:"Rejeter la responsabilité sur le client empêche toute progression.", g:"Éviter le réflexe de rejet sur le client"},
+      {t:"L'agent a mal fait son travail", w:1, r:"Possible mais trop rapide : la satisfaction ne dépend pas que d'un appel.", g:"Élargir l'analyse au-delà de l'appel"},
+      {t:"Ce n'est pas possible — satisfaction = fidélisation", w:0, r:"Faux. La satisfaction est une condition, pas une garantie.", g:"Comprendre que satisfaction ≠ fidélisation"}
+    ]},
+
+  // ---- JOUR 2 — COMMUNICATION ----
+  {day:2, tag:"Jour 2 — Communication", q:"Au téléphone, ce qui porte le plus le message est...",
+    opts:[
+      {t:"Les mots utilisés", w:1, r:"Au téléphone, les mots comptent ~15%. Sous-estimer le ton est une erreur fréquente.", g:"Développer la conscience du ton"},
+      {t:"L'intonation et le ton", w:3, r:"Exacte. Sans visuel, l'intonation porte ~85% du message perçu.", g:null},
+      {t:"La durée de l'appel", w:0, r:"La durée n'a pas d'impact direct sur la perception du message.", g:"Recentrer sur le contenu, pas la durée"},
+      {t:"Le script suivi à la lettre", w:1, r:"Le script est un guide, pas une fin. Réciter tue l'authenticité.", g:"Utiliser le script comme support, pas comme couperet"}
+    ]},
+  {day:2, tag:"Jour 2 — Communication", q:"Un client dit « De toute façon vous ne comprenez rien ». Votre meilleure réaction :",
+    opts:[
+      {t:"Lui prouver qu'il a tort avec des faits", w:0, r:"Rentrer dans le débat, c'est alimenter le conflit. Vous perdez.", g:"Ne pas débattre d'une opinion"},
+      {t:"Nommer son émotion : « Je comprends votre frustration »", w:3, r:"Exacte. Nommer l'émotion fait baisser la garde — c'est le niveau 3 de l'écoute active.", g:null},
+      {t:"Raccrocher poliment", w:1, r:"Solution de dernier recours. Avant cela, il faut tenter l'écoute active.", g:"Épuiser les techniques avant de clore"},
+      {t:"Ignorer et continuer le script", w:0, r:"Ignorer une émotion = nier le client. Il se sentira encore moins compris.", g:"Accueillir l'émotion avant le contenu"}
+    ]},
+  {day:2, tag:"Jour 2 — Communication", q:"« DIVA » signifie...",
+    opts:[
+      {t:"Débit, Intonation, Volume, Articulation", w:3, r:"Exacte. Les 4 réglages avant de décrocher.", g:null},
+      {t:"Dynamisme, Initiative, Vivacité, Attention", w:0, r:"Ce ne sont pas les 4 piliers de la voix.", g:"Mémoriser le référentiel DIVA"},
+      {t:"Dialogue, Interaction, Vivacité, Accueil", w:1, r:"Mélange de notions voisines mais pas le vrai acronyme.", g:"Clarifier le référentiel DIVA"},
+      {t:"Direct, Informel, Vif, Attentif", w:0, r:"Aucun rapport. DIVA concerne la voix, pas la posture.", g:"Associer DIVA à la voix uniquement"}
+    ]},
+  {day:2, tag:"Jour 2 — Communication", q:"Le sourire au téléphone...",
+    opts:[
+      {t:"Ne change rien, le client ne le voit pas", w:0, r:"Erreur fréquente. Le sourire modifie la voix et s'entend.", g:"Comprendre l'impact vocal du sourire"},
+      {t:"Modifie la voix et est perçu comme de la bienveillance", w:3, r:"Exacte. Le sourire produit des harmoniques hautes perçues comme chaleureuses.", g:null},
+      {t:"Est utile uniquement pour l'agent", w:1, r:"Le sourire a un effet sur l'agent (humeur) ET sur le client (perception).", g:"Voir le sourire comme un double levier"},
+      {t:"Doit être forcé pour être efficace", w:1, r:"Un sourire forcé sonne faux. La bienveillance doit être sincère.", g:"Travailler la sincérité du sourire"}
+    ]},
+  {day:2, tag:"Jour 2 — Communication", q:"Le 3ᵉ niveau d'écoute active est...",
+    opts:[
+      {t:"Écouter les mots", w:1, r:"C'est le niveau 1 — insuffisant seul.", g:"Passer au-delà de l'écoute factuelle"},
+      {t:"Reformuler pour comprendre", w:2, r:"C'est le niveau 2 — nécessaire mais pas suffisant.", g:"Ajouter l'accueil de l'émotion"},
+      {t:"Accueillir et nommer l'émotion", w:3, r:"Exacte. C'est au niveau 3 que la confiance naît.", g:null},
+      {t:"Prendre des notes pendant l'appel", w:0, r:"Prendre des notes est une technique, pas un niveau d'écoute.", g:"Distinguer technique et niveau d'écoute"}
+    ]},
+
+  // ---- JOUR 3 — RECOUVREMENT ----
+  {day:3, tag:"Jour 3 — Recouvrement", q:"Le recouvrement est...",
+    opts:[
+      {t:"Une action de vente forcée", w:0, r:"Confusion avec la vente. Le recouvrement n'est pas une vente.", g:"Distinguer recouvrement et vente"},
+      {t:"Une négociation cadrée au service de l'équilibre financier", w:3, r:"Exacte. Ni vente, ni conseil, ni assistance : c'est un métier de négociation.", g:null},
+      {t:"Une assistance sociale", w:0, r:"Confusion avec l'accompagnement social. Le recouvreur n'est pas un travailleur social.", g:"Clarifier le périmètre du métier"},
+      {t:"Un service de conseil financier", w:1, r:"Proche mais inexact : le conseil financier est un autre métier.", g:"Distinguer recouvrement et conseil"}
+    ]},
+  {day:3, tag:"Jour 3 — Recouvrement", q:"Un client « Professionnel » est agressif et connaît la loi. Vous :",
+    opts:[
+      {t:"Entrez dans le débat juridique", w:0, r:"Piège classique. Vous ne gagnerez pas le débat, vous perdrez l'appel.", g:"Éviter le piège du débat juridique"},
+      {t:"Restez factuel et procédural, sans émotion", w:3, r:"Exacte. Fermeté procédurale, pas d'émotion, faits et cadre.", g:null},
+      {t:"Cédez sur le montant", w:1, r:"Céder encourage l'agressivité. Ce n'est pas la bonne réponse.", g:"Ne pas céder à la pression"},
+      {t:"Raccrochez", w:0, r:"Le raccrochage doit être un dernier recours, pas une réaction.", g:"Développer la résistance à l'agressivité"}
+    ]},
+  {day:3, tag:"Jour 3 — Recouvrement", q:"Les 7 temps de l'appel de recouvrement incluent :",
+    opts:[
+      {t:"Seulement Ouverture, Négociation, Clôture", w:1, r:"Vision partielle : il manque 4 temps essentiels.", g:"Mémoriser les 7 temps complets"},
+      {t:"Préparation, Ouverture, Découverte, Confrontation, Négociation, Clôture, Traçabilité", w:3, r:"Exacte. C'est le squelette complet de l'appel.", g:null},
+      {t:"Accueil, Traitement, Conclusion", w:2, r:"Version simplifiée — correcte en surface, mais insuffisante pour le recouvrement.", g:"Affiner la structure d'appel"},
+      {t:"Introduction, Corps, Conclusion", w:1, r:"Structure d'exposé, pas d'appel de recouvrement.", g:"Différencier structure d'appel et structure d'exposé"}
+    ]},
+  {day:3, tag:"Jour 3 — Recouvrement", q:"La « règle d'or » du recouvrement est :",
+    opts:[
+      {t:"Toujours obtenir un paiement immédiat", w:0, r:"Objectif irréaliste. Le petit pas est souvent plus efficace.", g:"Adopter la stratégie du petit pas"},
+      {t:"Le recouvrement par la peur est un recouvrement perdu", w:3, r:"Exacte. Menace et harcèlement détruisent la relation et exposent l'agent.", g:null},
+      {t:"Menacer si nécessaire pour obtenir gain de cause", w:0, r:"Interdit par la loi et destructeur pour l'institution.", g:"Comprendre le cadre légal"},
+      {t:"Rappeler tous les jours jusqu'au paiement", w:0, r:"Harcèlement caractérisé — interdit.", g:"Distinguer relance et harcèlement"}
+    ]},
+  {day:3, tag:"Jour 3 — Recouvrement", q:"Le « silence stratégique » sert à :",
+    opts:[
+      {t:"Faire patienter le client", w:1, r:"Le silence n'est pas une pause passive, c'est un actif.", g:"Voir le silence comme un outil actif"},
+      {t:"Créer une tension productive que le client cherchera à résoudre", w:3, r:"Exacte. Le premier qui parle a perdu.", g:null},
+      {t:"Montrer son autorité", w:1, r:"Le silence n'est pas une démonstration de pouvoir.", g:"Comprendre l'objectif du silence"},
+      {t:"Éviter de dire quelque chose de faux", w:1, r:"Effet secondaire possible, mais ce n'est pas la raison d'être.", g:"Identifier la vraie finalité du silence"}
+    ]},
+
+  // ---- JOUR 4 — SITUATIONS COMPLEXES ----
+  {day:4, tag:"Jour 4 — Situations complexes", q:"Un conflit naît le plus souvent de :",
+    opts:[
+      {t:"La mauvaise foi du client", w:0, r:"Accuser le client ferme la porte à toute résolution.", g:"Sortir du réflexe d'accusation"},
+      {t:"La rencontre de deux attentes heurtées", w:3, r:"Exacte. Le conflit naît d'un choc entre les attentes du client et celles de l'institution.", g:null},
+      {t:"La personnalité de l'agent", w:1, r:"Parfois, mais rarement la cause profonde.", g:"Chercher les causes profondes"},
+      {t:"La culture de l'entreprise", w:1, r:"Contexte possible, mais pas la cause directe.", g:"Distinguer contexte et cause"}
+    ]},
+  {day:4, tag:"Jour 4 — Situations complexes", q:"FOS signifie :",
+    opts:[
+      {t:"Fait, Opinion, Sentiment", w:3, r:"Exacte. La règle de tri avant de répondre.", g:null},
+      {t:"Faible, Optimiste, Sérieux", w:0, r:"Aucun rapport avec la méthode FOS.", g:"Réviser la méthode FOS"},
+      {t:"Ferme, Ouvert, Sincère", w:0, r:"Qualités relationnelles, pas la méthode de tri.", g:"Distinguer qualités et méthode"},
+      {t:"Fiable, Objectif, Suivi", w:1, r:"Ces mots pourraient décrire l'agent, pas la méthode FOS.", g:"Clarifier FOS"}
+    ]},
+  {day:4, tag:"Jour 4 — Situations complexes", q:"Un client dit « Je vais porter plainte ». Vous :",
+    opts:[
+      {t:"Contre-attaquez avec les risques qu'il encourt", w:0, r:"Escalade garantie. Vous entrez dans un bras de fer perdu d'avance.", g:"Éviter le réflexe de contre-attaque"},
+      {t:"Notez, ne débatrez pas, tracez, escaladez si besoin", w:3, r:"Exacte. Reconnaître le droit, ne pas débattre, tracer, escalader.", g:null},
+      {t:"Raccrochez immédiatement", w:1, r:"Possible en cas d'insulte, mais pas ici.", g:"Distinguer menace et insulte"},
+      {t:"Promettez d'annuler les frais pour l'apaiser", w:0, r:"Promesse que vous ne pouvez pas tenir — vous perdez votre crédibilité.", g:"Ne jamais promettre au-delà du pouvoir"}
+    ]},
+  {day:4, tag:"Jour 4 — Situations complexes", q:"La méthode des 5R est :",
+    opts:[
+      {t:"Reconnaître, Reformuler, Respirer, Rediriger, Reprendre", w:3, r:"Exacte. La méthode complète de désamorçage.", g:null},
+      {t:"Réfléchir, Répondre, Résoudre, Rappeler, Refermer", w:1, r:"Étapes logiques mais pas la méthode des 5R.", g:"Mémoriser la vraie méthode des 5R"},
+      {t:"Refuser, Reporter, Relancer, Réduire, Résilier", w:0, r:"Vocabulaire administratif, pas la méthode de désamorçage.", g:"Réviser la méthode des 5R"},
+      {t:"Rire, Relativiser, Rassurer, Rester, Raccompagner", w:0, r:"Aucun rapport avec la méthode professionnelle.", g:"Réviser la méthode des 5R"}
+    ]},
+  {day:4, tag:"Jour 4 — Situations complexes", q:"Un client raccroche brutalement. Vous :",
+    opts:[
+      {t:"Notez l'incident, reprogrammez, changez de canal", w:3, r:"Exacte. Le raccrochage est une donnée, pas un échec.", g:null},
+      {t:"Rappelez immédiatement pour avoir une explication", w:0, r:"Insister tout de suite aggrave la situation.", g:"Comprendre le rythme de la relance"},
+      {t:"Le considérez comme perdu", w:0, r:"Abandon prématuré. Un autre canal peut fonctionner.", g:"Explorer d'autres canaux"},
+      {t:"Attendez qu'il rappelle", w:1, r:"Passif. C'est à l'agent de reprendre l'initiative.", g:"Reprendre l'initiative après raccrochage"}
+    ]}
+];
+
+/* ============================================ */
+/* ÉTAT DU QUIZ                                 */
+/* ============================================ */
+let state = {
+  name: "",
+  email: "",
+  current: 0,
+  answers: [],
+  selected: null
+};
+
+/* ============================================ */
+/* ÉLÉMENTS DOM                                 */
+/* ============================================ */
+const $welcome = document.getElementById('screen-welcome');
+const $quiz = document.getElementById('screen-quiz');
+const $result = document.getElementById('screen-result');
+
+/* ============================================ */
+/* DÉMARRAGE                                    */
+/* ============================================ */
+document.getElementById('btn-start').addEventListener('click', () => {
+  const name = document.getElementById('input-name').value.trim();
+  const email = document.getElementById('input-email').value.trim();
+  if (!name) { alert('Merci de renseigner votre nom.'); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Merci de renseigner un email valide.'); return; }
+  state.name = name;
+  state.email = email;
+  state.current = 0;
+  state.answers = [];
+  state.selected = null;
+  document.getElementById('quiz-learner').textContent = name;
+  $welcome.classList.remove('active');
+  $quiz.classList.add('active');
+  renderQuestion();
+});
+
+/* ============================================ */
+/* RENDER QUESTION                              */
+/* ============================================ */
+function renderQuestion() {
+  const q = QUESTIONS[state.current];
+  const total = QUESTIONS.length;
+
+  document.getElementById('q-tag').textContent = q.tag;
+  document.getElementById('q-tag').className = 'q-tag j' + q.day;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-num').textContent = state.current + 1;
+  document.getElementById('quiz-counter').textContent = (state.current + 1) + ' / ' + total;
+  document.getElementById('q-progress').style.width = ((state.current) / total * 100) + '%';
+
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">' + ['A','B','C','D'][i] + '</span><span class="txt">' + opt.t + '</span>';
+    btn.onclick = () => selectOption(i);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('q-reasoning').innerHTML = '';
+  document.getElementById('btn-next').style.display = 'none';
+  state.selected = null;
+}
+
+/* ============================================ */
+/* SÉLECTION OPTION                             */
+/* ============================================ */
+function selectOption(idx) {
+  if (state.selected !== null) return; // on ne change pas son choix
+  state.selected = idx;
+  const q = QUESTIONS[state.current];
+  const opt = q.opts[idx];
+
+  document.querySelectorAll('.option').forEach((btn, i) => {
+    if (i === idx) btn.classList.add('selected');
+    btn.style.pointerEvents = 'none';
+  });
+
+  // Afficher le raisonnement
+  const reasonDiv = document.getElementById('q-reasoning');
+  reasonDiv.innerHTML = `
+    <div class="reasoning">
+      <h4><i class="fas fa-lightbulb"></i> Pourquoi ce choix ?</h4>
+      <p>${opt.r}</p>
+    </div>`;
+
+  state.answers.push({
+    q: state.current,
+    choice: idx,
+    weight: opt.w,
+    gap: opt.g,
+    tag: q.tag
+  });
+
+  document.getElementById('btn-next').style.display = 'inline-flex';
+  document.getElementById('btn-next').textContent = (state.current < QUESTIONS.length - 1) ? 'Question suivante' : 'Voir mes résultats';
+}
+
+/* ============================================ */
+/* QUESTION SUIVANTE                            */
+/* ============================================ */
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (state.current < QUESTIONS.length - 1) {
+    state.current++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+/* ============================================ */
+/* RÉSULTATS                                    */
+/* ============================================ */
+function showResults() {
+  const maxPerDomain = 5 * 3; // 5 questions × 3 pts
+  const domains = {1: 0, 2: 0, 3: 0, 4: 0};
+  let total = 0;
+
+  state.answers.forEach(a => {
+    const q = QUESTIONS[a.q];
+    domains[q.day] += a.weight;
+    total += a.weight;
+  });
+
+  const maxTotal = QUESTIONS.length * 3;
+  const pct = Math.round((total / maxTotal) * 100);
+
+  // Verdict
+  let verdict, verdictClass;
+  if (pct >= 85) { verdict = "Expert"; verdictClass = "expert"; }
+  else if (pct >= 70) { verdict = "Maîtrise"; verdictClass = "maitrise"; }
+  else if (pct >= 50) { verdict = "En consolidation"; verdictClass = "consolidation"; }
+  else { verdict = "À renforcer"; verdictClass = "renforcer"; }
+
+  // Axes d'amélioration (dédupliqués)
+  const axesSet = new Set();
+  state.answers.forEach(a => { if (a.gap) axesSet.add(a.gap); });
+  const axes = Array.from(axesSet);
+
+  // Domaine le plus faible
+  const domainLabels = {1:'Relation Client', 2:'Communication', 3:'Recouvrement', 4:'Situations complexes'};
+  const domainColors = {1:'#0d47a1', 2:'#ffa900', 3:'#096475', 4:'#7c4dff'};
+  const domainPct = {};
+  for (let d = 1; d <= 4; d++) domainPct[d] = Math.round((domains[d] / maxPerDomain) * 100);
+
+  const weakest = Object.entries(domainPct).sort((a,b) => a[1] - b[1])[0];
+
+  const html = `
+    <h2>Votre profil d'apprentissage</h2>
+    <p class="verdict ${verdictClass}">${verdict}</p>
+    <div class="score-big">${pct}<small>%</small></div>
+    <p style="text-align:center;color:var(--text-light);margin-bottom:20px">${total} points sur ${maxTotal}</p>
+
+    <div class="domains">
+      ${[1,2,3,4].map(d => `
+        <div class="domain">
+          <h4>${domainLabels[d]}</h4>
+          <div class="val" style="color:${domainColors[d]}">${domainPct[d]}%</div>
+          <div class="bar"><div class="bar-fill" style="width:${domainPct[d]}%;background:${domainColors[d]}"></div></div>
+          <p style="font-size:12px;color:var(--text-light);margin-top:6px">${domains[d]}/${maxPerDomain} pts</p>
+        </div>
+      `).join('')}
+    </div>
+
+    ${axes.length > 0 ? `
+      <div class="axes">
+        <h3><i class="fas fa-compass"></i> Vos axes d'amélioration prioritaires</h3>
+        <ul>
+          ${axes.map(a => `<li><i class="fas fa-arrow-right"></i><span>${a}</span></li>`).join('')}
+        </ul>
+      </div>
+    ` : `
+      <div class="axes" style="background:linear-gradient(135deg,#e8f5e9,#fff);border-left-color:var(--success)">
+        <h3 style="color:var(--success)"><i class="fas fa-trophy"></i> Excellent parcours !</h3>
+        <p style="font-size:16px;color:var(--text-medium)">Vous avez atteint le niveau le plus élevé sur l'ensemble des domaines. Continuez à ancrer ces réflexes au quotidien.</p>
+      </div>
+    `}
+
+    <div style="background:#f9f9f9;border-radius:14px;padding:20px;margin-top:20px">
+      <h4 style="font-size:14px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Votre domaine le plus fragile</h4>
+      <p style="font-size:18px;font-weight:700;color:${domainColors[weakest[0]]}">${domainLabels[weakest[0]]} — ${weakest[1]}%</p>
+      <p style="font-size:14px;color:var(--text-medium);margin-top:6px">C'est sur ce domaine que se concentrent vos principaux axes d'amélioration. Revenez au contenu du Jour ${weakest[0]} pour approfondir.</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn sapphire" onclick="sendResults()"><i class="fas fa-paper-plane"></i> Envoyer mes résultats</button>
+      <button class="btn ghost" style="color:var(--sapphire);border-color:var(--sapphire)" onclick="location.reload()"><i class="fas fa-redo"></i> Refaire le quiz</button>
+    </div>
+
+    <p style="text-align:center;font-size:12px;color:var(--text-light);margin-top:20px" id="send-status"></p>
+  `;
+
+  $quiz.classList.remove('active');
+  $result.classList.add('active');
+  document.getElementById('result-card').innerHTML = html;
+}
+
+/* ============================================ */
+/* ENVOI DES RÉSULTATS (web3forms)              */
+/* ============================================ */
+async function sendResults() {
+  // ============================================
+  // CONFIGURATION WEB3FORMS
+  // Remplace ACCESS_KEY par ta clé quand tu auras créé le formulaire
+  // ============================================
+  const ACCESS_KEY = "REMPLACE_PAR_TON_ACCESS_KEY_WEB3FORMS";
+
+  const payload = buildPayload();
+
+  if (ACCESS_KEY === "REMPLACE_PAR_TON_ACCESS_KEY_WEB3FORMS") {
+    // Mode démo : afficher le JSON dans la console et proposer copie
+    console.log("⚠️ Mode démo — Web3Forms non configuré");
+    console.log(payload);
+    document.getElementById('send-status').innerHTML = '⚠️ Web3Forms non configuré — les données sont affichées dans la console (F12).';
+    return;
+  }
+
+  document.getElementById('send-status').textContent = 'Envoi en cours…';
+  try {
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ access_key: ACCESS_KEY, ...payload })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('send-status').innerHTML = '✅ Résultats envoyés avec succès. Merci !';
+    } else {
+      document.getElementById('send-status').innerHTML = '❌ Erreur d\'envoi. Réessayez.';
+    }
+  } catch (err) {
+    document.getElementById('send-status').innerHTML = '❌ Erreur réseau. Réessayez.';
+  }
+}
+
+/* ============================================ */
+/* CONSTRUCTION DU PAYLOAD                      */
+/* ============================================ */
+function buildPayload() {
+  const maxPerDomain = 15;
+  const maxTotal = 60;
+  const domains = {1: 0, 2: 0, 3: 0, 4: 0};
+  let total = 0;
+  const axes = new Set();
+
+  state.answers.forEach(a => {
+    const q = QUESTIONS[a.q];
+    domains[q.day] += a.weight;
+    total += a.weight;
+    if (a.gap) axes.add(a.gap);
+  });
+
+  const pct = Math.round((total / maxTotal) * 100);
+  let verdict;
+  if (pct >= 85) verdict = "Expert";
+  else if (pct >= 70) verdict = "Maîtrise";
+  else if (pct >= 50) verdict = "En consolidation";
+  else verdict = "À renforcer";
+
+  return {
+    subject: "Quiz Recouvrement — " + state.name,
+    from_name: "Quiz Formation Recouvrement",
+    name: state.name,
+    email: state.email,
+    score_total: total,
+    score_max: maxTotal,
+    score_pct: pct,
+    verdict: verdict,
+    score_j1: domains[1] + "/" + maxPerDomain,
+    score_j2: domains[2] + "/" + maxPerDomain,
+    score_j3: domains[3] + "/" + maxPerDomain,
+    score_j4: domains[4] + "/" + maxPerDomain,
+    axes_amelioration: Array.from(axes).join(" | "),
+    answers_json: JSON.stringify(state.answers.map(a => ({ q: a.q, choice: a.choice, w: a.weight }))),
+    date: new Date().toLocaleString('fr-FR')
+  };
+}
+</script>
+</body>
+</html>

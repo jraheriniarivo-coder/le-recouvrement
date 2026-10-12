@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de bord formateur — Connecteo</title>
+<link href="https://fonts.googleapis.com/css2?family=Mada:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--primary:#00afa9;--accent:#ffa900;--sapphire:#0d47a1;--violet:#7c4dff;--success:#096475;--danger:#c62828;--warning:#f52900;--text-dark:#212121;--text-medium:#424242;--text-light:#757575;--bg:#f7f0f0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Mada',sans-serif;background:var(--bg);color:var(--text-dark);line-height:1.6}
+.top-bar{position:sticky;top:0;background:linear-gradient(135deg,var(--sapphire),var(--primary));color:#fff;padding:16px 30px;display:flex;align-items:center;gap:20px;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.top-bar svg{height:40px;flex-shrink:0}
+.top-bar h1{font-size:20px;font-weight:900}
+.top-bar .sub{font-size:12px;opacity:.85}
+.top-bar .nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.top-bar .nav a{color:#fff;text-decoration:none;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:700;background:rgba(255,255,255,.15);transition:.3s}
+.top-bar .nav a:hover{background:rgba(255,255,255,.3)}
+.wrap{max-width:1400px;margin:0 auto;padding:30px 24px 80px}
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab{background:#fff;border:2px solid #e0e0e0;border-radius:50px;padding:10px 22px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;color:var(--text-medium)}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tab:hover:not(.active){border-color:var(--primary)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.panel{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:22px}
+.panel h2{font-size:20px;font-weight:900;color:var(--sapphire);margin-bottom:8px}
+.panel p{font-size:14px;color:var(--text-light);margin-bottom:16px}
+textarea{width:100%;min-height:140px;padding:14px;border:2px dashed #ccc;border-radius:12px;font-family:'Consolas',monospace;font-size:13px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--primary);background:#f0fbfb}
+input[type=text],input[type=email],select{width:100%;padding:10px 14px;border:2px solid #e0e0e0;border-radius:10px;font-family:inherit;font-size:14px}
+input:focus,select:focus{outline:none;border-color:var(--primary)}
+.btn{background:var(--primary);color:#fff;border:none;border-radius:50px;padding:11px 26px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn.secondary{background:var(--sapphire)}
+.btn.ghost{background:#f0f0f0;color:var(--text-dark)}
+.btn.danger{background:var(--danger)}
+.btn.small{padding:7px 16px;font-size:13px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:22px}
+.stat{background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,.06);text-align:center;border-top:4px solid var(--primary)}
+.stat:nth-child(2){border-top-color:var(--accent)}
+.stat:nth-child(3){border-top-color:var(--violet)}
+.stat:nth-child(4){border-top-color:var(--sapphire)}
+.stat .val{font-size:34px;font-weight:900;color:var(--sapphire);line-height:1}
+.stat .lbl{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-top:6px}
+table{width:100%;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);border-collapse:collapse;font-size:13px}
+thead{background:var(--sapphire);color:#fff}
+th{padding:12px 12px;text-align:left;font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase}
+td{padding:12px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;text-transform:uppercase}
+.badge.expert{background:rgba(9,100,117,.15);color:var(--success)}
+.badge.maitrise{background:rgba(0,175,169,.15);color:var(--primary)}
+.badge.consolidation{background:rgba(255,169,0,.2);color:#a06000}
+.badge.renforcer{background:rgba(198,40,40,.15);color:var(--danger)}
+.badge.debutant{background:rgba(198,40,40,.15);color:var(--danger)}
+.badge.intermediaire{background:rgba(255,169,0,.2);color:#a06000}
+.badge.avance{background:rgba(0,175,169,.15);color:var(--primary)}
+.learner-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:16px;border-left:5px solid var(--primary)}
+.learner-card h3{font-size:18px;font-weight:900;color:var(--sapphire);margin-bottom:4px}
+.learner-card .meta{font-size:13px;color:var(--text-light);margin-bottom:16px}
+.learner-card .scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:18px}
+.mini-stat{background:#f9f9f9;border-radius:10px;padding:12px;text-align:center}
+.mini-stat .v{font-size:22px;font-weight:900;color:var(--sapphire);line-height:1}
+.mini-stat .l{font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:4px}
+.observations-grid{display:grid;gap:10px}
+.obs-field{margin-bottom:4px}
+.obs-field label{display:block;font-size:11px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.obs-field textarea{min-height:70px;border:2px solid #e0e0e0;border-radius:10px;font-family:'Mada',sans-serif;font-size:14px;padding:10px}
+.report-preview{background:#fff;border-radius:16px;padding:50px 60px;box-shadow:0 8px 30px rgba(0,0,0,.08);max-width:900px;margin:0 auto}
+.report-preview h1{font-size:34px;font-weight:900;color:var(--sapphire);margin-bottom:6px;line-height:1.15}
+.report-preview h2{font-size:20px;font-weight:900;color:var(--primary);margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--primary);display:flex;align-items:center;gap:10px}
+.report-preview h2 i{color:var(--accent)}
+.report-preview h3{font-size:16px;font-weight:700;color:var(--sapphire);margin:16px 0 8px}
+.report-preview p{font-size:15px;color:var(--text-medium);margin-bottom:10px}
+.report-preview ul{margin-left:22px;color:var(--text-medium);font-size:15px}
+.report-preview ul li{margin-bottom:6px}
+.report-preview table{font-size:14px;margin:10px 0}
+.report-preview .report-header{text-align:center;padding-bottom:20px;border-bottom:3px solid var(--primary);margin-bottom:30px}
+.report-preview .report-header svg{height:70px;margin-bottom:12px}
+.report-preview .report-header .sub{color:var(--text-light);font-size:14px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.report-preview .day-block{background:linear-gradient(135deg,#f7f0f0,#fff);border-radius:10px;padding:14px 18px;margin-bottom:10px;border-left:4px solid var(--primary)}
+.report-preview .day-block h4{font-size:15px;font-weight:900;color:var(--sapphire);margin-bottom:4px}
+.report-preview .day-block p{font-size:13px;color:var(--text-medium);margin:0}
+.report-preview .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:16px 0}
+.report-preview .kpi{background:#f9f9f9;border-radius:10px;padding:14px;text-align:center}
+.report-preview .kpi .v{font-size:26px;font-weight:900;color:var(--sapphire)}
+.report-preview .kpi .l{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:2px}
+.report-preview .learner-report{border:2px solid #f0f0f0;border-radius:12px;padding:22px;margin-bottom:18px;page-break-inside:avoid}
+.report-preview .learner-report h3{font-size:18px;color:var(--sapphire);margin:0 0 6px}
+.report-preview .learner-report .sub{font-size:12px;color:var(--text-light);margin-bottom:12px}
+.report-preview .verdict-big{display:inline-block;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.report-preview .progression-bar{display:flex;align-items:center;gap:12px;margin:10px 0;font-size:14px}
+.report-preview .progression-bar .arrow{color:var(--accent);font-size:18px}
+.report-preview .progression-bar strong{color:var(--sapphire)}
+.report-preview .obs-block{background:#fffbea;border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin:8px 0;font-size:14px;color:var(--text-medium)}
+.report-preview .obs-block strong{color:var(--accent);display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.report-preview .empty{color:var(--text-light);font-style:italic;font-size:14px}
+.report-preview .footer-note{text-align:center;font-size:12px;color:var(--text-light);margin-top:40px;padding-top:20px;border-top:1px solid #eee;letter-spacing:1px}
+.empty{text-align:center;padding:50px 20px;color:var(--text-light)}
+.empty i{font-size:50px;color:#ddd;display:block;margin-bottom:12px}
+@media(max-width:768px){.report-preview{padding:26px 20px}.wrap{padding:20px 14px}}
+@media print{
+  .top-bar,.tabs,.panel:not(.printable),.row,.btn{display:none!important}
+  .report-preview{box-shadow:none;padding:0;max-width:100%}
+  body{background:#fff}
+  .wrap{padding:0}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <svg viewBox="96 369.65 808 200.67"><use href="#logo-connecteo-cursive"></use></svg>
+  <div>
+    <h1>Tableau de bord formateur</h1>
+    <div class="sub">Observations · Analyse · Rapport client</div>
+  </div>
+  <div class="nav">
+    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+    <a href="itineraire.html"><i class="fas fa-route"></i> Itinéraire</a>
+    <a href="diagnostic.html"><i class="fas fa-clipboard"></i> Diagnostic</a>
+    <a href="pre-quiz.html"><i class="fas fa-compass"></i> Pré-quiz</a>
+    <a href="quiz.html"><i class="fas fa-brain"></i> Quiz final</a>
+    <a href="reader.html"><i class="fas fa-chart-line"></i> Résultats</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="tabs">
+    <button class="tab active" data-tab="import"><i class="fas fa-file-import"></i> Import</button>
+    <button class="tab" data-tab="learners"><i class="fas fa-users"></i> Apprenants</button>
+    <button class="tab" data-tab="observations"><i class="fas fa-edit"></i> Observations</button>
+    <button class="tab" data-tab="report"><i class="fas fa-file-alt"></i> Rapport client</button>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="tab-panel active" id="tab-import">
+    <div class="panel">
+      <h2><i class="fas fa-file-import"></i> Importer les données</h2>
+      <p>Collez ici un export JSON de Web3Forms, Google Sheets ou du quiz. Le tableau de bord fusionne automatiquement les données par email.</p>
+      <textarea id="import-json" placeholder='Collez ici votre JSON (tableau). Exemple :
+[
+  {
+    "name": "Rakoto Andrianina",
+    "email": "rakoto@ex.com",
+    "seniority": "1 à 3 ans",
+    "deja_formation_rc": "Oui",
+    "niveau_recouvrement_pct": "55",
+    "langues": "Français, Malgache",
+    "pre_score_pct": 62,
+    "pre_score_j1": "5/9",
+    "pre_score_j2": "6/9",
+    "pre_score_j3": "5/9",
+    "pre_score_j4": "5/9",
+    "pre_axes": "Élargir la vision au-delà de la réclamation | Approfondir la distinction satisfaction/fidélité",
+    "score_pct": 82,
+    "score_j1": "13/15",
+    "score_j2": "12/15",
+    "score_j3": "12/15",
+    "score_j4": "12/15",
+    "verdict": "Maîtrise",
+    "axes_amelioration": "Développer la conscience du ton | Éviter le réflexe d'accusation"
+  }
+]'></textarea>
+      <div class="row">
+        <button class="btn" onclick="importData()"><i class="fas fa-upload"></i> Importer / Fusionner</button>
+        <button class="btn ghost" onclick="loadDemo()"><i class="fas fa-vial"></i> Charger un exemple</button>
+        <button class="btn danger" onclick="clearAll()"><i class="fas fa-trash"></i> Tout effacer</button>
+      </div>
+      <div class="row" style="margin-top:16px;padding-top:16px;border-top:1px solid #eee">
+        <button class="btn secondary" onclick="exportJSON()"><i class="fas fa-download"></i> Exporter tout (JSON)</button>
+        <button class="btn secondary" onclick="exportCSV()"><i class="fas fa-file-csv"></i> Exporter (CSV)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEARNERS -->
+  <div class="tab-panel" id="tab-learners">
+    <div class="stats" id="stats"></div>
+    <div class="panel">
+      <h2><i class="fas fa-users"></i> Liste des apprenants</h2>
+      <div id="learners-table"></div>
+    </div>
+  </div>
+
+  <!-- OBSERVATIONS -->
+  <div class="tab-panel" id="tab-observations">
+    <div class="panel">
+      <h2><i class="fas fa-edit"></i> Notes d'observation</h2>
+      <p>Saisissez vos observations pour chaque apprenant : participation, points forts, points à travailler, engagement final. Ces notes alimenteront directement le rapport client.</p>
+    </div>
+    <div id="observations-list"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="tab-panel" id="tab-report">
+    <div class="panel">
+      <h2><i class="fas fa-file-alt"></i> Rapport de fin de formation</h2>
+      <p>Le rapport client est généré ci-dessous, avec l'en-tête Connecteo, la roadmap des 5 jours, puis les résultats individuels enrichis de vos observations.</p>
+      <div class="row">
+        <button class="btn" onclick="window.print()"><i class="fas fa-print"></i> Imprimer / PDF</button>
+        <button class="btn secondary" onclick="downloadReportHTML()"><i class="fas fa-download"></i> Télécharger le rapport (HTML)</button>
+      </div>
+    </div>
+    <div class="report-preview" id="report-preview">
+      <div class="empty"><i class="fas fa-file-alt"></i><p>Importez des données pour générer le rapport.</p></div>
+    </div>
+  </div>
+
+</div>
+
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <symbol id="logo-connecteo-cursive" viewBox="96 369.65 808 200.67">
+    <defs><style>.lcc-1{fill:#fff}.lcc-3{fill:#878587}.lcc-4{fill:#cce1e1}.lcc-5{fill:#00aea9}.lcc-6{clip-path:url(#lcc-clip)}</style><clipPath id="lcc-clip"><polyline points="118.25 555.34 888.98 555.34 888.98 390.35 118.25 390.35 118.25 555.34"/></clipPath></defs>
+    <g class="lcc-6"><path class="lcc-4" d="M328.26,509.27c.04-.06.07-.12.11-.18-.04.17-.07.17-.11.18M430.4,509.27c.04-.06.07-.12.11-.18-.04.17-.07.17-.11.18M168.52,511.85c0-3.81,1.39-8.68,4-14.08.27-.56.55-1.12.84-1.67,3.68,3.53,8.25,5.8,13.26,6.56-2.95,2.67-6.01,4.82-9.14,6.4-3.26,1.65-6.33,2.61-8.96,2.78M597.82,511.85c0-3.81,1.39-8.68,4.01-14.08.27-.56.55-1.12.83-1.67,3.67,3.52,8.23,5.78,13.22,6.56-2.96,2.68-6.01,4.83-9.13,6.41-3.3,1.68-6.3,2.61-8.93,2.78M671.95,511.33c.26-4.91,1.63-12.62,5.98-24.12,3.69-.13,7.58-.32,11.64-.57-2.4,4.92-4.16,9.78-5.29,14.55-1.97,2.28-3.99,4.29-6.04,5.99-2.2,1.82-4.32,3.23-6.28,4.16M692.66,390.35h-.84c-13.99.25-24.24,12.99-31.63,24.1-6.09,9.16-11.92,19.77-17.39,31.63l-8.02-.87c-4.57-3.18-11.45-6.03-21.43-6.03-11.39,0-22.52,3.74-33.06,11.11-2.14,1.49-4.18,3.09-6.15,4.78-2.25-4.64-5.48-7.78-8.39-9.84-5.93-4.18-13.03-6.31-21.09-6.31-12.12,0-24.18,4.22-35.85,12.56-8.47,6.04-15.84,13.41-21.92,21.9-.86-7.1-3.16-13.56-6.85-19.28-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-3.88,2.4-7.09,5.35-9.54,8.75l-1.69,2.36-.47,2.83c-.21,1.27-.44,2.64-.69,4.1-1.06-2.7-2.39-5.28-3.97-7.73-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-1.21.75-2.58,1.77-3.91,2.85-4.77-4.24-12.25-8.15-23.71-8.48-.32,0-.64-.01-.95-.01-9.45,0-17.61,3.04-23.71,8.95-2.28,2.22-4.22,4.79-5.78,7.68-.31,0-.62-.01-.93-.01-3.09,0-6.29.36-9.43,1.35-2.65.83-5.09,1.92-7.34,3.21-1.51-4.13-3.93-7.88-7.22-11.11-4.2-4.11-11.96-9.02-25.06-9.02-11.39,0-22.51,3.74-33.06,11.11-9.68,6.77-17.62,15.63-23.58,26.34-6.07,10.9-9.15,22.33-9.15,33.96,0,13.4,4,24.15,11.89,31.94,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,2.02-1.03,4.01-2.13,5.96-3.32,4.38,4.84,10.17,8.24,17.05,9.85,2.79.66,5.76.99,8.82.99,13.84,0,29.38-6.93,41.33-17.8l.66,3.63c6.16,10.03,14.07,15.16,25.8,15.21h13.32l4.41-9.04c6.86-13.93,13.3-27.07,19.23-36.87,0,0,0,.01,0,.02-.87,4.07-1.31,7.53-1.31,10.89,0,9.26,2.95,17.3,8.53,23.53,6.22,6.95,14.99,10.55,25.36,10.55,6.77,0,8.99-1.6,14.85-4.77,4.77,2.63,14.11,5.65,19.96,5.69h11.15l4.39-9.05c6.86-13.93,13.3-27.07,19.23-36.87,0,0,0,.01,0,.02-.87,4.07-1.31,7.53-1.31,10.89,0,9.26,2.95,17.3,8.53,23.53,6.22,6.95,14.99,10.55,25.36,10.55,6.83,0,15.91-1.81,24.9-8.89,7.82,5.92,17.77,8.9,29.65,8.9,14.26,0,28.03-4.36,40.98-12.94.34.36.68.71,1.03,1.05,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,3-1.52,5.92-3.22,8.75-5.11.86,1.08,1.79,2.12,2.79,3.1,6.87,6.69,16.35,10.23,27.4,10.23,12.44,0,24.34-4.14,35.46-12.32l.1.09c8.22,7.64,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.22-17.41l6.99-43.29-22.21,14.88c-1.1-3.34,3.35-15.84-13.8-24.64-5.61-2.88-11.4-4-16.88-4-11.29,0-21.24,4.78-25.48,8.89-2.28,2.22-4.22,4.8-5.79,7.68-.36-.01-.72-.02-1.09-.02-3.04,0-6.19.38-9.27,1.35-2.79.87-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.55-6.31-21.62-6.31-9.76,0-18.74,2.74-29.53,8.17v-2.39s-7.11.86-14.52,1.52c-7.41.66-12.06,1.01-12.06,1.01.22-.36.58-.72.8-1.08,4.83-7.95,8.28-13.71,10.41-17.63,3.34-6.16,4.92-11.31,4.92-16.2,0-6.15-2.49-11.79-7.05-15.92-4.17-3.75-9.53-5.85-15.15-5.95"/></g>
+    <path class="lcc-1" d="M859.54,461.16c-1.1-3.34,3.35-15.84-13.8-24.64-17.16-8.8-36.07-1.22-42.37,4.89-2.28,2.22-4.22,4.8-5.79,7.68-3.37-.1-6.91.25-10.36,1.33-2.79.87-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.71-6.31-21.78-6.31-9.76,0-19.98,2.74-29.69,8.17v-2.39s-6.95.86-14.36,1.52c-7.41.66-11.98,1.01-11.98,1.01.22-.36.62-.72.84-1.08,4.83-7.95,8.3-13.71,10.43-17.63,3.34-6.16,4.94-11.31,4.94-16.2,0-6.15-2.48-11.79-7.05-15.92-4.28-3.84-9.8-5.96-15.57-5.96-14.21,0-24.59,12.88-32.05,24.1-6.09,9.16-11.92,19.77-17.39,31.63l-8.02-.87c-4.57-3.18-11.45-6.03-21.43-6.03-11.39,0-22.52,3.74-33.06,11.11-2.14,1.49-4.18,3.09-6.15,4.78-2.25-4.64-5.48-7.78-8.39-9.84-5.93-4.18-13.03-6.31-21.09-6.31-12.12,0-24.18,4.22-35.85,12.56-8.47,6.04-15.84,13.41-21.92,21.9-.86-7.1-3.16-13.56-6.85-19.28-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-3.88,2.4-7.09,5.35-9.54,8.75l-1.69,2.36-.47,2.83c-.21,1.27-.44,2.64-.69,4.1-1.06-2.7-2.39-5.28-3.97-7.73-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-1.21.75-2.58,1.77-3.91,2.85-4.78-4.24-12.25-8.15-23.71-8.48-9.85-.21-18.36,2.83-24.66,8.94-2.28,2.22-4.22,4.79-5.78,7.68-3.38-.08-6.91.25-10.36,1.34-2.65.83-5.09,1.92-7.34,3.21-1.51-4.13-3.93-7.88-7.22-11.11-4.2-4.12-11.96-9.02-25.06-9.02-11.39,0-22.51,3.74-33.06,11.11-9.68,6.77-17.61,15.63-23.58,26.34-6.07,10.9-9.15,22.33-9.15,33.96,0,13.41,4,24.15,11.89,31.94,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,2.02-1.03,4.01-2.13,5.96-3.32,4.38,4.84,10.17,8.24,17.05,9.85,2.79.66,5.76.99,8.82.99,13.84,0,29.38-6.93,41.33-17.8l.66,1.16c6.19,10.09,16.53,15.81,28.36,15.81h11.03l4.14-9.65c6.94-14.09,13.45-26.13,19.43-35.97-.07.32-.14.65-.21.97-.87,4.07-1.31,7.84-1.31,11.2,0,9.26,2.95,17.45,8.53,23.68,6.22,6.95,14.99,10.63,25.36,10.63,6.77,0,13.21-1.7,19.06-4.87,4.8,2.65,10.27,4,16.1,4h11.03l4.14-9.65c6.94-14.09,13.45-26.13,19.43-35.96-.07.32-.14.65-.21.97-.87,4.07-1.31,7.84-1.31,11.2,0,9.26,2.95,17.45,8.53,23.68,6.22,6.95,14.99,10.63,25.36,10.63,6.83,0,15.91-1.77,24.9-8.86,7.82,5.92,17.77,8.92,29.65,8.92,14.26,0,28.03-4.35,40.98-12.93.34.36.68.71,1.03,1.06,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,3-1.52,5.92-3.22,8.75-5.11.86,1.09,1.79,2.12,2.79,3.1,6.87,6.69,16.35,10.23,27.4,10.23,12.44,0,24.34-4.14,35.46-12.32.03.03.07.06.1.09,8.22,7.64,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.23-17.41l6.99-43.29-22.21,14.88ZM590.58,506.16c0-3.81,1.39-8.68,4.01-14.09.27-.56.55-1.12.83-1.67,3.67,3.52,8.23,5.78,13.22,6.56-2.96,2.68-6.01,4.83-9.13,6.41-3.3,1.68-6.3,2.61-8.93,2.78M677.04,495.5c-1.97,2.28-3.99,4.29-6.04,5.99-2.2,1.82-4.32,3.23-6.28,4.16.26-4.91,1.63-12.62,5.98-24.12,3.69-.13,7.58-.32,11.64-.57-2.4,4.92-4.16,9.78-5.29,14.55M161.29,506.16c0-3.81,1.39-8.68,4-14.08.27-.56.55-1.12.84-1.67,3.68,3.53,8.25,5.8,13.26,6.56-2.95,2.67-6.01,4.82-9.14,6.4-3.26,1.65-6.33,2.61-8.96,2.78"/>
+    <path class="lcc-3" d="M845.74,436.52c-17.16-8.8-36.07-1.22-42.37,4.89-2.28,2.22-4.22,4.8-5.79,7.68-3.37-.1-6.91.25-10.36,1.33-2.79.88-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.7-6.31-21.77-6.31-1.75,0-3.53.12-5.32.29l-11.08.74s-32.34,4.43-48.71,46.91c-15.57,40.38,3.72,54.65,5.66,55.96.02-.02.04-.03.07-.05.03.03-7.03-5.5.1.09,7.13,5.59,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.23-17.41l6.99-43.29-22.2,14.88c-1.1-3.34,3.35-15.84-13.8-24.64"/>
+    <path class="lcc-5" d="M677.37,519.44c-.34-2.26-.56-4.32-.71-6.11-5.84,4.18-11.52,6.31-16.93,6.31-2.94,0-4.95-.73-6.16-2.24-.96-1.2-2.11-3.91-2.11-10.01,0-9.85,3.4-22.72,10.1-38.3,11.57-.1,26.94-1.16,26.94-1.16,0,0,.4-1.06,4.59-7.23,3.71-4.83,5.94-7.39,5.94-7.39,0,0-16.24,1.3-30.04,1.4,3.25-5.88,7.24-12.82,12.15-20.72,4.59-7.54,7.9-13.29,9.96-17.09,2.29-4.23,3.38-7.63,3.38-10.38s-1.02-4.99-2.92-6.71c-1.85-1.66-4.12-2.54-6.55-2.54-5.99,0-12.64,5.8-20.91,18.25-7.13,10.73-13.92,23.63-20.19,38.39-2.56-.23-5.09-.5-7.68-.81l-3.76-.46v12.21l1.96.86c1,.43,2.41.85,4.39,1.3-2.47,6.68-4.58,13.13-6.32,19.29-2.77,5.81-6.28,11.1-10.54,15.68-5.02,5.41-10.48,9.63-16.22,12.53-5.61,2.84-11,4.29-16.02,4.29-4.6,0-7.78-1.09-9.46-3.25-1.93-2.48-2.87-5.55-2.87-9.39,0-5.72,1.76-12.24,5.22-19.4,3.51-7.25,7.91-13.51,13.09-18.6,4.77-4.69,9.1-7.07,12.85-7.07.4,0,.65.04.79.07,0,.07.02.16.02.28,0,3.28-.62,6.15-1.86,8.51-1.19,2.27-2.47,3.89-3.72,4.67l-2.77,1.76,1.77,2.69c3.02,4.58,6.97,5.54,9.74,5.54,3.03,0,7.36-1.22,10.82-7.05,2.43-4.09,3.66-8.58,3.66-13.37,0-5.09-1.78-9.42-5.29-12.87-3.53-3.46-8.79-5.22-15.62-5.22-8.53,0-17.03,2.92-25.27,8.68-8.07,5.64-14.7,13.07-19.72,22.08-3.66,6.57-5.99,13.34-7.01,20.2-4.15,5.32-8.95,10.02-14.36,14.06-8.49,6.33-16.84,9.54-24.81,9.54-5.56,0-9.1-1.25-10.53-3.7-1.79-3.07-2.7-6.15-2.7-9.16,0-.65.02-1.27.06-1.85,8.2-1.15,16.33-3.5,24.21-6.97,8.83-3.9,16.15-9.01,21.77-15.18,5.86-6.44,8.83-13.45,8.83-20.84,0-6.03-1.99-10.49-5.92-13.26-3.61-2.55-8.07-3.84-13.26-3.84-9.21,0-18.62,3.38-27.96,10.05-7.65,5.46-14.19,12.11-19.54,19.79l-1.74,2.61c-.41.64-.84,1.28-1.24,1.93-3.45,5.72-5.88,11.26-7.32,16.6-2.18,4.05-4.46,7.83-6.83,11.3-4.71,6.89-9.19,10.68-12.6,10.68-.2,0-.49,0-.99-.61-.24-.29-.8-1.26-.8-3.88,0-3.4,1.18-8.73,3.49-15.78,1.62-4.55,2.86-8.72,3.67-12.39.84-3.77,1.26-7.77,1.26-11.89,0-7.34-1.77-13.8-5.26-19.2-3.76-5.81-9.4-8.89-16.29-8.89-7.68,0-15.44,3.74-23.05,11.12-3.63,3.52-7.22,7.58-10.73,12.15,1.04-5.13,1.75-9.41,1.75-12,0-3.28-.93-5.97-2.78-8.02-1.35-1.48-3.87-3.25-8.18-3.25-2.68,0-5.41.85-8.11,2.52-2.53,1.57-4.42,3.35-5.82,5.3,0,0-4.51,27.4-6.5,34.33-2,6.93-7.19,14.02-11.14,19.81-4.71,6.89-9.21,10.68-12.63,10.68-.2,0-.51,0-1-.61-.24-.29-.8-1.26-.8-3.88,0-3.4,1.18-8.73,3.49-15.78,1.62-4.55,2.85-8.72,3.67-12.39.84-3.77,1.26-7.77,1.26-11.89,0-7.34-1.77-13.8-5.26-19.2-3.76-5.81-9.4-8.89-16.29-8.89-7.68,0-15.44,3.74-23.05,11.12-3.63,3.52-7.22,7.58-10.73,12.15,1.04-5.13,1.75-9.41,1.75-12,0-3.28-.93-5.97-2.78-8.02-1.35-1.48-3.87-3.25-8.18-3.25-2.68,0-5.41.85-8.11,2.52-2.53,1.57-7.4,6.13-7.4,6.13,0,0-.82,14.44-3.18,24.44,0,0-1.63,1.11-3.17,1.63-1.64.56-3.25.16-3.25.16.48-1.39,1.02-2.95,1.36-4.17,2.83-10.21,2-18.91-2.35-24.49-3.62-4.64-9.39-7.11-17.17-7.33-6.14-.16-11.16,1.57-14.89,5.18-4.09,3.97-5.64,9.34-6.22,13.19-4.09-1.33-10.13-2.64-15.2-1.05-14.48,4.55-20.78,21.69-24.21,35.21-1.16,1.52-2.39,2.98-3.69,4.37-5.02,5.41-10.48,9.63-16.22,12.53-5.61,2.84-11,4.29-16.02,4.29-4.6,0-7.78-1.09-9.46-3.25-1.93-2.48-2.87-5.55-2.87-9.39,0-5.72,1.76-12.24,5.22-19.4,3.51-7.25,7.91-13.51,13.09-18.6,4.77-4.69,9.1-7.07,12.85-7.07.4,0,.65.04.79.07,0,.07.02.16.02.28,0,3.28-.62,6.15-1.86,8.51-1.19,2.27-2.47,3.88-3.72,4.68l-2.77,1.76,1.77,2.69c3.02,4.58,6.97,5.54,9.74,5.54,3.02,0,7.36-1.22,10.82-7.05,2.43-4.09,3.66-8.58,3.66-13.37,0-5.09-1.78-9.42-5.29-12.87-3.53-3.46-8.79-5.22-15.62-5.22-8.53,0-17.03,2.92-25.27,8.68-8.06,5.64-14.7,13.07-19.72,22.08-5.04,9.05-6.9,18.48-6.9,28.02,0,10.01,3.47,17.8,8.86,23.14h0c6.48,5.37,12.01,8.09,20.9,8.09,7.91,0,15.69-2.09,23.84-6.2,5.98-3.03,11.43-6.94,16.61-11.65,1.77,8.9,7.08,15.11,15.45,17.07,1.8.42,3.66.62,5.64.62,13.61,0,30.61-9.61,40.41-23.55,2.31-3.29,9.1-13.99,12-18.57,1.44.27,3.38.51,5.8.51,1.29,0,2.45-.07,3.54-.16-1.94,6.79-4.21,14.14-6.82,21.94l-2.33,8.01.73,1.26c3.76,6.12,9.63,9.42,16.98,9.42h2.16l.92-1.94c8.82-17.95,17.19-33,24.86-44.69,7.08-10.77,13.89-16.25,20.24-16.25,1.14,0,1.96.39,2.76,1.33.64.75,1.4,2.37,1.4,5.82,0,3.65-.99,9.5-2.94,17.44-.73,3.05-1.42,6.1-2.07,9.15-.69,3.23-1.04,6.15-1.04,8.66,0,6.3,1.8,11.5,5.35,15.47,3.69,4.12,8.85,6.21,15.33,6.21,7.19,0,13.74-2.89,19.56-8.66,3.75,4.84,9.09,7.46,15.61,7.46h2.16l.92-1.94c8.82-17.95,17.19-33,24.86-44.69,7.08-10.77,13.88-16.25,20.23-16.25,1.14,0,1.96.39,2.76,1.33.64.75,1.4,2.37,1.4,5.82,0,3.65-.99,9.5-2.94,17.44-.73,3.05-1.42,6.1-2.07,9.15-.69,3.23-1.04,6.15-1.04,8.66,0,6.3,1.8,11.5,5.35,15.47,3.69,4.12,8.85,6.21,15.33,6.21,9.2,0,17.37-4.78,24.28-14.2.32-.44.64-.92.96-1.38,1.41,2.84,3.31,5.42,5.76,7.7,5.68,5.27,13.6,7.95,23.54,7.95,12.2,0,24.12-4.04,35.4-12,3.36-2.37,6.79-5.02,9.7-7.86,1.33,4.74,3.79,8.71,7.02,11.83h0c5.4,5.37,12.4,8.09,21.29,8.09,7.91,0,15.89-2.09,24.03-6.2,7.51-3.8,14.36-9,20.57-15.43.46,6.69,2.6,11.98,6.45,15.74,4.39,4.28,10.42,6.45,17.96,6.45,9.34,0,18.44-3.21,27.13-9.52-.94-1.89-1.88-4.45-2.38-7.72M513.2,480.1c3.96-5.49,8.35-10.18,13.04-13.76,4.33-3.3,8.23-5.02,11.6-5.02.09,0,.17-.02.24-.02.02.17.03.37.03.66,0,4-1.98,8.63-5.89,13.03-4.18,4.71-9.36,8.03-15.39,12.34h0c-3.63,1.08-7.06,3.04-10.24,4,1.74-3.68,3.95-7.57,6.6-11.24M220.69,517.18c-1.28-.52-2.17-1.52-2.72-3.06-1.71-4.76.27-13.58,4.82-21.43,4.25-7.34,10.48-13.74,14.44-17.41,1.27,2.34,3.43,5.12,7.11,7.84,3.9,2.87,7.16,4.65,9.52,5.73-6.95,11.26-22.77,32.56-33.17,28.33M260.33,475.77c-1.54-.91-3.54-2.42-5.36-4.81-2.06-2.69-2.97-5.86-2.33-8.08.34-1.18,1.09-2,2.3-2.49.68-.28,1.35-.41,1.99-.41.78,0,1.52.2,2.19.61,1.73,1.04,2.84,3.23,2.98,5.88.2,3.83-.81,7.07-1.77,9.31"/>
+  </symbol>
+</svg>
+
+<script>
+const STORAGE_KEY='connecteo_dashboard_v1';
+let LEARNERS=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+let OBSERVATIONS=JSON.parse(localStorage.getItem(STORAGE_KEY+'_obs')||'{}');
+
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='learners')renderLearners();
+    if(btn.dataset.tab==='observations')renderObservations();
+    if(btn.dataset.tab==='report')renderReport();
+  };
+});
+
+function save(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(LEARNERS));
+  localStorage.setItem(STORAGE_KEY+'_obs',JSON.stringify(OBSERVATIONS));
+}
+
+function importData(){
+  const raw=document.getElementById('import-json').value.trim();
+  if(!raw){alert('Collez des données.');return;}
+  try{
+    let parsed=JSON.parse(raw);
+    if(!Array.isArray(parsed))parsed=[parsed];
+    // Fusion par email
+    parsed.forEach(item=>{
+      if(!item.email){LEARNERS.push(item);return;}
+      const idx=LEARNERS.findIndex(l=>l.email&&l.email.toLowerCase()===item.email.toLowerCase());
+      if(idx>=0)LEARNERS[idx]={...LEARNERS[idx],...item};
+      else LEARNERS.push(item);
+    });
+    save();
+    renderLearners();
+    alert('✅ '+parsed.length+' enregistrement(s) importé(s)/fusionné(s).');
+  }catch(e){alert('JSON invalide : '+e.message);}
+}
+
+function loadDemo(){
+  const demo=[
+    {name:"Rakoto Andrianina",email:"rakoto@ex.com",seniority:"1 à 3 ans",deja_formation_rc:"Oui",niveau_recouvrement_pct:"55",langues:"Français, Malgache",
+     pre_score_pct:62,pre_score_j1:"5/9",pre_score_j2:"6/9",pre_score_j3:"5/9",pre_score_j4:"5/9",
+     pre_axes:"Élargir la vision au-delà de la réclamation | Approfondir la distinction satisfaction/fidélité",
+     score_pct:82,score_j1:"13/15",score_j2:"12/15",score_j3:"12/15",score_j4:"12/15",
+     verdict:"Maîtrise",axes_amelioration:"Développer la conscience du ton | Éviter le réflexe d'accusation"},
+    {name:"Rasoa Marie",email:"rasoa@ex.com",seniority:"6 à 12 mois",deja_formation_rc:"Non",niveau_recouvrement_pct:"35",langues:"Français",
+     pre_score_pct:44,pre_score_j1:"3/9",pre_score_j2:"4/9",pre_score_j3:"5/9",pre_score_j4:"4/9",
+     pre_axes:"Passer de l'écoute passive à l'écoute active | Retenir la répartition mots/ton",
+     score_pct:65,score_j1:"10/15",score_j2:"9/15",score_j3:"10/15",score_j4:"10/15",
+     verdict:"En consolidation",axes_amelioration:"Mémoriser le référentiel DIVA | Comprendre la chaîne satisfaction → fidélisation"},
+    {name:"Rabe Jean",email:"rabe@ex.com",seniority:"Plus de 5 ans",deja_formation_rc:"Oui",niveau_recouvrement_pct:"80",langues:"Français, Anglais",
+     pre_score_pct:87,pre_score_j1:"8/9",pre_score_j2:"8/9",pre_score_j3:"8/9",pre_score_j4:"7/9",
+     pre_axes:"",score_pct:90,score_j1:"14/15",score_j2:"14/15",score_j3:"13/15",score_j4:"13/15",
+     verdict:"Expert",axes_amelioration:""}
+  ];
+  document.getElementById('import-json').value=JSON.stringify(demo,null,2);
+  importData();
+}
+
+function clearAll(){
+  if(!confirm('Effacer toutes les données (apprenants + observations) ?'))return;
+  LEARNERS=[];OBSERVATIONS={};
+  localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(STORAGE_KEY+'_obs');
+  document.getElementById('import-json').value='';
+  renderLearners();renderObservations();renderReport();
+}
+
+function exportJSON(){
+  const blob=new Blob([JSON.stringify({learners:LEARNERS,observations:OBSERVATIONS},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='dashboard_export_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportCSV(){
+  const headers=['Nom','Email','Ancienneté','Formation RC','Niveau initial (%)','Langues','Pré-quiz (%)','Pré J1','Pré J2','Pré J3','Pré J4','Quiz final (%)','Final J1','Final J2','Final J3','Final J4','Verdict','Axes','Observation'];
+  const rows=LEARNERS.map(l=>{
+    const o=OBSERVATIONS[l.email]||{};
+    return [l.name||'',l.email||'',l.seniority||'',l.deja_formation_rc||'',l.niveau_recouvrement_pct||'',l.langues||'',
+      l.pre_score_pct||'',l.pre_score_j1||'',l.pre_score_j2||'',l.pre_score_j3||'',l.pre_score_j4||'',
+      l.score_pct||'',l.score_j1||'',l.score_j2||'',l.score_j3||'',l.score_j4||'',l.verdict||'',
+      (l.axes_amelioration||'').replace(/,/g,';'),(o.global||'').replace(/\n/g,' ').replace(/,/g,';')];
+  });
+  const csv=[headers,...rows].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='dashboard_export_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+
+function renderLearners(){
+  if(LEARNERS.length===0){
+    document.getElementById('learners-table').innerHTML='<div class="empty"><i class="fas fa-users"></i><p>Aucun apprenant. Importez des données depuis l\'onglet Import.</p></div>';
+    document.getElementById('stats').innerHTML='';
+    return;
+  }
+  const preAvg=Math.round(LEARNERS.reduce((a,l)=>a+(parseFloat(l.pre_score_pct)||0),0)/LEARNERS.length);
+  const postAvg=Math.round(LEARNERS.reduce((a,l)=>a+(parseFloat(l.score_pct)||0),0)/LEARNERS.length);
+  const progression=postAvg-preAvg;
+  const passed=LEARNERS.filter(l=>(parseFloat(l.score_pct)||0)>=60).length;
+
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="val">${LEARNERS.length}</div><div class="lbl">Apprenants</div></div>
+    <div class="stat"><div class="val">${preAvg}%</div><div class="lbl">Score pré-quiz</div></div>
+    <div class="stat"><div class="val">${postAvg}%</div><div class="lbl">Score final</div></div>
+    <div class="stat"><div class="val">${progression>=0?'+':''}${progression}pts</div><div class="lbl">Progression</div></div>
+  `;
+
+  const html=`
+    <table>
+      <thead><tr>
+        <th>Apprenant</th><th>Ancienneté</th><th>Pré-quiz</th><th>Final</th><th>Progression</th><th>Verdict</th><th>Observation</th>
+      </tr></thead>
+      <tbody>
+      ${LEARNERS.map(l=>{
+        const pre=parseFloat(l.pre_score_pct)||0;
+        const post=parseFloat(l.score_pct)||0;
+        const prog=post-pre;
+        const o=OBSERVATIONS[l.email]||{};
+        const progColor=prog>=15?'var(--success)':prog>=5?'var(--primary)':prog>=0?'var(--accent)':'var(--danger)';
+        return `
+          <tr>
+            <td><strong>${l.name||'—'}</strong><br><span style="font-size:11px;color:var(--text-light)">${l.email||''}</span></td>
+            <td>${l.seniority||'—'}</td>
+            <td>${pre>0?pre+'%':'—'}</td>
+            <td>${post>0?post+'%':'—'}</td>
+            <td style="color:${progColor};font-weight:700">${post&&pre?(prog>=0?'+':'')+prog+'pts':'—'}</td>
+            <td>${l.verdict?`<span class="badge ${verdictClass(l.verdict)}">${l.verdict}</span>`:'—'}</td>
+            <td style="font-size:12px">${o.global?'✅ Saisie':'<span style="color:var(--text-light)">— vide —</span>'}</td>
+          </tr>`;
+      }).join('')}
+      </tbody>
+    </table>`;
+  document.getElementById('learners-table').innerHTML=html;
+}
+
+function verdictClass(v){
+  v=(v||'').toLowerCase();
+  if(v.includes('expert'))return 'expert';
+  if(v.includes('maîtrise')||v.includes('maitrise'))return 'maitrise';
+  if(v.includes('consolidation'))return 'consolidation';
+  if(v.includes('renforcer')||v.includes('débutant'))return 'renforcer';
+  if(v.includes('avancé')||v.includes('avance'))return 'avance';
+  if(v.includes('intermédiaire')||v.includes('intermediaire'))return 'intermediaire';
+  return 'renforcer';
+}
+
+function renderObservations(){
+  if(LEARNERS.length===0){
+    document.getElementById('observations-list').innerHTML='<div class="empty"><i class="fas fa-edit"></i><p>Importez d\'abord des apprenants.</p></div>';
+    return;
+  }
+  document.getElementById('observations-list').innerHTML=LEARNERS.map(l=>{
+    const o=OBSERVATIONS[l.email]||{};
+    return `
+      <div class="learner-card">
+        <h3>${l.name||'—'}</h3>
+        <div class="meta">${l.email||''} · ${l.seniority||'—'}</div>
+        <div class="scores">
+          <div class="mini-stat"><div class="v">${l.pre_score_pct||'—'}%</div><div class="l">Pré-quiz</div></div>
+          <div class="mini-stat"><div class="v">${l.score_pct||'—'}%</div><div class="l">Final</div></div>
+          <div class="mini-stat"><div class="v">${l.niveau_recouvrement_pct||'—'}%</div><div class="l">Auto-éval. initiale</div></div>
+        </div>
+        <div class="observations-grid">
+          <div class="obs-field"><label>Participation en formation</label><textarea data-email="${l.email}" data-field="participation" placeholder="Ex. Très participatif, pose des questions pertinentes…">${o.participation||''}</textarea></div>
+          <div class="obs-field"><label>Points forts observés</label><textarea data-email="${l.email}" data-field="forces" placeholder="Ex. Excellente écoute active, bonne maîtrise du ton…">${o.forces||''}</textarea></div>
+          <div class="obs-field"><label>Axes à travailler</label><textarea data-email="${l.email}" data-field="axes" placeholder="Ex. Doit travailler la fermeté sans agressivité, techniques de désamorçage…">${o.axes||''}</textarea></div>
+          <div class="obs-field"><label>Engagement final (à chaud)</label><textarea data-email="${l.email}" data-field="engagement" placeholder="Ex. S'engage à appliquer les 7 temps dès demain…">${o.engagement||''}</textarea></div>
+          <div class="obs-field"><label>Observation générale / synthèse</label><textarea data-email="${l.email}" data-field="global" placeholder="Synthèse formateur à intégrer dans le rapport client…">${o.global||''}</textarea></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.querySelectorAll('#observations-list textarea').forEach(t=>{
+    t.addEventListener('input',e=>{
+      const email=e.target.dataset.email;
+      const field=e.target.dataset.field;
+      if(!OBSERVATIONS[email])OBSERVATIONS[email]={};
+      OBSERVATIONS[email][field]=e.target.value;
+      save();
+    });
+  });
+}
+
+function renderReport(){
+  const target=document.getElementById('report-preview');
+  if(LEARNERS.length===0){
+    target.innerHTML='<div class="empty"><i class="fas fa-file-alt"></i><p>Importez des données pour générer le rapport.</p></div>';
+    return;
+  }
+  const today=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  const preAvg=Math.round(LEARNERS.reduce((a,l)=>a+(parseFloat(l.pre_score_pct)||0),0)/LEARNERS.length);
+  const postAvg=Math.round(LEARNERS.reduce((a,l)=>a+(parseFloat(l.score_pct)||0),0)/LEARNERS.length);
+  const progression=postAvg-preAvg;
+  const passed=LEARNERS.filter(l=>(parseFloat(l.score_pct)||0)>=60).length;
+
+  const learnerBlocks=LEARNERS.map(l=>{
+    const pre=parseFloat(l.pre_score_pct)||0;
+    const post=parseFloat(l.score_pct)||0;
+    const prog=post-pre;
+    const o=OBSERVATIONS[l.email]||{};
+    const axes=(l.axes_amelioration||'').split('|').map(s=>s.trim()).filter(Boolean);
+    const preAxes=(l.pre_axes||'').split('|').map(s=>s.trim()).filter(Boolean);
+    return `
+      <div class="learner-report">
+        <h3>${l.name||'—'}</h3>
+        <div class="sub">${l.email||''} · ${l.seniority||'—'} · Langues : ${l.langues||'—'}</div>
+        ${l.verdict?`<span class="verdict-big badge ${verdictClass(l.verdict)}">${l.verdict}</span>`:''}
+        <div class="progression-bar">
+          <span>Pré-quiz : <strong>${pre}%</strong></span>
+          <i class="fas fa-arrow-right arrow"></i>
+          <span>Quiz final : <strong>${post}%</strong></span>
+          <span style="color:${prog>=15?'#096475':prog>=5?'#00afa9':prog>=0?'#ffa900':'#c62828'};font-weight:800">${prog>=0?'+':''}${prog} pts</span>
+        </div>
+        ${preAxes.length?`<p style="font-size:13px"><strong>Axes identifiés en pré-quiz :</strong> ${preAxes.join(' • ')}</p>`:''}
+        ${axes.length?`<p style="font-size:13px"><strong>Axes identifiés en quiz final :</strong> ${axes.join(' • ')}</p>`:''}
+        ${o.forces?`<div class="obs-block"><strong>Points forts</strong>${o.forces.replace(/\n/g,'<br>')}</div>`:''}
+        ${o.axes?`<div class="obs-block"><strong>Axes à travailler</strong>${o.axes.replace(/\n/g,'<br>')}</div>`:''}
+        ${o.engagement?`<div class="obs-block"><strong>Engagement final</strong>${o.engagement.replace(/\n/g,'<br>')}</div>`:''}
+        ${o.global?`<div class="obs-block"><strong>Synthèse formateur</strong>${o.global.replace(/\n/g,'<br>')}</div>`:''}
+      </div>`;
+  }).join('');
+
+  target.innerHTML=`
+    <div class="report-header">
+      <svg viewBox="96 369.65 808 200.67"><use href="#logo-connecteo-cursive"></use></svg>
+      <div class="sub">Rapport de fin de formation</div>
+    </div>
+
+    <h1>Formation Recouvrement — Bilan 5 jours</h1>
+    <p style="color:#757575;font-size:14px;margin-bottom:6px">Connecteo 2026 · Version 2.0 · Facilitateur : Joatina Dylan RAHERINIARIVO</p>
+    <p style="color:#757575;font-size:14px;margin-bottom:24px">Édité le ${today}</p>
+
+    <h2><i class="fas fa-route"></i> Contenu de la formation</h2>
+    <p>Le parcours s'est déroulé sur 5 journées progressives, articulées autour du fil rouge « Chaque expérience est unique ».</p>
+    <div class="day-block"><h4>Jour 1 — Relation Client</h4><p>Fondations : définition, acteurs, missions, enjeux, satisfaction et fidélisation.</p></div>
+    <div class="day-block"><h4>Jour 2 — Communication Interpersonnelle</h4><p>Verbal, non-verbal, voix au téléphone, DIVA, écoute active et 10 comportements d'excellence.</p></div>
+    <div class="day-block"><h4>Jour 3 — Le Recouvrement</h4><p>Cadre légal et déontologique, profils de débiteurs, structure d'appel en 7 temps, négociation ferme.</p></div>
+    <div class="day-block"><h4>Jour 4 — Situations Complexes</h4><p>Causes du conflit, méthode FOS, escalade, désamorçage avancé et méthode des 5 R.</p></div>
+    <div class="day-block"><h4>Jour 5 — Consolidation &amp; Certification</h4><p>Retour sur les acquis, évaluation des compétences, mise en pratique globale et plan d'action individuel.</p></div>
+
+    <h2><i class="fas fa-chart-line"></i> Synthèse des résultats</h2>
+    <div class="kpi-row">
+      <div class="kpi"><div class="v">${LEARNERS.length}</div><div class="l">Apprenants</div></div>
+      <div class="kpi"><div class="v">${preAvg}%</div><div class="l">Score initial moyen</div></div>
+      <div class="kpi"><div class="v">${postAvg}%</div><div class="l">Score final moyen</div></div>
+      <div class="kpi"><div class="v" style="color:${progression>=0?'#096475':'#c62828'}">${progression>=0?'+':''}${progression}pts</div><div class="l">Progression</div></div>
+      <div class="kpi"><div class="v">${passed}/${LEARNERS.length}</div><div class="l">Validation ≥60%</div></div>
+    </div>
+    <p>Sur les ${LEARNERS.length} apprenants évalués, le score moyen est passé de <strong>${preAvg}%</strong> (pré-quiz) à <strong>${postAvg}%</strong> (quiz final), soit une progression moyenne de <strong>${progression>=0?'+':''}${progression} points</strong>.</p>
+
+    <h2><i class="fas fa-user-graduate"></i> Bilan individuel détaillé</h2>
+    ${learnerBlocks}
+
+    <div class="footer-note">Connecteo 2026 · Chaque expérience est unique</div>
+  `;
+}
+
+function downloadReportHTML(){
+  const content=document.getElementById('report-preview').innerHTML;
+  const full=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Rapport formation — Connecteo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Mada:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Mada',sans-serif;max-width:900px;margin:40px auto;padding:40px;color:#212121;line-height:1.6}
+    h1{font-size:32px;font-weight:900;color:#0d47a1;margin-bottom:6px}
+    h2{font-size:20px;font-weight:900;color:#00afa9;margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid #00afa9;display:flex;align-items:center;gap:10px}
+    h2 i{color:#ffa900}h3{font-size:16px;color:#0d47a1;margin:16px 0 8px}
+    p{font-size:15px;color:#424242;margin-bottom:10px}
+    .report-header{text-align:center;padding-bottom:20px;border-bottom:3px solid #00afa9;margin-bottom:30px}
+    .report-header svg{height:70px;margin-bottom:12px}
+    .report-header .sub{color:#757575;font-size:14px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+    .day-block{background:#f7f0f0;border-radius:10px;padding:14px 18px;margin-bottom:10px;border-left:4px solid #00afa9}
+    .day-block h4{font-size:15px;font-weight:900;color:#0d47a1;margin-bottom:4px}
+    .day-block p{font-size:13px;color:#424242;margin:0}
+    .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:16px 0}
+    .kpi{background:#f9f9f9;border-radius:10px;padding:14px;text-align:center}
+    .kpi .v{font-size:26px;font-weight:900;color:#0d47a1}
+    .kpi .l{font-size:11px;color:#757575;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:2px}
+    .learner-report{border:2px solid #f0f0f0;border-radius:12px;padding:22px;margin-bottom:18px;page-break-inside:avoid}
+    .learner-report h3{font-size:18px;color:#0d47a1;margin:0 0 6px}
+    .learner-report .sub{font-size:12px;color:#757575;margin-bottom:12px}
+    .verdict-big{display:inline-block;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;background:#e6f7f7;color:#00afa9}
+    .progression-bar{display:flex;align-items:center;gap:12px;margin:10px 0;font-size:14px}
+    .progression-bar .arrow{color:#ffa900;font-size:18px}
+    .progression-bar strong{color:#0d47a1}
+    .obs-block{background:#fffbea;border-left:4px solid #ffa900;border-radius:0 8px 8px 0;padding:12px 16px;margin:8px 0;font-size:14px;color:#424242}
+    .obs-block strong{color:#ffa900;display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+    .footer-note{text-align:center;font-size:12px;color:#757575;margin-top:40px;padding-top:20px;border-top:1px solid #eee;letter-spacing:1px}
+    @media print{body{margin:0;padding:20px}.learner-report{page-break-inside:avoid}}
+  </style></head><body>${content}</body></html>`;
+  const blob=new Blob([full],{type:'text/html'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='rapport_formation_connecteo_'+new Date().toISOString().slice(0,10)+'.html';a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Init
+renderLearners();
+</script>
+</body>
+</html>
