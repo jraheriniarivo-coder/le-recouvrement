@@ -455,8 +455,12 @@ function buildPayload(){
     pre_score_j1:domains[1]+"/9",pre_score_j2:domains[2]+"/9",
     pre_score_j3:domains[3]+"/9",pre_score_j4:domains[4]+"/9",
     pre_axes:Array.from(axes).join(" | "),
-    pre_answers_json:JSON.stringify(state.answers.map(a=>({q:a.q,c:a.choice,w:a.weight}))),
-    date:new Date().toLocaleString('fr-FR')
+pre_answers_lisible: state.answers.map(a => {
+  const q = QUESTIONS[a.q];
+  const letter = ['A','B','C','D'][a.choice];
+  return 'Q' + (a.q + 1) + ':' + letter;
+}).join(', '),
+pre_answers_json: JSON.stringify(state.answers.map(a => ({q: a.q, c: a.choice, w: a.weight}))),    date:new Date().toLocaleString('fr-FR')
   };
 }
 </script>
