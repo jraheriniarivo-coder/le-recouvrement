@@ -240,7 +240,7 @@ const QUESTIONS = [
 /* =========================================================
    CONFIGURATION
    ========================================================= */
-const ACCESS_KEY = "REMPLACE_PAR_TON_ACCESS_KEY_WEB3FORMS";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKrkXsdPw3a7Nk6rCtOwscO6z8pvGXM0aROmih_GrvacbG45Nr3zZPUi2ZZcKuCDJpvA/exec";
 
 /* =========================================================
    ÉTAT
@@ -417,21 +417,27 @@ function showResults(){
    ENVOI DES RÉSULTATS
    ========================================================= */
 async function sendResults(){
-  const payload=buildPayload();
-  if(ACCESS_KEY==="REMPLACE_PAR_TON_ACCESS_KEY_WEB3FORMS"){
-    console.log("⚠️ Mode démo — Payload:",payload);
-    document.getElementById('send-status').innerHTML='⚠️ Web3Forms non configuré — voir console.';
+  const payload = buildPayload();
+  
+  if (APPS_SCRIPT_URL === "REMPLACE_PAR_TON_URL_APPS_SCRIPT") {
+    console.log("⚠️ Mode démo — Payload:", payload);
+    document.getElementById('send-status').innerHTML = '⚠️ Apps Script non configuré — voir console.';
     return;
   }
-  document.getElementById('send-status').textContent='Envoi en cours…';
-  try{
-    const res=await fetch("https://api.web3forms.com/submit",{
-      method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
-      body:JSON.stringify({access_key:ACCESS_KEY,...payload})
+  
+  document.getElementById('send-status').textContent = 'Envoi en cours…';
+  
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
     });
-    const data=await res.json();
-    document.getElementById('send-status').innerHTML=data.success?'✅ Profil enregistré. Merci !':'❌ Erreur d\'envoi.';
-  }catch(err){document.getElementById('send-status').innerHTML='❌ Erreur réseau.';}
+    document.getElementById('send-status').innerHTML = '✅ Profil enregistré. Merci !';
+  } catch (err) {
+    document.getElementById('send-status').innerHTML = '❌ Erreur réseau.';
+  }
 }
 
 function buildPayload(){
@@ -441,10 +447,10 @@ function buildPayload(){
   });
   const maxTotal=QUESTIONS.length*3;
   const pct=Math.round(total/maxTotal*100);
-  return {
-    subject:"Pré-quiz — "+state.name,
-    from_name:"Pré-quiz Formation Recouvrement",
-    name:state.name,email:state.email,
+   return {
+    type: "pre-quiz",
+    name: state.name,
+    email: state.email,
     pre_score_total:total,pre_score_max:maxTotal,pre_score_pct:pct,
     pre_score_j1:domains[1]+"/9",pre_score_j2:domains[2]+"/9",
     pre_score_j3:domains[3]+"/9",pre_score_j4:domains[4]+"/9",
