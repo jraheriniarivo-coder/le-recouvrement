@@ -559,11 +559,19 @@ function renderLearnerSelect(){
 }
 
 function parseScore(str){
-  if (!str) return { score: 0, max: 0, pct: 0 };
-  const parts = str.toString().split('/');
-  const s = parseFloat(parts[0]) || 0;
-  const m = parseFloat(parts[1]) || 0;
-  return { score: s, max: m, pct: m > 0 ? Math.round(s/m*100) : 0 };
+  if (!str) return { score: 0, max: 0, pct: 0, invalid: true };
+  const s = str.toString();
+  // Détecte si c'est une date ISO (bug Google Sheet) ou une valeur non "x/y"
+  if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
+    return { score: 0, max: 0, pct: 0, invalid: true };
+  }
+  if (!s.includes('/')) {
+    return { score: 0, max: 0, pct: 0, invalid: true };
+  }
+  const parts = s.split('/');
+  const score = parseFloat(parts[0]) || 0;
+  const max = parseFloat(parts[1]) || 0;
+  return { score, max, pct: max > 0 ? Math.round(score/max*100) : 0 };
 }
 
 function renderVueApprenant(){
@@ -620,7 +628,7 @@ function renderVueApprenant(){
 
   const labels = {1:'Relation Client', 2:'Communication', 3:'Recouvrement', 4:'Situations complexes'};
   const colors = {1:'#0d47a1', 2:'#ffa900', 3:'#096475', 4:'#7c4dff'};
-  const scores = [j1, j2, j3, j4];
+ const scores = [j1, j2, j3, j4].map(s => s.invalid ? { score: 0, max: 0, pct: 0, invalid: true } : s);
   const weakest = scores.map((s,i) => ({d:i+1, pct:s.pct})).sort((a,b) => a.pct - b.pct)[0];
 
 el.innerHTML = `
@@ -638,9 +646,9 @@ el.innerHTML = `
         ${[1,2,3,4].map(i => `
           <div class="domain">
             <h4>${labels[i]}</h4>
-            <div class="val" style="color:${colors[i]}">${scores[i-1].pct}%</div>
-            <div class="bar"><div class="bar-fill" style="width:${scores[i-1].pct}%;background:${colors[i]}"></div></div>
-            <p style="font-size:11px;color:var(--text-light);margin-top:4px">${scores[i-1].score}/${scores[i-1].max} pts</p>
+            <div class="val" style="color:${colors[i]}">${scores[i-1].invalid ? '—' : scores[i-1].pct + '%'}</div>
+            <div class="bar"><div class="bar-fill" style="width:${scores[i-1].invalid ? 0 : scores[i-1].pct}%;background:${colors[i]}"></div></div>
+            <p style="font-size:11px;color:var(--text-light);margin-top:4px">${scores[i-1].invalid ? '—' : scores[i-1].score + '/' + scores[i-1].max + ' pts'}</p>
           </div>
         `).join('')}
       </div>
