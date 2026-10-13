@@ -7,92 +7,130 @@
 <link href="https://fonts.googleapis.com/css2?family=Mada:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--primary:#00afa9;--accent:#ffa900;--sapphire:#0d47a1;--violet:#7c4dff;--success:#096475;--danger:#c62828;--warning:#f52900;--text-dark:#212121;--text-medium:#424242;--text-light:#757575;--bg:#f7f0f0}
+:root{--primary:#00afa9;--accent:#ffa900;--sapphire:#0d47a1;--violet:#7c4dff;--success:#096475;--danger:#c62828;--warning:#f52900;--text-dark:#212121;--text-medium:#424242;--text-light:#757575;--bg:#f7f0f0;--white:#fff}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Mada',sans-serif;background:var(--bg);color:var(--text-dark);line-height:1.6}
 
-.top-bar{position:sticky;top:0;background:linear-gradient(135deg,var(--sapphire),var(--primary));color:#fff;padding:18px 30px;display:flex;align-items:center;gap:20px;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.top-bar svg{height:40px}
-.top-bar h1{font-size:20px;font-weight:900}
+/* TOP BAR */
+.top-bar{position:sticky;top:0;background:linear-gradient(135deg,var(--sapphire),var(--primary));color:#fff;padding:14px 30px;display:flex;align-items:center;gap:20px;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.top-bar .logo{height:38px;width:auto;background-color:#fff;background-image:url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBpZD0iQ2FscXVlXzEiIGRhdGEtbmFtZT0iQ2FscXVlIDEiIHZpZXdCb3g9IjAgMCAxMDAwIDEwMDAiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEge2ZpbGw6ICNmZmY7fQogICAgICAuY2xzLTIge2ZpbGw6IG5vbmU7fQogICAgICAuY2xzLTMge2ZpbGw6ICM4Nzg1ODc7fQogICAgICAuY2xzLTQge2ZpbGw6ICNjY2UxZTE7fQogICAgICAuY2xzLTUge2ZpbGw6ICMwMGFlYTk7fQogICAgICAuY2xzLTYge2NsaXAtcGF0aDogdXJsKCNjbGlwcGF0aCk7fQogICAgPC9zdHlsZT4KICAgIDxjbGlwUGF0aCBpZD0iY2xpcHBhdGgiPjxwb2x5bGluZSBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTE4LjI1IDU1NS4zNCA4ODguOTggNTU1LjM0IDg4OC45OCAzOTAuMzUgMTE4LjI1IDM5MC4zNSAxMTguMjUgNTU1LjM0Ij48L3BvbHlsaW5lPjwvY2xpcFBhdGg+CiAgPC9kZWZzPgogIDxnIGNsYXNzPSJjbHMtNiI+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNMzI4LjI2LDUwOS4yN2MuMDQtLjA2LjA3LS4xMi4xMS0uMTgtLjA0LjE3LS4wNy4xNy0uMTEuMThNNDMwLjQsNTA5LjI3Yy4wNC0uMDYuMDctLjEyLjExLS4xOC0uMDQuMTctLjA3LjE3LS4xMS4xOE0xNjguNTIsNTExLjg1YzAtMy44MSwxLjM5LTguNjgsNC0xNC4wOC4yNy0uNTYuNTUtMS4xMi44NC0xLjY3LDMuNjgsMy41Myw4LjI1LDUuOCwxMy4yNiw2LjU2LTIuOTUsMi42Ny02LjAxLDQuODItOS4xNCw2LjQtMy4yNiwxLjY1LTYuMzMsMi42MS04Ljk2LDIuNzhNNTk3LjgyLDUxMS44NWMwLTMuODEsMS4zOS04LjY4LDQuMDEtMTQuMDguMjctLjU2LjU1LTEuMTIuODMtMS42NywzLjY3LDMuNTIsOC4yMyw1Ljc4LDEzLjIyLDYuNTYtMi45NiwyLjY4LTYuMDEsNC44My05LjEzLDYuNDEtMy4zLDEuNjgtNi4zLDIuNjEtOC45MywyLjc4TTY3MS45NSw1MTEuMzNjLjI2LTQuOTEsMS42My0xMi42Miw1Ljk4LTI0LjEyLDMuNjktLjEzLDcuNTgtLjMyLDExLjY0LS41Ny0yLjQsNC45Mi00LjE2LDkuNzgtNS4yOSwxNC41NS0xLjk3LDIuMjgtMy45OSw0LjI5LTYuMDQsNS45OS0yLjIsMS44Mi00LjMyLDMuMjMtNi4yOCw0LjE2TTY5Mi42NiwzOTAuMzVoLS44NGMtMTMuOTkuMjUtMjQuMjQsMTIuOTktMzEuNjMsMjQuMS02LjA5LDkuMTYtMTEuOTIsMTkuNzctMTcuMzksMzEuNjNsLTguMDItLjg3Yy00LjU3LTMuMTgtMTEuNDUtNi4wMy0yMS40My02LjAzLTExLjM5LDAtMjIuNTIsMy43NC0zMy4wNiwxMS4xMS0yLjE0LDEuNDktNC4xOCwzLjA5LTYuMTUsNC43OC0yLjI1LTQuNjQtNS40OC03Ljc4LTguMzktOS44NC01LjkzLTQuMTgtMTMuMDMtNi4zMS0yMS4wOS02LjMxLTEyLjEyLDAtMjQuMTgsNC4yMi0zNS44NSwxMi41Ni04LjQ3LDYuMDQtMTUuODQsMTMuNDEtMjEuOTIsMjEuOS0uODYtNy4xLTMuMTYtMTMuNTYtNi44NS0xOS4yOC02LjIxLTkuNTktMTUuOTgtMTQuODctMjcuNTEtMTQuODctOC4zOSwwLTE2LjU1LDIuNzQtMjQuMzYsOC4xNi0uMTctLjItLjM0LS4zOS0uNTEtLjU5LTQuNDUtNC44OS0xMC44OS03LjU4LTE4LjEzLTcuNTgtNS4yNywwLTEwLjQxLDEuNTMtMTUuMjgsNC41NS0zLjg4LDIuNC03LjA5LDUuMzUtOS41NCw4Ljc1bC0xLjY5LDIuMzYtLjQ3LDIuODNjLS4yMSwxLjI3LS40NCwyLjY0LS42OSw0LjEtMS4wNi0yLjctMi4zOS01LjI4LTMuOTctNy43My02LjIxLTkuNTktMTUuOTgtMTQuODctMjcuNTEtMTQuODctOC4zOSwwLTE2LjU1LDIuNzQtMjQuMzYsOC4xNi0uMTctLjItLjM0LS4zOS0uNTEtLjU5LTQuNDUtNC44OS0xMC44OS03LjU4LTE4LjEzLTcuNTgtNS4yNywwLTEwLjQxLDEuNTMtMTUuMjgsNC41NS0xLjIxLjc1LTIuNTgsMS43Ny0zLjkxLDIuODUtNC43Ny00LjI0LTEyLjI1LTguMTUtMjMuNzEtOC40OC0uMzIsMC0uNjQtLjAxLS45NS0uMDEtOS40NSwwLTE3LjYxLDMuMDQtMjMuNzEsOC45NS0yLjI4LDIuMjItNC4yMiw0Ljc5LTUuNzgsNy42OC0uMzEsMC0uNjItLjAxLS45My0uMDEtMy4wOSwwLTYuMjkuMzYtOS40MywxLjM1LTIuNjUuODMtNS4wOSwxLjkyLTcuMzQsMy4yMS0xLjUxLTQuMTMtMy45My03Ljg4LTcuMjItMTEuMTEtNC4yLTQuMTEtMTEuOTYtOS4wMi0yNS4wNi05LjAyLTExLjM5LDAtMjIuNTEsMy43NC0zMy4wNiwxMS4xMS05LjY4LDYuNzctMTcuNjIsMTUuNjMtMjMuNTgsMjYuMzQtNi4wNywxMC45LTkuMTUsMjIuMzMtOS4xNSwzMy45NiwwLDEzLjQsNCwyNC4xNSwxMS44OSwzMS45NCw3LjkxLDcuOCwxOC42NiwxMS45MiwzMS4wOCwxMS45MiwxMC4wOCwwLDIwLjI5LTIuNTgsMzAuMzctNy42NywyLjAyLTEuMDMsNC4wMS0yLjEzLDUuOTYtMy4zMiw0LjM4LDQuODQsMTAuMTcsOC4yNCwxNy4wNSw5Ljg1LDIuNzkuNjYsNS43Ni45OSw4LjgyLjk5LDEzLjg0LDAsMjkuMzgtNi45Myw0MS4zMy0xNy44bC42NiwzLjYzYzYuMTYsMTAuMDMsMTQuMDcsMTUuMTYsMjUuOCwxNS4yMWgxMy4zMmw0LjQxLTkuMDRjNi44Ni0xMy45MywxMy4zLTI3LjA3LDE5LjIzLTM2Ljg3LDAsMCwwLC4wMSwwLC4wMi0uODcsNC4wNy0xLjMxLDcuNTMtMS4zMSwxMC44OSwwLDkuMjYsMi45NSwxNy4zLDguNTMsMjMuNTMsNi4yMiw2Ljk1LDE0Ljk5LDEwLjU1LDI1LjM2LDEwLjU1LDYuNzcsMCw4Ljk5LTEuNiwxNC44NS00Ljc3LDQuNzcsMi42MywxNC4xMSw1LjY1LDE5Ljk2LDUuNjloMTEuMTVsNC4zOS05LjA1YzYuODYtMTMuOTMsMTMuMy0yNy4wNywxOS4yMy0zNi44NywwLDAsMCwuMDEsMCwuMDItLjg3LDQuMDctMS4zMSw3LjUzLTEuMzEsMTAuODksMCw5LjI2LDIuOTUsMTcuMyw4LjUzLDIzLjUzLDYuMjIsNi45NSwxNC45OSwxMC41NSwyNS4zNiwxMC41NSw2LjgzLDAsMTUuOTEtMS44MSwyNC45LTguODksNy44Miw1LjkyLDE3Ljc3LDguOSwyOS42NSw4LjksMTQuMjYsMCwyOC4wMy00LjM2LDQwLjk4LTEyLjk0LjM0LjM2LjY4LjcxLDEuMDMsMS4wNSw3LjkxLDcuOCwxOC42NiwxMS45MiwzMS4wOCwxMS45MiwxMC4wOCwwLDIwLjI5LTIuNTgsMzAuMzctNy42NywzLTEuNTIsNS45Mi0zLjIyLDguNzUtNS4xMS44NiwxLjA4LDEuNzksMi4xMiwyLjc5LDMuMSw2Ljg3LDYuNjksMTYuMzUsMTAuMjMsMjcuNCwxMC4yMywxMi40NCwwLDI0LjM0LTQuMTQsMzUuNDYtMTIuMzJsLjEuMDljOC4yMiw3LjY0LDE5LjI0LDExLjUyLDMyLjc0LDExLjUyczI2Ljg5LTMuOTksMzkuMzctMTEuODhjNC40OCw1LjM5LDEwLjU5LDkuMTksMTcuODksMTAuOSwyLjc5LjY2LDUuNzYuOTksOC44Mi45OSwxOC4xOSwwLDM5LjMyLTExLjk4LDUxLjM4LTI5LjEzLDEuNjMtMi4zMiw1LjEzLTcuNzQsOC4xNy0xMi41MSwyMy4wMy0uNTIsMjcuNTYtMTQuNiwyOC4yMi0xNy40MWw2Ljk5LTQzLjI5LTIyLjIxLDE0Ljg4Yy0xLjEtMy4zNCwzLjM1LTE1Ljg0LTEzLjgtMjQuNjQtNS42MS0yLjg4LTExLjQtNC0xNi44OC00LTExLjI5LDAtMjEuMjQsNC43OC0yNS40OCw4Ljg5LTIuMjgsMi4yMi00LjIyLDQuOC01Ljc5LDcuNjgtLjM2LS4wMS0uNzItLjAyLTEuMDktLjAyLTMuMDQsMC02LjE5LjM4LTkuMjcsMS4zNS0yLjc5Ljg3LTUuNDEsMi4wMy03Ljg4LDMuNDgtMi4wMi03LjI4LTYuMzQtMTEuNzgtMTAuMTMtMTQuNDYtNS45My00LjE4LTEzLjU1LTYuMzEtMjEuNjItNi4zMS05Ljc2LDAtMTguNzQsMi43NC0yOS41Myw4LjE3di0yLjM5cy03LjExLjg2LTE0LjUyLDEuNTJjLTcuNDEuNjYtMTIuMDYsMS4wMS0xMi4wNiwxLjAxLjIyLS4zNi41OC0uNzIuOC0xLjA4LDQuODMtNy45NSw4LjI4LTEzLjcxLDEwLjQxLTE3LjYzLDMuMzQtNi4xNiw0LjkyLTExLjMxLDQuOTItMTYuMiwwLTYuMTUtMi40OS0xMS43OS03LjA1LTE1LjkyLTQuMTctMy43NS05LjUzLTUuODUtMTUuMTUtNS45NSIvPjwvZz4KICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NTkuNTQsNDYxLjE2Yy0xLjEtMy4zNCwzLjM1LTE1Ljg0LTEzLjgtMjQuNjQtMTcuMTYtOC44LTM2LjA3LTEuMjItNDIuMzcsNC44OS0yLjI4LDIuMjItNC4yMiw0LjgtNS43OSw3LjY4LTMuMzctLjEtNi45MS4yNS0xMC4zNiwxLjMzLTIuNzkuODctNS40MSwyLjAzLTcuODgsMy40OC0yLjAyLTcuMjgtNi4zNC0xMS43OC0xMC4xMy0xNC40Ni01LjkzLTQuMTgtMTMuNzEtNi4zMS0yMS43OC02LjMxLTkuNzYsMC0xOS45OCwyLjc0LTI5LjY5LDguMTd2LTIuMzlzLTYuOTUuODYtMTQuMzYsMS41MmMtNy40MS42Ni0xMS45OCwxLjAxLTExLjk4LDEuMDEuMjItLjM2LjYyLS43Mi44NC0xLjA4LDQuODMtNy45NSw4LjMtMTMuNzEsMTAuNDMtMTcuNjMsMy4zNC02LjE2LDQuOTQtMTEuMzEsNC45NC0xNi4yLDAtNi4xNS0yLjQ4LTExLjc5LTcuMDUtMTUuOTItNC4yOC0zLjg0LTkuOC01Ljk2LTE1LjU3LTUuOTYtMTQuMjEsMC0yNC41OSwxMi44OC0zMi4wNSwyNC4xLTYuMDksOS4xNi0xMS45MiwxOS43Ny0xNy4zOSwzMS42M2wtOC4wMi0uODdjLTQuNTctMy4xOC0xMS40NS02LjAzLTIxLjQzLTYuMDMtMTEuMzksMC0yMi41MiwzLjc0LTMzLjA2LDExLjExLTIuMTQsMS40OS00LjE4LDMuMDktNi4xNSw0Ljc4LTIuMjUtNC42NC01LjQ4LTcuNzgtOC4zOS05Ljg0LTUuOTMtNC4xOC0xMy4wMy02LjMxLTIxLjA5LTYuMzEtMTIuMTIsMC0yNC4xOCw0LjIyLTM1Ljg1LDEyLjU2LTguNDcsNi4wNC0xNS44NCwxMy40MS0yMS45MiwyMS45LS44Ni03LjEtMy4xNi0xMy41Ni02Ljg1LTE5LjI4LTYuMjEtOS41OS0xNS45OC0xNC44Ny0yNy41MS0xNC44Ny04LjM5LDAtMTYuNTUsMi43NC0yNC4zNiw4LjE2LS4xNy0uMi0uMzQtLjM5LS41MS0uNTktNC40NS00Ljg5LTEwLjg5LTcuNTgtMTguMTMtNy41OC01LjI3LDAtMTAuNDEsMS41My0xNS4yOCw0LjU1LTMuODgsMi40LTcuMDksNS4zNS05LjU0LDguNzVsLTEuNjksMi4zNi0uNDcsMi44M2MtLjIxLDEuMjctLjQ0LDIuNjQtLjY5LDQuMS0xLjA2LTIuNy0yLjM5LTUuMjgtMy45Ny03LjczLTYuMjEtOS41OS0xNS45OC0xNC44Ny0yNy41MS0xNC44Ny04LjM5LDAtMTYuNTUsMi43NC0yNC4zNiw4LjE2LS4xNy0uMi0uMzQtLjM5LS41MS0uNTktNC40NS00Ljg5LTEwLjg5LTcuNTgtMTguMTMtNy41OC01LjI3LDAtMTAuNDEsMS41My0xNS4yOCw0LjU1LTEuMjEuNzUtMi41OCwxLjc3LTMuOTEsMi44NS00Ljc4LTQuMjQtMTIuMjUtOC4xNS0yMy43MS04LjQ4LTkuODUtLjIxLTE4LjM2LDIuODMtMjQuNjYsOC45NC0yLjI4LDIuMjItNC4yMiw0Ljc5LTUuNzgsNy42OC0zLjM4LS4wOC02LjkxLjI1LTEwLjM2LDEuMzQtMi42NS44My01LjA5LDEuOTItNy4zNCwzLjIxLTEuNTEtNC4xMy0zLjkzLTcuODgtNy4yMi0xMS4xMS00LjItNC4xMi0xMS45Ni05LjAyLTI1LjA2LTkuMDItMTEuMzksMC0yMi41MSwzLjc0LTMzLjA2LDExLjExLTkuNjgsNi43Ny0xNy42MSwxNS42My0yMy41OCwyNi4zNC02LjA3LDEwLjktOS4xNSwyMi4zMy05LjE1LDMzLjk2LDAsMTMuNDEsNCwyNC4xNSwxMS44OSwzMS45NCw3LjkxLDcuOCwxOC42NiwxMS45MiwzMS4wOCwxMS45MiwxMC4wOCwwLDIwLjI5LTIuNTgsMzAuMzctNy42NywyLjAyLTEuMDMsNC4wMS0yLjEzLDUuOTYtMy4zMiw0LjM4LDQuODQsMTAuMTcsOC4yNCwxNy4wNSw5Ljg1LDIuNzkuNjYsNS43Ni45OSw4LjgyLjk5LDEzLjg0LDAsMjkuMzgtNi45Myw0MS4zMy0xNy44bC42NiwxLjE2YzYuMTksMTAuMDksMTYuNTMsMTUuODEsMjguMzYsMTUuODFoMTEuMDNsNC4xNC05LjY1YzYuOTQtMTQuMDksMTMuNDUtMjYuMTMsMTkuNDMtMzUuOTctLjA3LjMyLS4xNC42NS0uMjEuOTctLjg3LDQuMDctMS4zMSw3Ljg0LTEuMzEsMTEuMiwwLDkuMjYsMi45NSwxNy40NSw4LjUzLDIzLjY4LDYuMjIsNi45NSwxNC45OSwxMC42MywyNS4zNiwxMC42Myw2Ljc3LDAsMTMuMjEtMS43LDE5LjA2LTQuODcsNC44LDIuNjUsMTAuMjcsNCwxNi4xLDRoMTEuMDNsNC4xNC05LjY1YzYuOTQtMTQuMDksMTMuNDUtMjYuMTMsMTkuNDMtMzUuOTYtLjA3LjMyLS4xNC42NS0uMjEuOTctLjg3LDQuMDctMS4zMSw3Ljg0LTEuMzEsMTEuMiwwLDkuMjYsMi45NSwxNy40NSw4LjUzLDIzLjY4LDYuMjIsNi45NSwxNC45OSwxMC42MywyNS4zNiwxMC42Myw2LjgzLDAsMTUuOTEtMS43NywyNC45LTguODYsNy44Miw1LjkyLDE3Ljc3LDguOTIsMjkuNjUsOC45MiwxNC4yNiwwLDI4LjAzLTQuMzUsNDAuOTgtMTIuOTMuMzQuMzYuNjguNzEsMS4wMywxLjA2LDcuOTEsNy44LDE4LjY2LDExLjkyLDMxLjA4LDExLjkyLDEwLjA4LDAsMjAuMjktMi41OCwzMC4zNy03LjY3LDMtMS41Miw1LjkyLTMuMjIsOC43NS01LjExLjg2LDEuMDksMS43OSwyLjEyLDIuNzksMy4xLDYuODcsNi42OSwxNi4zNSwxMC4yMywyNy40LDEwLjIzLDEyLjQ0LDAsMjQuMzQtNC4xNCwzNS40Ni0xMi4zMi4wMy4wMy4wNy4wNi4xLjA5LDguMjIsNy42NCwxOS4yNCwxMS41MiwzMi43NCwxMS41MnMyNi44OS0zLjk5LDM5LjM3LTExLjg4YzQuNDgsNS4zOSwxMC41OSw5LjE5LDE3Ljg5LDEwLjksMi43OS42Niw1Ljc2Ljk5LDguODIuOTksMTguMTksMCwzOS4zMi0xMS45OCw1MS4zOC0yOS4xMywxLjYzLTIuMzIsNS4xMy03Ljc0LDguMTctMTIuNTEsMjMuMDMtLjUyLDI3LjU2LTE0LjYsMjguMjMtMTcuNDFsNi45OS00My4yOS0yMi4yMSwxNC44OFpNNTkwLjU4LDUwNi4xNmMwLTMuODEsMS4zOS04LjY4LDQuMDEtMTQuMDkuMjctLjU2LjU1LTEuMTIuODMtMS42NywzLjY3LDMuNTIsOC4yMyw1Ljc4LDEzLjIyLDYuNTYtMi45NiwyLjY4LTYuMDEsNC44My05LjEzLDYuNDEtMy4zLDEuNjgtNi4zLDIuNjEtOC45MywyLjc4TTY3Ny4wNCw0OTUuNWMtMS45NywyLjI4LTMuOTksNC4yOS02LjA0LDUuOTktMi4yLDEuODItNC4zMiwzLjIzLTYuMjgsNC4xNi4yNi00LjkxLDEuNjMtMTIuNjIsNS45OC0yNC4xMiwzLjY5LS4xMyw3LjU4LS4zMiwxMS42NC0uNTctMi40LDQuOTItNC4xNiw5Ljc4LTUuMjksMTQuNTVNMTYxLjI5LDUwNi4xNmMwLTMuODEsMS4zOS04LjY4LDQtMTQuMDguMjctLjU2LjU1LTEuMTIuODQtMS42NywzLjY4LDMuNTMsOC4yNSw1LjgsMTMuMjYsNi41Ni0yLjk1LDIuNjctNi4wMSw0LjgyLTkuMTQsNi40LTMuMjYsMS42NS02LjMzLDIuNjEtOC45NiwyLjc4Ij48L3BhdGg+CiAgPHBhdGggY2xhc3M9ImNscy0zIiBkPSJNODQ1Ljc0LDQzNi41MmMtMTcuMTYtOC44LTM2LjA3LTEuMjItNDIuMzcsNC44OS0yLjI4LDIuMjItNC4yMiw0LjgtNS43OSw3LjY4LTMuMzctLjEtNi45MS4yNS0xMC4zNiwxLjMzLTIuNzkuODgtNS40MSwyLjAzLTcuODgsMy40OC0yLjAyLTcuMjgtNi4zNC0xMS43OC0xMC4xMy0xNC40Ni01LjkzLTQuMTgtMTMuNy02LjMxLTIxLjc3LTYuMzEtMS43NSwwLTMuNTMuMTItNS4zMi4yOWwtMTEuMDguNzRzLTMyLjM0LDQuNDMtNDguNzEsNDYuOTFjLTE1LjU3LDQwLjM4LDMuNzIsNTQuNjUsNS42Niw1NS45Ni4wMi0uMDIuMDQtLjAzLjA3LS4wNS4wMy4wMy03LjAzLTUuNS4xLjA5LDcuMTMsNS41OSwxOS4yNCwxMS41MiwzMi43NCwxMS41MnMyNi44OS0zLjk5LDM5LjM3LTExLjg4YzQuNDgsNS4zOSwxMC41OSw5LjE5LDE3Ljg5LDEwLjksMi43OS42Niw1Ljc2Ljk5LDguODIuOTksMTguMTksMCwzOS4zMi0xMS45OCw1MS4zOC0yOS4xMywxLjYzLTIuMzIsNS4xMy03Ljc0LDguMTctMTIuNTEsMjMuMDMtLjUyLDI3LjU2LTE0LjYsMjguMjMtMTcuNDFsNi45OS00My4yOS0yMi4yLDE0Ljg4Yy0xLjEtMy4zNCwzLjM1LTE1Ljg0LTEzLjgtMjQuNjQiPjwvcGF0aD4KICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03ODYuOTgsNTQ5LjdjLTMuMTQsMC02LjE5LS4zNC05LjA3LTEuMDEtNy4wOS0xLjY2LTEzLjI0LTUuMjktMTcuODYtMTAuNTQtMTIuNDIsNy42Ny0yNS41OSwxMS41NS0zOS4xNSwxMS41NS0xNi43NCwwLTI5LjM1LTguNjEtMzMuMTctMTEuNTZsLS4zNS0uMTljLS4zOC0uMjYtMS4yMy0uODctMi4zMS0xLjktLjQxLS4zMi0uNzItLjU2LS43Ni0uNTlsLjA0LS4wNWMtLjI3LS4yNS0uNDMtLjQ0LS41MS0uNjEtNS43NC02LjI3LTE0LjgxLTIyLjI2LTIuNTQtNTQuMTEsOC41Ny0yMi4yMiwyMS41NS0zMy45NywzMC45My0zOS45MSwxMC4yMi02LjQ3LDE4LjMxLTcuNjQsMTguNjUtNy42OWwxMS4xNi0uNzRjMi4wNy0uMiwzLjc5LS4zLDUuMzktLjMsOC40OSwwLDE2LjQ1LDIuMzEsMjIuMzksNi41MSwzLjQxLDIuNDEsNy44NCw2LjcxLDEwLjE1LDEzLjc0LDIuMTgtMS4xNyw0LjUtMi4xNSw2LjkxLTIuOSwzLjEtLjk3LDYuNDktMS40MywxMC4wNS0xLjQsMS41Ni0yLjc1LDMuNDYtNS4yMyw1LjY2LTcuMzYsNi40Ni02LjI2LDI1Ljg4LTE0LjE3LDQzLjYyLTUuMDgsMTQuMjcsNy4zMiwxNC4yMSwxNy4yMywxNC4xOSwyMi41NSwwLC40MSwwLC44LDAsMS4xNmwyMi44LTE1LjI4LTcuMzksNDUuNzdjLS43MSwzLjAxLTUuMzUsMTcuNTUtMjguNywxOC4zMS0yLjc2LDQuMzItNi4yNSw5LjczLTcuODgsMTIuMDYtMTIuMjYsMTcuNDItMzMuNzYsMjkuNTktNTIuMjgsMjkuNTlNNzYwLjUsNTM1LjI5bC42MS43NGM0LjM3LDUuMjcsMTAuMzYsOC45MSwxNy4zLDEwLjU0LDIuNzEuNjQsNS42Ljk2LDguNTcuOTYsMTcuODYsMCwzOC42Mi0xMS43OCw1MC40OS0yOC42NiwxLjY3LTIuMzgsNS4zNS04LjA5LDguMTQtMTIuNDZsLjMxLS40OWguNThjMjIuMjQtLjUxLDI2LjU1LTEzLjksMjcuMTktMTYuNThsNi41Ny00MC43My0yMS4zMSwxNC4yOC0uNDUtMS4zN2MtLjI4LS44NS0uMjctMS45OC0uMjctMy40MS4wMy01LjIuMDctMTMuODktMTMtMjAuNi0xNi43Ni04LjYtMzUuMDQtMS4xOC00MS4xMSw0LjctMi4xOSwyLjEzLTQuMDcsNC42Mi01LjU4LDcuNDFsLS4zMi41OS0uNjctLjAyYy0zLjU4LS4wOS02Ljk0LjMzLTEwLDEuMjgtMi43Ljg1LTUuMjgsMS45OS03LjY2LDMuMzhsLTEuMjIuNzItLjM4LTEuMzdjLTItNy4yLTYuMzgtMTEuNTEtOS43MS0xMy44Ni01LjU4LTMuOTQtMTMuMDktNi4xMS0yMS4xNC02LjExLTEuNTMsMC0zLjE5LjA5LTUuMjEuMjlsLTExLjEyLjc0Yy0uMjQuMDQtMzEuODQsNC44OC00Ny43Nyw0Ni4yMS0xMi42OSwzMi45MS0yLjAyLDQ3Ljk2LDMuMDksNTIuODguMTguMTQuMzguMjkuNTkuNDYuMzYuMjguNzMuNTcsMS4wMy44MWwxLjU2LDEuMjJjNC4yNCwzLjE2LDE1Ljk2LDEwLjY4LDMxLjI3LDEwLjY4LDEzLjQ0LDAsMjYuNDktMy45NCwzOC43OS0xMS43MWwuODEtLjUxWiI+PC9wYXRoPgogIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTg1OC4xOSw0NzUuMDFjLTEuMzgsMS40Ni02LjIyLDUuNy0xMC4yNiw1LjkxbC0uMjIuMDJjLS43MS4wOC0xLjMyLjEzLTEuODMuMTQuNDgtMS4zOS45OS0yLjk1LDEuMzMtNC4xNywyLjgzLTEwLjIxLDEuOTktMTguOS0yLjM2LTI0LjQ5LTMuNjItNC42NC05LjQtNy4xMS0xNy4xOC03LjMzLTYuMTQtLjE2LTExLjE3LDEuNTctMTQuOSw1LjE4LTQuMDksMy45Ny01LjY0LDkuMzQtNi4yMiwxMy4xOS00LjA4LTEuMzMtMTAuMTMtMi42My0xNS4yLTEuMDUtMTIuMjEsMy44My0xOC41OSwxNi42Mi0yMi4zNSwyOC42NC00Ljk4LDcuNzktMTEuMTksMTQuNS0xOC41MywxOS45OC04LjQ5LDYuMzMtMTYuODQsOS41NC0yNC44MSw5LjU0LTUuNTYsMC05LjEtMS4yNS0xMC41My0zLjctMS43OS0zLjA3LTIuNy02LjE1LTIuNy05LjE2LDAtLjY1LjAyLTEuMjcuMDYtMS44NSw4LjItMS4xNiwxNi4zMy0zLjUsMjQuMjEtNi45Nyw4LjgzLTMuOSwxNi4xNS05LjAxLDIxLjc3LTE1LjE4LDUuODYtNi40NCw4LjgzLTEzLjQ1LDguODMtMjAuODQsMC02LjAzLTEuOTktMTAuNDktNS45Mi0xMy4yNi0zLjYxLTIuNTUtOC4wNy0zLjg0LTEzLjI2LTMuODQtOS4yMSwwLTE4LjYyLDMuMzgtMjcuOTYsMTAuMDUtOS4xMiw2LjUxLTE2LjcsMTQuNjktMjIuNTIsMjQuMzMtNC4zNiw3LjIyLTcuMTIsMTQuMTgtOC4yNywyMC43Ny0uMDQuMDUtLjA4LjEtLjEyLjE0LS4yMiwyLjc5LS4zOCw1LjYxLS4zOSw4LjEzLS4wMiwzLjI4LjYzLDYuMTQsMS40OSw4LjQ5LjAzLS4wMy4wNi0uMDYuMDgtLjA5LDEuNDEsMy45NCwzLjcsNy40NCw2LjkyLDEwLjQzLDUuNjgsNS4yNywxMy42LDcuOTUsMjMuNTQsNy45NSwxMi4yLDAsMjQuMTEtNC4wNCwzNS40LTEyLDMuMjctMi4zMSw2LjMxLTQuODgsOS4xNS03LjYzLDEuMzQsOS45Myw2Ljg3LDE2LjkyLDE1Ljg1LDE5LjAyLDEuOC40MiwzLjcuNjIsNS42OC42MiwxMy42MSwwLDMwLjYzLTkuNjEsNDAuNDMtMjMuNTUsMi4zMS0zLjI5LDkuMTEtMTMuOTksMTIuMDEtMTguNTcsMS40NC4yNywzLjM4LjUxLDUuOC41MSwxNC4wMywwLDE2LjMzLTYuMTgsMTYuNjgtNy42NWw1LjEyLTIxLjEtOC44Myw5LjRaTTcyMy45Miw0ODAuMDJjMy45Ni01LjQ5LDguMzUtMTAuMiwxMy4wNC0xMy43Nyw0LjMzLTMuMyw4LjIzLTUuMDMsMTEuNi01LjAzLjA5LDAsLjE3LS4wMi4yNC0uMDIuMDIuMTcuMDMuMzcuMDMuNjUsMCw0LjAxLTEuOTgsOC42OS01Ljg5LDEzLjA5LTQuMTgsNC43MS05LjM2LDguMDgtMTUuMzgsMTIuNGgwYy0zLjYzLDEuMDgtNy4wNiwyLjk5LTEwLjI0LDMuOTUsMS43NC0zLjY4LDMuOTUtNy41OSw2LjYxLTExLjI3TTc5MS40OCw1MTcuMThjLTEuMjgtLjUyLTIuMTctMS41Mi0yLjcyLTMuMDYtMS43MS00Ljc3LjI3LTEzLjU4LDQuODItMjEuNDMsNC4yNS03LjM0LDEwLjQ4LTEzLjc0LDE0LjQ0LTE3LjQxLDEuMjcsMi4zNCwzLjQzLDUuMTIsNy4xMSw3Ljg0LDMuOSwyLjg3LDcuMTYsNC42NSw5LjUyLDUuNzMtNi45NSwxMS4yNi0yMi43NywzMi41Ni0zMy4xNywyOC4zM004MzEuMTIsNDc1Ljc3Yy0xLjU0LS45MS0zLjU0LTIuNDItNS4zNi00LjgxLTIuMDYtMi42OS0yLjk3LTUuODYtMi4zMy04LjA4LjM0LTEuMTgsMS4wOS0yLDIuMy0yLjQ5LjY4LS4yOCwxLjM1LS40MSwxLjk5LS40MS43OCwwLDEuNTIuMiwyLjE5LjYxLDEuNzMsMS4wNCwyLjg0LDMuMjMsMi45OCw1Ljg4LjIsMy44My0uODEsNy4wNy0xLjc3LDkuMzEiPjwvcGF0aD4KICA8cGF0aCBjbGFzcz0iY2xzLTUiIGQ9Ik02NzcuMzcsNTE5LjQ0Yy0uMzQtMi4yNi0uNTYtNC4zMi0uNzEtNi4xMS01Ljg0LDQuMTgtMTEuNTIsNi4zMS0xNi45Myw2LjMxLTIuOTQsMC00Ljk1LS43My02LjE2LTIuMjQtLjk2LTEuMi0yLjExLTMuOTEtMi4xMS0xMC4wMSwwLTkuODUsMy40LTIyLjcyLDEwLjEtMzguMywxMS41Ny0uMSwyNi45NC0xLjE2LDI2Ljk0LTEuMTYsMCwwLC40LTEuMDYsNC41OS03LjIzLDMuNzEtNC44Myw1Ljk0LTcuMzksNS45NC03LjM5LDAsMC0xNi4yNCwxLjMtMzAuMDQsMS40LDMuMjUtNS44OCw3LjI0LTEyLjgyLDEyLjE1LTIwLjcyLDQuNTktNy41NCw3LjktMTMuMjksOS45Ni0xNy4wOSwyLjI5LTQuMjMsMy4zOC03LjYzLDMuMzgtMTAuMzhzLTEuMDItNC45OS0yLjkyLTYuNzFjLTEuODUtMS42Ni00LjEyLTIuNTQtNi41NS0yLjU0LTUuOTksMC0xMi42NCw1LjgtMjAuOTEsMTguMjUtNy4xMywxMC43My0xMy45MiwyMy42My0yMC4xOSwzOC4zOS0yLjU2LS4yMy01LjA5LS41LTcuNjgtLjgxbC0zLjc2LS40NnYxMi4yMWwxLjk2Ljg2YzEsLjQzLDIuNDEuODUsNC4zOSwxLjMtMi40Nyw2LjY4LTQuNTgsMTMuMTMtNi4zMiwxOS4yOS0yLjc3LDUuODEtNi4yOCwxMS4xLTEwLjU0LDE1LjY4LTUuMDIsNS40MS0xMC40OCw5LjYzLTE2LjIyLDEyLjUzLTUuNjEsMi44NC0xMSw0LjI5LTE2LjAyLDQuMjktNC42LDAtNy43OC0xLjA5LTkuNDYtMy4yNS0xLjkzLTIuNDgtMi44Ny01LjU1LTIuODctOS4zOSwwLTUuNzIsMS43Ni0xMi4yNCw1LjIyLTE5LjQsMy41MS03LjI1LDcuOTEtMTMuNTEsMTMuMDktMTguNiw0Ljc3LTQuNjksOS4xLTcuMDcsMTIuODUtNy4wNy40LDAsLjY1LjA0Ljc5LjA3LDAsLjA3LjAyLjE2LjAyLjI4LDAsMy4yOC0uNjIsNi4xNS0xLjg2LDguNTEtMS4xOSwyLjI3LTIuNDcsMy44OS0zLjcyLDQuNjdsLTIuNzcsMS43NiwxLjc3LDIuNjljMy4wMiw0LjU4LDYuOTcsNS41NCw5Ljc0LDUuNTQsMy4wMywwLDcuMzYtMS4yMiwxMC44Mi03LjA1LDIuNDMtNC4wOSwzLjY2LTguNTgsMy42Ni0xMy4zNywwLTUuMDktMS43OC05LjQyLTUuMjktMTIuODctMy41My0zLjQ2LTguNzktNS4yMi0xNS42Mi01LjIyLTguNTMsMC0xNy4wMywyLjkyLTI1LjI3LDguNjgtOC4wNyw1LjY0LTE0LjcsMTMuMDctMTkuNzIsMjIuMDgtMy42Niw2LjU3LTUuOTksMTMuMzQtNy4wMSwyMC4yLTQuMTUsNS4zMi04Ljk1LDEwLjAyLTE0LjM2LDE0LjA2LTguNDksNi4zMy0xNi44NCw5LjU0LTI0LjgxLDkuNTQtNS41NiwwLTkuMS0xLjI1LTEwLjUzLTMuNy0xLjc5LTMuMDctMi43LTYuMTUtMi43LTkuMTYsMC0uNjUuMDItMS4yNy4wNi0xLjg1LDguMi0xLjE1LDE2LjMzLTMuNSwyNC4yMS02Ljk3LDguODMtMy45LDE2LjE1LTkuMDEsMjEuNzctMTUuMTgsNS44Ni02LjQ0LDguODMtMTMuNDUsOC44My0yMC44NCwwLTYuMDMtMS45OS0xMC40OS01LjkyLTEzLjI2LTMuNjEtMi41NS04LjA3LTMuODQtMTMuMjYtMy44NC05LjIxLDAtMTguNjIsMy4zOC0yNy45NiwxMC4wNS03LjY1LDUuNDYtMTQuMTksMTIuMTEtMTkuNTQsMTkuNzlsLTEuNzQsMi42MWMtLjQxLjY0LS44NCwxLjI4LTEuMjQsMS45My0zLjQ1LDUuNzItNS44OCwxMS4yNi03LjMyLDE2LjYtMi4xOCw0LjA1LTQuNDYsNy44My02LjgzLDExLjMtNC43MSw2Ljg5LTkuMTksMTAuNjgtMTIuNiwxMC42OC0uMiwwLS40OSwwLS45OS0uNjEtLjI0LS4yOS0uOC0xLjI2LS44LTMuODgsMC0zLjQsMS4xOC04LjczLDMuNDktMTUuNzgsMS42Mi00LjU1LDIuODYtOC43MiwzLjY3LTEyLjM5Ljg0LTMuNzcsMS4yNi03Ljc3LDEuMjYtMTEuODksMC03LjM0LTEuNzctMTMuOC01LjI2LTE5LjItMy43Ni01LjgxLTkuNC04Ljg5LTE2LjI5LTguODktNy42OCwwLTE1LjQ0LDMuNzQtMjMuMDUsMTEuMTItMy42MywzLjUyLTcuMjIsNy41OC0xMC43MywxMi4xNSwxLjA0LTUuMTMsMS43NS05LjQxLDEuNzUtMTIsMC0zLjI4LS45My01Ljk3LTIuNzgtOC4wMi0xLjM1LTEuNDgtMy44Ny0zLjI1LTguMTgtMy4yNS0yLjY4LDAtNS40MS44NS04LjExLDIuNTItMi41MywxLjU3LTQuNDIsMy4zNS01LjgyLDUuMywwLDAtNC41MSwyNy40LTYuNSwzNC4zMy0yLDYuOTMtNy4xOSwxNC4wMi0xMS4xNCwxOS44MS00LjcxLDYuODktOS4yMSwxMC42OC0xMi42MywxMC42OC0uMiwwLS41MSwwLTEtLjYxLS4yNC0uMjktLjgtMS4yNi0uOC0zLjg4LDAtMy40LDEuMTgtOC43MywzLjQ5LTE1Ljc4LDEuNjItNC41NSwyLjg1LTguNzIsMy42Ny0xMi4zOS44NC0zLjc3LDEuMjYtNy43NywxLjI2LTExLjg5LDAtNy4zNC0xLjc3LTEzLjgtNS4yNi0xOS4yLTMuNzYtNS44MS05LjQtOC44OS0xNi4yOS04Ljg5LTcuNjgsMC0xNS40NCwzLjc0LTIzLjA1LDExLjEyLTMuNjMsMy41Mi03LjIyLDcuNTgtMTAuNzMsMTIuMTUsMS4wNC01LjEzLDEuNzUtOS40MSwxLjc1LTEyLDAtMy4yOC0uOTMtNS45Ny0yLjc4LTguMDItMS4zNS0xLjQ4LTMuODctMy4yNS04LjE4LTMuMjUtMi42OCwwLTUuNDEuODUtOC4xMSwyLjUyLTIuNTMsMS41Ny03LjQsNi4xMy03LjQsNi4xMywwLDAtLjgyLDE0LjQ0LTMuMTgsMjQuNDQsMCwwLTEuNjMsMS4xMS0zLjE3LDEuNjMtMS42NC41Ni0zLjI1LjE2LTMuMjUuMTYuNDgtMS4zOSwxLjAyLTIuOTUsMS4zNi00LjE3LDIuODMtMTAuMjEsMi0xOC45MS0yLjM1LTI0LjQ5LTMuNjItNC42NC05LjM5LTcuMTEtMTcuMTctNy4zMy02LjE0LS4xNi0xMS4xNiwxLjU3LTE0Ljg5LDUuMTgtNC4wOSwzLjk3LTUuNjQsOS4zNC02LjIyLDEzLjE5LTQuMDktMS4zMy0xMC4xMy0yLjY0LTE1LjItMS4wNS0xNC40OCw0LjU1LTIwLjc4LDIxLjY5LTI0LjIxLDM1LjIxLTEuMTYsMS41Mi0yLjM5LDIuOTgtMy42OSw0LjM3LTUuMDIsNS40MS0xMC40OCw5LjYzLTE2LjIyLDEyLjUzLTUuNjEsMi44NC0xMSw0LjI5LTE2LjAyLDQuMjktNC42LDAtNy43OC0xLjA5LTkuNDYtMy4yNS0xLjkzLTIuNDgtMi44Ny01LjU1LTIuODctOS4zOSwwLTUuNzIsMS43Ni0xMi4yNCw1LjIyLTE5LjQsMy41MS03LjI1LDcuOTEtMTMuNTEsMTMuMDktMTguNiw0Ljc3LTQuNjksOS4xLTcuMDcsMTIuODUtNy4wNy40LDAsLjY1LjA0Ljc5LjA3LDAsLjA3LjAyLjE2LjAyLjI4LDAsMy4yOC0uNjIsNi4xNS0xLjg2LDguNTEtMS4xOSwyLjI3LTIuNDcsMy44OC0zLjcyLDQuNjhsLTIuNzcsMS43NiwxLjc3LDIuNjljMy4wMiw0LjU4LDYuOTcsNS41NCw5Ljc0LDUuNTQsMy4wMiwwLDcuMzYtMS4yMiwxMC44Mi03LjA1LDIuNDMtNC4wOSwzLjY2LTguNTgsMy42Ni0xMy4zNywwLTUuMDktMS43OC05LjQyLTUuMjktMTIuODctMy41My0zLjQ2LTguNzktNS4yMi0xNS42Mi01LjIyLTguNTMsMC0xNy4wMywyLjkyLTI1LjI3LDguNjgtOC4wNiw1LjY0LTE0LjcsMTMuMDctMTkuNzIsMjIuMDgtNS4wNCw5LjA1LTYuOSwxOC40OC02LjksMjguMDIsMCwxMC4wMSwzLjQ3LDE3LjgsOC44NiwyMy4xNGgwYzYuNDgsNS4zNywxMi4wMSw4LjA5LDIwLjksOC4wOSw3LjkxLDAsMTUuNjktMi4wOSwyMy44NC02LjIsNS45OC0zLjAzLDExLjQzLTYuOTQsMTYuNjEtMTEuNjUsMS43Nyw4LjksNy4wOCwxNS4xMSwxNS40NSwxNy4wNywxLjguNDIsMy42Ni42Miw1LjY0LjYyLDEzLjYxLDAsMzAuNjEtOS42MSw0MC40MS0yMy41NSwyLjMxLTMuMjksOS4xLTEzLjk5LDEyLTE4LjU3LDEuNDQuMjcsMy4zOC41MSw1LjguNTEsMS4yOSwwLDIuNDUtLjA3LDMuNTQtLjE2LTEuOTQsNi43OS00LjIxLDE0LjE0LTYuODIsMjEuOTRsLTIuMzMsOC4wMS43MywxLjI2YzMuNzYsNi4xMiw5LjYzLDkuNDIsMTYuOTgsOS40MmgyLjE2bC45Mi0xLjk0YzguODItMTcuOTUsMTcuMTktMzMsMjQuODYtNDQuNjksNy4wOC0xMC43NywxMy44OS0xNi4yNSwyMC4yNC0xNi4yNSwxLjE0LDAsMS45Ni4zOSwyLjc2LDEuMzMuNjQuNzUsMS40LDIuMzcsMS40LDUuODIsMCwzLjY1LS45OSw5LjUtMi45NCwxNy40NC0uNzMsMy4wNS0xLjQyLDYuMS0yLjA3LDkuMTUtLjY5LDMuMjMtMS4wNCw2LjE1LTEuMDQsOC42NiwwLDYuMywxLjgsMTEuNSw1LjM1LDE1LjQ3LDMuNjksNC4xMiw4Ljg1LDYuMjEsMTUuMzMsNi4yMSw3LjE5LDAsMTMuNzQtMi44OSwxOS41Ni04LjY2LDMuNzUsNC44NCw5LjA5LDcuNDYsMTUuNjEsNy40NmgyLjE2bC45Mi0xLjk0YzguODItMTcuOTUsMTcuMTktMzMsMjQuODYtNDQuNjksNy4wOC0xMC43NywxMy44OC0xNi4yNSwyMC4yMy0xNi4yNSwxLjE0LDAsMS45Ni4zOSwyLjc2LDEuMzMuNjQuNzUsMS40LDIuMzcsMS40LDUuODIsMCwzLjY1LS45OSw5LjUtMi45NCwxNy40NC0uNzMsMy4wNS0xLjQyLDYuMS0yLjA3LDkuMTUtLjY5LDMuMjMtMS4wNCw2LjE1LTEuMDQsOC42NiwwLDYuMywxLjgsMTEuNSw1LjM1LDE1LjQ3LDMuNjksNC4xMiw4Ljg1LDYuMjEsMTUuMzMsNi4yMSw5LjIsMCwxNy4zNy00Ljc4LDI0LjI4LTE0LjIuMzItLjQ0LjY0LS45Mi45Ni0xLjM4LDEuNDEsMi44NCwzLjMxLDUuNDIsNS43Niw3LjcsNS42OCw1LjI3LDEzLjYsNy45NSwyMy41NCw3Ljk1LDEyLjIsMCwyNC4xMi00LjA0LDM1LjQtMTIsMy4zNi0yLjM3LDYuNzktNS4wMiw5LjctNy44NiwxLjMzLDQuNzQsMy43OSw4LjcxLDcuMDIsMTEuODNoMGM1LjQsNS4zNywxMi40LDguMDksMjEuMjksOC4wOSw3LjkxLDAsMTUuODktMi4wOSwyNC4wMy02LjIsNy41MS0zLjgsMTQuMzYtOSwyMC41Ny0xNS40My40Niw2LjY5LDIuNiwxMS45OCw2LjQ1LDE1Ljc0LDQuMzksNC4yOCwxMC40Miw2LjQ1LDE3Ljk2LDYuNDUsOS4zNCwwLDE4LjQ0LTMuMjEsMjcuMTMtOS41Mi0uOTQtMS44OS0xLjg4LTQuNDUtMi4zOC03LjcyTTUxMy4yLDQ4MC4xYzMuOTYtNS40OSw4LjM1LTEwLjE4LDEzLjA0LTEzLjc2LDQuMzMtMy4zLDguMjMtNS4wMiwxMS42LTUuMDIuMDksMCwuMTctLjAyLjI0LS4wMi4wMi4xNy4wMy4zNy4wMy42NiwwLDQtMS45OCw4LjYzLTUuODksMTMuMDMtNC4xOCw0LjcxLTkuMzYsOC4wMy0xNS4zOSwxMi4zNGgwYy0zLjYzLDEuMDgtNy4wNiwzLjA0LTEwLjI0LDQsMS43NC0zLjY4LDMuOTUtNy41Nyw2LjYtMTEuMjRNMjIwLjY5LDUxNy4xOGMtMS4yOC0uNTItMi4xNy0xLjUyLTIuNzItMy4wNi0xLjcxLTQuNzYuMjctMTMuNTgsNC44Mi0yMS40Myw0LjI1LTcuMzQsMTAuNDgtMTMuNzQsMTQuNDQtMTcuNDEsMS4yNywyLjM0LDMuNDMsNS4xMiw3LjExLDcuODQsMy45LDIuODcsNy4xNiw0LjY1LDkuNTIsNS43My02Ljk1LDExLjI2LTIyLjc3LDMyLjU2LTMzLjE3LDI4LjMzTTI2MC4zMyw0NzUuNzdjLTEuNTQtLjkxLTMuNTQtMi40Mi01LjM2LTQuODEtMi4wNi0yLjY5LTIuOTctNS44Ni0yLjMzLTguMDguMzQtMS4xOCwxLjA5LTIsMi4zLTIuNDkuNjgtLjI4LDEuMzUtLjQxLDEuOTktLjQxLjc4LDAsMS41Mi4yLDIuMTkuNjEsMS43MywxLjA0LDIuODQsMy4yMywyLjk4LDUuODguMiwzLjgzLS44MSw3LjA3LTEuNzcsOS4zMSI+PC9wYXRoPgo8L3N2Zz4K');background-repeat:no-repeat;background-size:223px 223px;background-position:-22px -87px;border-radius:8px;flex-shrink:0}
+.top-bar h1{font-size:19px;font-weight:900}
 .top-bar .sub{font-size:12px;opacity:.85}
-.top-bar .nav{margin-left:auto;display:flex;gap:8px}
-.top-bar .nav a{color:#fff;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;background:rgba(255,255,255,.15);transition:.3s}
+.top-bar .nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.top-bar .nav a{color:#fff;text-decoration:none;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,.15);transition:.3s}
 .top-bar .nav a:hover{background:rgba(255,255,255,.3)}
 
-.wrap{max-width:1400px;margin:0 auto;padding:36px 24px 80px}
+.wrap{max-width:1400px;margin:0 auto;padding:30px 24px 80px}
 
-.panel{background:#fff;border-radius:16px;padding:30px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:24px}
-.panel h2{font-size:22px;font-weight:900;color:var(--sapphire);margin-bottom:8px}
-.panel p{font-size:15px;color:var(--text-light);margin-bottom:16px}
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.tab{background:#fff;border:2px solid #e0e0e0;border-radius:50px;padding:10px 22px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;color:var(--text-medium)}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tab:hover:not(.active){border-color:var(--primary)}
+.tab i{margin-right:6px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-.import-area{display:grid;grid-template-columns:1fr;gap:16px}
-textarea{width:100%;min-height:160px;padding:16px;border:2px dashed #ccc;border-radius:12px;font-family:'Consolas',monospace;font-size:13px;resize:vertical;transition:.3s}
+/* PANELS & BUTTONS */
+.panel{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:22px}
+.panel h2{font-size:20px;font-weight:900;color:var(--sapphire);margin-bottom:8px}
+.panel p{font-size:14px;color:var(--text-light);margin-bottom:16px}
+textarea{width:100%;min-height:140px;padding:14px;border:2px dashed #ccc;border-radius:12px;font-family:'Consolas',monospace;font-size:13px;resize:vertical}
 textarea:focus{outline:none;border-color:var(--primary);background:#f0fbfb}
-.btn{background:var(--primary);color:#fff;border:none;border-radius:50px;padding:12px 28px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;display:inline-flex;align-items:center;gap:8px}
+input[type=text],input[type=email],select{width:100%;padding:10px 14px;border:2px solid #e0e0e0;border-radius:10px;font-family:inherit;font-size:14px}
+input:focus,select:focus{outline:none;border-color:var(--primary)}
+.btn{background:var(--primary);color:#fff;border:none;border-radius:50px;padding:11px 24px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;gap:8px}
 .btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn.secondary{background:var(--sapphire)}
+.btn.accent{background:var(--accent)}
+.btn.violet{background:var(--violet)}
 .btn.ghost{background:#f0f0f0;color:var(--text-dark)}
 .btn.danger{background:var(--danger)}
+.btn.small{padding:7px 14px;font-size:13px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:24px}
-.stat{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06);text-align:center;border-top:5px solid var(--primary)}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:22px}
+.stat{background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,.06);text-align:center;border-top:4px solid var(--primary)}
 .stat:nth-child(2){border-top-color:var(--accent)}
 .stat:nth-child(3){border-top-color:var(--violet)}
 .stat:nth-child(4){border-top-color:var(--sapphire)}
-.stat .val{font-size:40px;font-weight:900;color:var(--sapphire);line-height:1}
-.stat .lbl{font-size:13px;color:var(--text-light);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-top:8px}
+.stat .val{font-size:34px;font-weight:900;color:var(--sapphire);line-height:1}
+.stat .lbl{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-top:6px}
 
-.filters{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.filter{padding:8px 18px;border-radius:20px;background:#fff;border:2px solid #e0e0e0;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
-.filter.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.filter:hover:not(.active){border-color:var(--primary)}
-
-table{width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);border-collapse:collapse;font-size:14px}
+/* TABLE */
+table{width:100%;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);border-collapse:collapse;font-size:13px}
 thead{background:var(--sapphire);color:#fff}
-th{padding:14px 16px;text-align:left;font-weight:700;font-size:13px;letter-spacing:.5px;text-transform:uppercase}
-td{padding:14px 16px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+th{padding:12px;text-align:left;font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase}
+td{padding:12px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafafa}
-
-.badge{display:inline-block;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;text-transform:uppercase}
 .badge.expert{background:rgba(9,100,117,.15);color:var(--success)}
 .badge.maitrise{background:rgba(0,175,169,.15);color:var(--primary)}
 .badge.consolidation{background:rgba(255,169,0,.2);color:#a06000}
 .badge.renforcer{background:rgba(198,40,40,.15);color:var(--danger)}
-
+.badge.debutant{background:rgba(198,40,40,.15);color:var(--danger)}
+.badge.intermediaire{background:rgba(255,169,0,.2);color:#a06000}
+.badge.avance{background:rgba(0,175,169,.15);color:var(--primary)}
 .mini-bar{width:60px;height:6px;background:#eee;border-radius:6px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
 .mini-bar div{height:100%;border-radius:6px}
 
-.axes-cell{font-size:12px;color:var(--text-light);line-height:1.5;max-width:280px}
-
-.aggregate{margin-top:30px}
-.aggregate h3{font-size:18px;font-weight:900;color:var(--sapphire);margin-bottom:14px}
-.agg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.agg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
 .agg-item{background:#fff;border-radius:12px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
-.agg-item h4{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
-.agg-item .cnt{font-size:28px;font-weight:900;color:var(--sapphire)}
-.agg-item .list{font-size:13px;color:var(--text-medium);margin-top:8px;line-height:1.7}
+.agg-item h4{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.agg-item .cnt{font-size:24px;font-weight:900;color:var(--sapphire)}
+.empty{text-align:center;padding:50px 20px;color:var(--text-light)}
+.empty i{font-size:50px;color:#ddd;display:block;margin-bottom:12px}
 
-.empty{text-align:center;padding:60px 20px;color:var(--text-light)}
-.empty i{font-size:60px;color:#ddd;margin-bottom:16px;display:block}
+/* VUE APPRENANT (copiée du pré-quiz) */
+.vue-apprenant{background:#fff;border-radius:16px;padding:38px 42px;box-shadow:0 8px 30px rgba(0,0,0,.08);max-width:900px;margin:0 auto}
+.vue-apprenant h2{font-size:26px;font-weight:900;color:var(--sapphire);margin-bottom:8px;text-align:center}
+.vue-apprenant .verdict{text-align:center;font-size:19px;font-weight:700;margin-bottom:22px}
+.vue-apprenant .verdict.debutant{color:var(--danger)}
+.vue-apprenant .verdict.intermediaire{color:var(--accent)}
+.vue-apprenant .verdict.avance{color:var(--primary)}
+.vue-apprenant .verdict.expert{color:var(--success)}
+.score-big{text-align:center;font-size:68px;font-weight:900;color:var(--sapphire);line-height:1;margin-bottom:6px}
+.score-big small{font-size:22px;color:var(--text-light);font-weight:500}
+.domains{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:24px 0}
+.domain{background:#f9f9f9;border-radius:14px;padding:16px;text-align:center}
+.domain h4{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px}
+.domain .bar{height:8px;background:#e5e5e5;border-radius:8px;overflow:hidden;margin:6px 0}
+.domain .bar-fill{height:100%;border-radius:8px}
+.domain .val{font-size:20px;font-weight:900}
+.axes{background:linear-gradient(135deg,#e3f2fd,#fff);border-radius:16px;padding:24px;margin-top:18px;border-left:5px solid var(--sapphire)}
+.axes h3{font-size:17px;font-weight:900;color:var(--sapphire);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.axes ul{list-style:none}
+.axes li{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:15px;color:var(--text-medium);align-items:flex-start}
+.axes li:last-child{border-bottom:none}
+.axes li i{color:var(--sapphire);font-size:16px;margin-top:3px}
 
-.demo-hint{background:linear-gradient(135deg,#fff8e1,#fff);border-left:5px solid var(--accent);border-radius:12px;padding:16px 20px;margin-top:12px;font-size:14px;color:var(--text-medium)}
-.demo-hint strong{color:var(--accent)}
-
-@media(max-width:768px){
-  table{font-size:12px}
-  th,td{padding:10px 8px}
-  .axes-cell{max-width:140px;font-size:11px}
+/* IMPRESSION */
+@media print{
+  .top-bar,.tabs,.btn,.no-print{display:none!important}
+  body{background:#fff}
+  .wrap{padding:0}
+  .vue-apprenant{box-shadow:none;padding:20px;max-width:100%}
+  .panel{box-shadow:none}
+}
+@media(max-width:640px){
+  .wrap{padding:20px 14px}
+  .vue-apprenant{padding:24px 20px}
+  .score-big{font-size:48px}
+  table{font-size:11px}
+  th,td{padding:8px}
 }
 </style>
 </head>
 <body>
 
 <div class="top-bar">
-  <svg viewBox="96 369.65 808 200.67"><use href="#logo-connecteo-cursive"></use></svg>
+  <div class="logo"></div>
   <div>
     <h1>Lecteur de résultats</h1>
-    <div class="sub">Import et analyse des résultats de quiz</div>
+    <div class="sub">Compilation multi-sources · Connecteo 2026</div>
   </div>
   <div class="nav">
     <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
@@ -103,257 +141,500 @@ tr:hover td{background:#fafafa}
 
 <div class="wrap">
 
-<!-- IMPORT -->
-<div class="panel" id="import-panel">
-  <h2><i class="fas fa-file-import"></i> Importer les résultats</h2>
-  <p>Collez ci-dessous un export JSON de vos réponses (une soumission ou un tableau). Le format est produit par le quiz et peut être récupéré depuis Web3Forms, un CSV, ou un Google Sheet.</p>
-  <div class="import-area">
-    <textarea id="import-json" placeholder='Collez ici vos données JSON. Exemple :
+  <div class="tabs">
+    <button class="tab active" data-tab="import"><i class="fas fa-file-import"></i> Import</button>
+    <button class="tab" data-tab="dashboard"><i class="fas fa-chart-bar"></i> Tableau de bord</button>
+    <button class="tab" data-tab="vue"><i class="fas fa-user-graduate"></i> Vue apprenant</button>
+    <button class="tab" data-tab="progression"><i class="fas fa-arrow-trend-up"></i> Progression</button>
+  </div>
 
+  <!-- ================= IMPORT ================= -->
+  <div class="tab-panel active" id="tab-import">
+    <div class="panel">
+      <h2><i class="fas fa-file-import"></i> Importer des données</h2>
+      <p>Collez le JSON d'une source (Diagnostic, Pré-quiz ou Quiz final). Les données sont <strong>fusionnées par Nom + Email</strong> — un même apprenant peut ainsi recevoir ses données de plusieurs sources.</p>
+      <textarea id="import-json" placeholder='Collez votre JSON ici (tableau ou objet unique)…
+
+Exemple :
 [
   {
     "name": "Rakoto Andrianina",
-    "email": "rakoto@exemple.com",
-    "score_total": 48,
-    "score_max": 60,
-    "score_pct": 80,
-    "verdict": "Maîtrise",
-    "score_j1": "12/15",
-    "score_j2": "13/15",
-    "score_j3": "11/15",
-    "score_j4": "12/15",
-    "axes_amelioration": "Développer la conscience du ton | Éviter le réflexe d''accusation",
-    "date": "15/06/2026 14:23"
+    "email": "rakoto@ex.com",
+    "pre_score_pct": 62,
+    "pre_score_j1": "5/9",
+    "pre_score_j2": "6/9",
+    "pre_score_j3": "5/9",
+    "pre_score_j4": "5/9",
+    "pre_axes": "Élargir la vision au-delà de la réclamation | Approfondir la distinction satisfaction/fidélité"
   }
 ]'></textarea>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn" onclick="loadData()"><i class="fas fa-upload"></i> Analyser</button>
-      <button class="btn ghost" onclick="loadDemo()"><i class="fas fa-vial"></i> Charger un exemple</button>
-      <button class="btn ghost" onclick="clearAll()"><i class="fas fa-trash"></i> Effacer</button>
+      <div class="row">
+        <button class="btn" onclick="handleAdd()"><i class="fas fa-plus"></i> Ajouter / Fusionner</button>
+        <button class="btn secondary" onclick="handleReplace()"><i class="fas fa-sync"></i> Remplacer tout</button>
+        <button class="btn ghost" onclick="loadDemo()"><i class="fas fa-vial"></i> Exemple</button>
+        <button class="btn danger" onclick="handleClear()"><i class="fas fa-trash"></i> Vider</button>
+      </div>
+      <div class="row" style="margin-top:16px;padding-top:16px;border-top:1px solid #eee">
+        <button class="btn accent" onclick="exportCompilation()"><i class="fas fa-download"></i> Exporter la compilation</button>
+        <button class="btn accent" onclick="document.getElementById('file-import').click()"><i class="fas fa-upload"></i> Importer une compilation</button>
+        <input type="file" id="file-import" accept=".json" style="display:none" onchange="importCompilationFile(event)">
+      </div>
+      <div id="import-feedback" style="margin-top:14px;font-size:14px;color:var(--text-medium)"></div>
     </div>
   </div>
-  <div class="demo-hint" id="import-hint" style="display:none"></div>
-</div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" style="display:none">
-
-  <div class="stats" id="stats"></div>
-
-  <div class="panel">
-    <h2><i class="fas fa-users"></i> Résultats individuels</h2>
-    <div class="filters" id="filters">
-      <button class="filter active" data-f="all">Tous</button>
-      <button class="filter" data-f="expert">Expert</button>
-      <button class="filter" data-f="maitrise">Maîtrise</button>
-      <button class="filter" data-f="consolidation">En consolidation</button>
-      <button class="filter" data-f="renforcer">À renforcer</button>
+  <!-- ================= DASHBOARD ================= -->
+  <div class="tab-panel" id="tab-dashboard">
+    <div id="dashboard-content">
+      <div class="empty"><i class="fas fa-chart-bar"></i><p>Aucune donnée. Importez un JSON depuis l'onglet Import.</p></div>
     </div>
-    <table id="table">
-      <thead>
-        <tr>
-          <th>Apprenant</th>
-          <th>Score</th>
-          <th>Verdict</th>
-          <th>J1</th>
-          <th>J2</th>
-          <th>J3</th>
-          <th>J4</th>
-          <th>Axes d'amélioration</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
   </div>
 
-  <div class="aggregate">
-    <h3><i class="fas fa-chart-bar"></i> Analyse collective</h3>
-    <div class="agg-grid" id="aggregate"></div>
+  <!-- ================= VUE APPRENANT ================= -->
+  <div class="tab-panel" id="tab-vue">
+    <div class="panel no-print">
+      <h2><i class="fas fa-user-graduate"></i> Vue apprenant</h2>
+      <p>Sélectionnez un apprenant pour voir son profil complet (identique à ce qu'il a vu).</p>
+      <select id="select-learner" onchange="renderVueApprenant()">
+        <option value="">— Sélectionnez un apprenant —</option>
+      </select>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" onclick="window.print()"><i class="fas fa-print"></i> Imprimer / PDF</button>
+      </div>
+    </div>
+    <div id="vue-render">
+      <div class="empty"><i class="fas fa-user-graduate"></i><p>Sélectionnez un apprenant dans la liste ci-dessus.</p></div>
+    </div>
   </div>
 
-  <div class="panel" style="margin-top:24px">
-    <h2><i class="fas fa-lightbulb"></i> Recommandations de renforcement</h2>
-    <p>Axes collectifs à travailler en priorité lors des prochaines sessions.</p>
-    <div id="recommendations"></div>
+  <!-- ================= PROGRESSION ================= -->
+  <div class="tab-panel" id="tab-progression">
+    <div class="panel">
+      <h2><i class="fas fa-arrow-trend-up"></i> Progression</h2>
+      <p>Le tableau comparatif Pré-quiz → Quiz final apparaîtra ici dès que le quiz final sera branché sur Apps Script.</p>
+      <div id="progression-content">
+        <div class="empty"><i class="fas fa-arrow-trend-up"></i><p>Fonctionnalité à venir — en attente du branchement du quiz final.</p></div>
+      </div>
+    </div>
   </div>
 
 </div>
-
-</div>
-
-<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-  <symbol id="logo-connecteo-cursive" viewBox="96 369.65 808 200.67">
-    <defs><style>.lcc-1{fill:#fff}.lcc-3{fill:#878587}.lcc-4{fill:#cce1e1}.lcc-5{fill:#00aea9}.lcc-6{clip-path:url(#lcc-clip)}</style><clipPath id="lcc-clip"><polyline points="118.25 555.34 888.98 555.34 888.98 390.35 118.25 390.35 118.25 555.34"/></clipPath></defs>
-    <g class="lcc-6"><path class="lcc-4" d="M328.26,509.27c.04-.06.07-.12.11-.18-.04.17-.07.17-.11.18M430.4,509.27c.04-.06.07-.12.11-.18-.04.17-.07.17-.11.18M168.52,511.85c0-3.81,1.39-8.68,4-14.08.27-.56.55-1.12.84-1.67,3.68,3.53,8.25,5.8,13.26,6.56-2.95,2.67-6.01,4.82-9.14,6.4-3.26,1.65-6.33,2.61-8.96,2.78M597.82,511.85c0-3.81,1.39-8.68,4.01-14.08.27-.56.55-1.12.83-1.67,3.67,3.52,8.23,5.78,13.22,6.56-2.96,2.68-6.01,4.83-9.13,6.41-3.3,1.68-6.3,2.61-8.93,2.78M671.95,511.33c.26-4.91,1.63-12.62,5.98-24.12,3.69-.13,7.58-.32,11.64-.57-2.4,4.92-4.16,9.78-5.29,14.55-1.97,2.28-3.99,4.29-6.04,5.99-2.2,1.82-4.32,3.23-6.28,4.16M692.66,390.35h-.84c-13.99.25-24.24,12.99-31.63,24.1-6.09,9.16-11.92,19.77-17.39,31.63l-8.02-.87c-4.57-3.18-11.45-6.03-21.43-6.03-11.39,0-22.52,3.74-33.06,11.11-2.14,1.49-4.18,3.09-6.15,4.78-2.25-4.64-5.48-7.78-8.39-9.84-5.93-4.18-13.03-6.31-21.09-6.31-12.12,0-24.18,4.22-35.85,12.56-8.47,6.04-15.84,13.41-21.92,21.9-.86-7.1-3.16-13.56-6.85-19.28-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-3.88,2.4-7.09,5.35-9.54,8.75l-1.69,2.36-.47,2.83c-.21,1.27-.44,2.64-.69,4.1-1.06-2.7-2.39-5.28-3.97-7.73-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-1.21.75-2.58,1.77-3.91,2.85-4.77-4.24-12.25-8.15-23.71-8.48-.32,0-.64-.01-.95-.01-9.45,0-17.61,3.04-23.71,8.95-2.28,2.22-4.22,4.79-5.78,7.68-.31,0-.62-.01-.93-.01-3.09,0-6.29.36-9.43,1.35-2.65.83-5.09,1.92-7.34,3.21-1.51-4.13-3.93-7.88-7.22-11.11-4.2-4.11-11.96-9.02-25.06-9.02-11.39,0-22.51,3.74-33.06,11.11-9.68,6.77-17.62,15.63-23.58,26.34-6.07,10.9-9.15,22.33-9.15,33.96,0,13.4,4,24.15,11.89,31.94,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,2.02-1.03,4.01-2.13,5.96-3.32,4.38,4.84,10.17,8.24,17.05,9.85,2.79.66,5.76.99,8.82.99,13.84,0,29.38-6.93,41.33-17.8l.66,3.63c6.16,10.03,14.07,15.16,25.8,15.21h13.32l4.41-9.04c6.86-13.93,13.3-27.07,19.23-36.87,0,0,0,.01,0,.02-.87,4.07-1.31,7.53-1.31,10.89,0,9.26,2.95,17.3,8.53,23.53,6.22,6.95,14.99,10.55,25.36,10.55,6.77,0,8.99-1.6,14.85-4.77,4.77,2.63,14.11,5.65,19.96,5.69h11.15l4.39-9.05c6.86-13.93,13.3-27.07,19.23-36.87,0,0,0,.01,0,.02-.87,4.07-1.31,7.53-1.31,10.89,0,9.26,2.95,17.3,8.53,23.53,6.22,6.95,14.99,10.55,25.36,10.55,6.83,0,15.91-1.81,24.9-8.89,7.82,5.92,17.77,8.9,29.65,8.9,14.26,0,28.03-4.36,40.98-12.94.34.36.68.71,1.03,1.05,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,3-1.52,5.92-3.22,8.75-5.11.86,1.08,1.79,2.12,2.79,3.1,6.87,6.69,16.35,10.23,27.4,10.23,12.44,0,24.34-4.14,35.46-12.32l.1.09c8.22,7.64,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.22-17.41l6.99-43.29-22.21,14.88c-1.1-3.34,3.35-15.84-13.8-24.64-5.61-2.88-11.4-4-16.88-4-11.29,0-21.24,4.78-25.48,8.89-2.28,2.22-4.22,4.8-5.79,7.68-.36-.01-.72-.02-1.09-.02-3.04,0-6.19.38-9.27,1.35-2.79.87-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.55-6.31-21.62-6.31-9.76,0-18.74,2.74-29.53,8.17v-2.39s-7.11.86-14.52,1.52c-7.41.66-12.06,1.01-12.06,1.01.22-.36.58-.72.8-1.08,4.83-7.95,8.28-13.71,10.41-17.63,3.34-6.16,4.92-11.31,4.92-16.2,0-6.15-2.49-11.79-7.05-15.92-4.17-3.75-9.53-5.85-15.15-5.95"/></g>
-    <path class="lcc-1" d="M859.54,461.16c-1.1-3.34,3.35-15.84-13.8-24.64-17.16-8.8-36.07-1.22-42.37,4.89-2.28,2.22-4.22,4.8-5.79,7.68-3.37-.1-6.91.25-10.36,1.33-2.79.87-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.71-6.31-21.78-6.31-9.76,0-19.98,2.74-29.69,8.17v-2.39s-6.95.86-14.36,1.52c-7.41.66-11.98,1.01-11.98,1.01.22-.36.62-.72.84-1.08,4.83-7.95,8.3-13.71,10.43-17.63,3.34-6.16,4.94-11.31,4.94-16.2,0-6.15-2.48-11.79-7.05-15.92-4.28-3.84-9.8-5.96-15.57-5.96-14.21,0-24.59,12.88-32.05,24.1-6.09,9.16-11.92,19.77-17.39,31.63l-8.02-.87c-4.57-3.18-11.45-6.03-21.43-6.03-11.39,0-22.52,3.74-33.06,11.11-2.14,1.49-4.18,3.09-6.15,4.78-2.25-4.64-5.48-7.78-8.39-9.84-5.93-4.18-13.03-6.31-21.09-6.31-12.12,0-24.18,4.22-35.85,12.56-8.47,6.04-15.84,13.41-21.92,21.9-.86-7.1-3.16-13.56-6.85-19.28-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-3.88,2.4-7.09,5.35-9.54,8.75l-1.69,2.36-.47,2.83c-.21,1.27-.44,2.64-.69,4.1-1.06-2.7-2.39-5.28-3.97-7.73-6.21-9.59-15.98-14.87-27.51-14.87-8.39,0-16.55,2.74-24.36,8.16-.17-.2-.34-.39-.51-.59-4.45-4.89-10.89-7.58-18.13-7.58-5.27,0-10.41,1.53-15.28,4.55-1.21.75-2.58,1.77-3.91,2.85-4.78-4.24-12.25-8.15-23.71-8.48-9.85-.21-18.36,2.83-24.66,8.94-2.28,2.22-4.22,4.79-5.78,7.68-3.38-.08-6.91.25-10.36,1.34-2.65.83-5.09,1.92-7.34,3.21-1.51-4.13-3.93-7.88-7.22-11.11-4.2-4.12-11.96-9.02-25.06-9.02-11.39,0-22.51,3.74-33.06,11.11-9.68,6.77-17.61,15.63-23.58,26.34-6.07,10.9-9.15,22.33-9.15,33.96,0,13.41,4,24.15,11.89,31.94,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,2.02-1.03,4.01-2.13,5.96-3.32,4.38,4.84,10.17,8.24,17.05,9.85,2.79.66,5.76.99,8.82.99,13.84,0,29.38-6.93,41.33-17.8l.66,1.16c6.19,10.09,16.53,15.81,28.36,15.81h11.03l4.14-9.65c6.94-14.09,13.45-26.13,19.43-35.97-.07.32-.14.65-.21.97-.87,4.07-1.31,7.84-1.31,11.2,0,9.26,2.95,17.45,8.53,23.68,6.22,6.95,14.99,10.63,25.36,10.63,6.77,0,13.21-1.7,19.06-4.87,4.8,2.65,10.27,4,16.1,4h11.03l4.14-9.65c6.94-14.09,13.45-26.13,19.43-35.96-.07.32-.14.65-.21.97-.87,4.07-1.31,7.84-1.31,11.2,0,9.26,2.95,17.45,8.53,23.68,6.22,6.95,14.99,10.63,25.36,10.63,6.83,0,15.91-1.77,24.9-8.86,7.82,5.92,17.77,8.92,29.65,8.92,14.26,0,28.03-4.35,40.98-12.93.34.36.68.71,1.03,1.06,7.91,7.8,18.66,11.92,31.08,11.92,10.08,0,20.29-2.58,30.37-7.67,3-1.52,5.92-3.22,8.75-5.11.86,1.09,1.79,2.12,2.79,3.1,6.87,6.69,16.35,10.23,27.4,10.23,12.44,0,24.34-4.14,35.46-12.32.03.03.07.06.1.09,8.22,7.64,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.23-17.41l6.99-43.29-22.21,14.88ZM590.58,506.16c0-3.81,1.39-8.68,4.01-14.09.27-.56.55-1.12.83-1.67,3.67,3.52,8.23,5.78,13.22,6.56-2.96,2.68-6.01,4.83-9.13,6.41-3.3,1.68-6.3,2.61-8.93,2.78M677.04,495.5c-1.97,2.28-3.99,4.29-6.04,5.99-2.2,1.82-4.32,3.23-6.28,4.16.26-4.91,1.63-12.62,5.98-24.12,3.69-.13,7.58-.32,11.64-.57-2.4,4.92-4.16,9.78-5.29,14.55M161.29,506.16c0-3.81,1.39-8.68,4-14.08.27-.56.55-1.12.84-1.67,3.68,3.53,8.25,5.8,13.26,6.56-2.95,2.67-6.01,4.82-9.14,6.4-3.26,1.65-6.33,2.61-8.96,2.78"/>
-    <path class="lcc-3" d="M845.74,436.52c-17.16-8.8-36.07-1.22-42.37,4.89-2.28,2.22-4.22,4.8-5.79,7.68-3.37-.1-6.91.25-10.36,1.33-2.79.88-5.41,2.03-7.88,3.48-2.02-7.28-6.34-11.78-10.13-14.46-5.93-4.18-13.7-6.31-21.77-6.31-1.75,0-3.53.12-5.32.29l-11.08.74s-32.34,4.43-48.71,46.91c-15.57,40.38,3.72,54.65,5.66,55.96.02-.02.04-.03.07-.05.03.03-7.03-5.5.1.09,7.13,5.59,19.24,11.52,32.74,11.52s26.89-3.99,39.37-11.88c4.48,5.39,10.59,9.19,17.89,10.9,2.79.66,5.76.99,8.82.99,18.19,0,39.32-11.98,51.38-29.13,1.63-2.32,5.13-7.74,8.17-12.51,23.03-.52,27.56-14.6,28.23-17.41l6.99-43.29-22.2,14.88c-1.1-3.34,3.35-15.84-13.8-24.64"/>
-    <path class="lcc-5" d="M677.37,519.44c-.34-2.26-.56-4.32-.71-6.11-5.84,4.18-11.52,6.31-16.93,6.31-2.94,0-4.95-.73-6.16-2.24-.96-1.2-2.11-3.91-2.11-10.01,0-9.85,3.4-22.72,10.1-38.3,11.57-.1,26.94-1.16,26.94-1.16,0,0,.4-1.06,4.59-7.23,3.71-4.83,5.94-7.39,5.94-7.39,0,0-16.24,1.3-30.04,1.4,3.25-5.88,7.24-12.82,12.15-20.72,4.59-7.54,7.9-13.29,9.96-17.09,2.29-4.23,3.38-7.63,3.38-10.38s-1.02-4.99-2.92-6.71c-1.85-1.66-4.12-2.54-6.55-2.54-5.99,0-12.64,5.8-20.91,18.25-7.13,10.73-13.92,23.63-20.19,38.39-2.56-.23-5.09-.5-7.68-.81l-3.76-.46v12.21l1.96.86c1,.43,2.41.85,4.39,1.3-2.47,6.68-4.58,13.13-6.32,19.29-2.77,5.81-6.28,11.1-10.54,15.68-5.02,5.41-10.48,9.63-16.22,12.53-5.61,2.84-11,4.29-16.02,4.29-4.6,0-7.78-1.09-9.46-3.25-1.93-2.48-2.87-5.55-2.87-9.39,0-5.72,1.76-12.24,5.22-19.4,3.51-7.25,7.91-13.51,13.09-18.6,4.77-4.69,9.1-7.07,12.85-7.07.4,0,.65.04.79.07,0,.07.02.16.02.28,0,3.28-.62,6.15-1.86,8.51-1.19,2.27-2.47,3.89-3.72,4.67l-2.77,1.76,1.77,2.69c3.02,4.58,6.97,5.54,9.74,5.54,3.03,0,7.36-1.22,10.82-7.05,2.43-4.09,3.66-8.58,3.66-13.37,0-5.09-1.78-9.42-5.29-12.87-3.53-3.46-8.79-5.22-15.62-5.22-8.53,0-17.03,2.92-25.27,8.68-8.07,5.64-14.7,13.07-19.72,22.08-3.66,6.57-5.99,13.34-7.01,20.2-4.15,5.32-8.95,10.02-14.36,14.06-8.49,6.33-16.84,9.54-24.81,9.54-5.56,0-9.1-1.25-10.53-3.7-1.79-3.07-2.7-6.15-2.7-9.16,0-.65.02-1.27.06-1.85,8.2-1.15,16.33-3.5,24.21-6.97,8.83-3.9,16.15-9.01,21.77-15.18,5.86-6.44,8.83-13.45,8.83-20.84,0-6.03-1.99-10.49-5.92-13.26-3.61-2.55-8.07-3.84-13.26-3.84-9.21,0-18.62,3.38-27.96,10.05-7.65,5.46-14.19,12.11-19.54,19.79l-1.74,2.61c-.41.64-.84,1.28-1.24,1.93-3.45,5.72-5.88,11.26-7.32,16.6-2.18,4.05-4.46,7.83-6.83,11.3-4.71,6.89-9.19,10.68-12.6,10.68-.2,0-.49,0-.99-.61-.24-.29-.8-1.26-.8-3.88,0-3.4,1.18-8.73,3.49-15.78,1.62-4.55,2.86-8.72,3.67-12.39.84-3.77,1.26-7.77,1.26-11.89,0-7.34-1.77-13.8-5.26-19.2-3.76-5.81-9.4-8.89-16.29-8.89-7.68,0-15.44,3.74-23.05,11.12-3.63,3.52-7.22,7.58-10.73,12.15,1.04-5.13,1.75-9.41,1.75-12,0-3.28-.93-5.97-2.78-8.02-1.35-1.48-3.87-3.25-8.18-3.25-2.68,0-5.41.85-8.11,2.52-2.53,1.57-4.42,3.35-5.82,5.3,0,0-4.51,27.4-6.5,34.33-2,6.93-7.19,14.02-11.14,19.81-4.71,6.89-9.21,10.68-12.63,10.68-.2,0-.51,0-1-.61-.24-.29-.8-1.26-.8-3.88,0-3.4,1.18-8.73,3.49-15.78,1.62-4.55,2.85-8.72,3.67-12.39.84-3.77,1.26-7.77,1.26-11.89,0-7.34-1.77-13.8-5.26-19.2-3.76-5.81-9.4-8.89-16.29-8.89-7.68,0-15.44,3.74-23.05,11.12-3.63,3.52-7.22,7.58-10.73,12.15,1.04-5.13,1.75-9.41,1.75-12,0-3.28-.93-5.97-2.78-8.02-1.35-1.48-3.87-3.25-8.18-3.25-2.68,0-5.41.85-8.11,2.52-2.53,1.57-7.4,6.13-7.4,6.13,0,0-.82,14.44-3.18,24.44,0,0-1.63,1.11-3.17,1.63-1.64.56-3.25.16-3.25.16.48-1.39,1.02-2.95,1.36-4.17,2.83-10.21,2-18.91-2.35-24.49-3.62-4.64-9.39-7.11-17.17-7.33-6.14-.16-11.16,1.57-14.89,5.18-4.09,3.97-5.64,9.34-6.22,13.19-4.09-1.33-10.13-2.64-15.2-1.05-14.48,4.55-20.78,21.69-24.21,35.21-1.16,1.52-2.39,2.98-3.69,4.37-5.02,5.41-10.48,9.63-16.22,12.53-5.61,2.84-11,4.29-16.02,4.29-4.6,0-7.78-1.09-9.46-3.25-1.93-2.48-2.87-5.55-2.87-9.39,0-5.72,1.76-12.24,5.22-19.4,3.51-7.25,7.91-13.51,13.09-18.6,4.77-4.69,9.1-7.07,12.85-7.07.4,0,.65.04.79.07,0,.07.02.16.02.28,0,3.28-.62,6.15-1.86,8.51-1.19,2.27-2.47,3.88-3.72,4.68l-2.77,1.76,1.77,2.69c3.02,4.58,6.97,5.54,9.74,5.54,3.02,0,7.36-1.22,10.82-7.05,2.43-4.09,3.66-8.58,3.66-13.37,0-5.09-1.78-9.42-5.29-12.87-3.53-3.46-8.79-5.22-15.62-5.22-8.53,0-17.03,2.92-25.27,8.68-8.06,5.64-14.7,13.07-19.72,22.08-5.04,9.05-6.9,18.48-6.9,28.02,0,10.01,3.47,17.8,8.86,23.14h0c6.48,5.37,12.01,8.09,20.9,8.09,7.91,0,15.69-2.09,23.84-6.2,5.98-3.03,11.43-6.94,16.61-11.65,1.77,8.9,7.08,15.11,15.45,17.07,1.8.42,3.66.62,5.64.62,13.61,0,30.61-9.61,40.41-23.55,2.31-3.29,9.1-13.99,12-18.57,1.44.27,3.38.51,5.8.51,1.29,0,2.45-.07,3.54-.16-1.94,6.79-4.21,14.14-6.82,21.94l-2.33,8.01.73,1.26c3.76,6.12,9.63,9.42,16.98,9.42h2.16l.92-1.94c8.82-17.95,17.19-33,24.86-44.69,7.08-10.77,13.89-16.25,20.24-16.25,1.14,0,1.96.39,2.76,1.33.64.75,1.4,2.37,1.4,5.82,0,3.65-.99,9.5-2.94,17.44-.73,3.05-1.42,6.1-2.07,9.15-.69,3.23-1.04,6.15-1.04,8.66,0,6.3,1.8,11.5,5.35,15.47,3.69,4.12,8.85,6.21,15.33,6.21,7.19,0,13.74-2.89,19.56-8.66,3.75,4.84,9.09,7.46,15.61,7.46h2.16l.92-1.94c8.82-17.95,17.19-33,24.86-44.69,7.08-10.77,13.88-16.25,20.23-16.25,1.14,0,1.96.39,2.76,1.33.64.75,1.4,2.37,1.4,5.82,0,3.65-.99,9.5-2.94,17.44-.73,3.05-1.42,6.1-2.07,9.15-.69,3.23-1.04,6.15-1.04,8.66,0,6.3,1.8,11.5,5.35,15.47,3.69,4.12,8.85,6.21,15.33,6.21,9.2,0,17.37-4.78,24.28-14.2.32-.44.64-.92.96-1.38,1.41,2.84,3.31,5.42,5.76,7.7,5.68,5.27,13.6,7.95,23.54,7.95,12.2,0,24.12-4.04,35.4-12,3.36-2.37,6.79-5.02,9.7-7.86,1.33,4.74,3.79,8.71,7.02,11.83h0c5.4,5.37,12.4,8.09,21.29,8.09,7.91,0,15.89-2.09,24.03-6.2,7.51-3.8,14.36-9,20.57-15.43.46,6.69,2.6,11.98,6.45,15.74,4.39,4.28,10.42,6.45,17.96,6.45,9.34,0,18.44-3.21,27.13-9.52-.94-1.89-1.88-4.45-2.38-7.72M513.2,480.1c3.96-5.49,8.35-10.18,13.04-13.76,4.33-3.3,8.23-5.02,11.6-5.02.09,0,.17-.02.24-.02.02.17.03.37.03.66,0,4-1.98,8.63-5.89,13.03-4.18,4.71-9.36,8.03-15.39,12.34h0c-3.63,1.08-7.06,3.04-10.24,4,1.74-3.68,3.95-7.57,6.6-11.24M220.69,517.18c-1.28-.52-2.17-1.52-2.72-3.06-1.71-4.76.27-13.58,4.82-21.43,4.25-7.34,10.48-13.74,14.44-17.41,1.27,2.34,3.43,5.12,7.11,7.84,3.9,2.87,7.16,4.65,9.52,5.73-6.95,11.26-22.77,32.56-33.17,28.33M260.33,475.77c-1.54-.91-3.54-2.42-5.36-4.81-2.06-2.69-2.97-5.86-2.33-8.08.34-1.18,1.09-2,2.3-2.49.68-.28,1.35-.41,1.99-.41.78,0,1.52.2,2.19.61,1.73,1.04,2.84,3.23,2.98,5.88.2,3.83-.81,7.07-1.77,9.31"/>
-  </symbol>
-</svg>
 
 <script>
-let DATA = [];
-let filter = 'all';
+/* =========================================================
+   CONFIGURATION & STATE
+   ========================================================= */
+const STORAGE_KEY = 'connecteo_reader_compilation_v1';
+let DATA = []; // tableau d'objets fusionnés
 
-function loadData() {
-  const raw = document.getElementById('import-json').value.trim();
-  if (!raw) { alert('Collez des données JSON.'); return; }
+/* Chargement initial */
+(function loadFromStorage(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) DATA = JSON.parse(raw) || [];
+  } catch(e){ DATA = []; }
+})();
+
+function saveToStorage(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+}
+
+/* =========================================================
+   CLÉ DE FUSION : Nom + Email
+   ========================================================= */
+function makeKey(item){
+  const nom = (item.name || '').toString().toLowerCase().trim();
+  const email = (item.email || '').toString().toLowerCase().trim();
+  return nom + '|' + email;
+}
+
+/* Détection automatique du type de données */
+function detectType(item){
+  if (item.type === 'diagnostic') return 'diagnostic';
+  if (item.type === 'pre-quiz' || item.type === 'prequiz') return 'pre-quiz';
+  if (item.type === 'quiz-final' || item.type === 'quiz') return 'quiz-final';
+  // Détection par champs
+  if (item.pre_score_pct !== undefined) return 'pre-quiz';
+  if (item.score_pct !== undefined && item.verdict !== undefined) return 'quiz-final';
+  if (item.niveau_recouvrement_pct !== undefined || item.wave) return 'diagnostic';
+  return 'unknown';
+}
+
+/* Fusion douce : les champs non vides entrants écrasent ceux existants */
+function mergeItems(existing, incoming){
+  const merged = { ...existing };
+  Object.keys(incoming).forEach(k => {
+    const v = incoming[k];
+    if (v !== undefined && v !== null && v !== '') {
+      merged[k] = v;
+    }
+  });
+  return merged;
+}
+
+/* Ajout / fusion d'un lot de données */
+function addBatch(items){
+  let added = 0, updated = 0;
+  items.forEach(raw => {
+    const item = { ...raw, _type: detectType(raw) };
+    const key = makeKey(item);
+    if (!key || key === '|') return; // skip si ni nom ni email
+
+    const idx = DATA.findIndex(d => makeKey(d) === key);
+    if (idx >= 0) {
+      DATA[idx] = mergeItems(DATA[idx], item);
+      updated++;
+    } else {
+      DATA.push(item);
+      added++;
+    }
+  });
+  saveToStorage();
+  return { added, updated };
+}
+
+/* =========================================================
+   IMPORT / EXPORT
+   ========================================================= */
+function parseInput(raw){
   try {
     let parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) parsed = [parsed];
-    DATA = parsed;
-    render();
-  } catch(e) {
-    alert('JSON invalide : ' + e.message);
+    return parsed;
+  } catch(e){
+    throw new Error('JSON invalide : ' + e.message);
   }
 }
 
-function loadDemo() {
-  document.getElementById('import-json').value = JSON.stringify([
-    {name:"Rakoto Andrianina", email:"rakoto@ex.com", score_total:48, score_max:60, score_pct:80, verdict:"Maîtrise", score_j1:"12/15", score_j2:"13/15", score_j3:"11/15", score_j4:"12/15", axes_amelioration:"Développer la conscience du ton | Éviter le réflexe d'accusation", date:"15/06/2026 14:23"},
-    {name:"Rasoa Marie", email:"rasoa@ex.com", score_total:36, score_max:60, score_pct:60, verdict:"En consolidation", score_j1:"10/15", score_j2:"9/15", score_j3:"8/15", score_j4:"9/15", axes_amelioration:"Mémoriser le référentiel DIVA | Comprendre la chaîne satisfaction → fidélisation", date:"15/06/2026 14:31"},
-    {name:"Rabe Jean", email:"rabe@ex.com", score_total:52, score_max:60, score_pct:87, verdict:"Expert", score_j1:"14/15", score_j2:"13/15", score_j3:"13/15", score_j4:"12/15", axes_amelioration:"", date:"15/06/2026 14:40"},
-    {name:"Randria Paul", email:"randria@ex.com", score_total:28, score_max:60, score_pct:47, verdict:"À renforcer", score_j1:"7/15", score_j2:"6/15", score_j3:"8/15", score_j4:"7/15", axes_amelioration:"Élargir la vision au-delà du SAV | Éviter le piège du débat juridique | Réviser la méthode FOS", date:"15/06/2026 14:52"}
-  ], null, 2);
-  loadData();
+function handleAdd(){
+  const raw = document.getElementById('import-json').value.trim();
+  const fb = document.getElementById('import-feedback');
+  if (!raw) { fb.textContent = 'Collez des données.'; fb.style.color = 'var(--danger)'; return; }
+  try {
+    const items = parseInput(raw);
+    const { added, updated } = addBatch(items);
+    fb.innerHTML = '✅ ' + added + ' ajouté(s), ' + updated + ' mis à jour. Total : ' + DATA.length + ' apprenant(s).';
+    fb.style.color = 'var(--success)';
+    refreshAll();
+  } catch(e){
+    fb.textContent = '❌ ' + e.message;
+    fb.style.color = 'var(--danger)';
+  }
 }
 
-function clearAll() {
-  document.getElementById('import-json').value = '';
+function handleReplace(){
+  if (!confirm('Remplacer TOUTE la compilation par ces données ? Cette action est irréversible (mais vous pouvez sauvegarder avant).')) return;
+  const raw = document.getElementById('import-json').value.trim();
+  const fb = document.getElementById('import-feedback');
+  if (!raw) { fb.textContent = 'Collez des données.'; fb.style.color = 'var(--danger)'; return; }
+  try {
+    const items = parseInput(raw);
+    DATA = [];
+    addBatch(items);
+    fb.innerHTML = '✅ Compilation remplacée. ' + DATA.length + ' apprenant(s).';
+    fb.style.color = 'var(--success)';
+    refreshAll();
+  } catch(e){
+    fb.textContent = '❌ ' + e.message;
+    fb.style.color = 'var(--danger)';
+  }
+}
+
+function handleClear(){
+  if (!confirm('Vider la compilation actuelle ? (Pensez à exporter avant !)')) return;
   DATA = [];
-  document.getElementById('dashboard').style.display = 'none';
+  saveToStorage();
+  document.getElementById('import-feedback').textContent = 'Compilation vidée.';
+  refreshAll();
 }
 
-document.querySelectorAll('.filter').forEach(btn => {
+function exportCompilation(){
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'compilation_connecteo_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importCompilationFile(event){
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const items = JSON.parse(e.target.result);
+      if (!Array.isArray(items)) throw new Error('Le fichier doit contenir un tableau.');
+      if (!confirm('Ajouter ces ' + items.length + ' apprenants à la compilation actuelle ? (Fusion par Nom + Email)')) return;
+      const { added, updated } = addBatch(items);
+      const fb = document.getElementById('import-feedback');
+      fb.innerHTML = '✅ ' + added + ' ajouté(s), ' + updated + ' mis à jour. Total : ' + DATA.length + '.';
+      fb.style.color = 'var(--success)';
+      refreshAll();
+    } catch(err){
+      alert('Erreur : ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function loadDemo(){
+  document.getElementById('import-json').value = JSON.stringify([
+    {name:"Rakoto Andrianina",email:"rakoto@ex.com",wave:"Première vague",niveau_recouvrement_pct:"55",
+     pre_score_pct:62,pre_score_j1:"5/9",pre_score_j2:"6/9",pre_score_j3:"5/9",pre_score_j4:"5/9",
+     pre_axes:"Élargir la vision au-delà de la réclamation | Approfondir la distinction satisfaction/fidélité"},
+    {name:"Rasoa Marie",email:"rasoa@ex.com",wave:"Première vague",niveau_recouvrement_pct:"35",
+     pre_score_pct:44,pre_score_j1:"3/9",pre_score_j2:"4/9",pre_score_j3:"5/9",pre_score_j4:"4/9",
+     pre_axes:"Passer de l'écoute passive à l'écoute active | Retenir la répartition mots/ton"},
+    {name:"Rabe Jean",email:"rabe@ex.com",wave:"Deuxième vague",niveau_recouvrement_pct:"80",
+     pre_score_pct:87,pre_score_j1:"8/9",pre_score_j2:"8/9",pre_score_j3:"8/9",pre_score_j4:"7/9",
+     pre_axes:""}
+  ], null, 2);
+}
+
+/* =========================================================
+   TAB SWITCHING
+   ========================================================= */
+document.querySelectorAll('.tab').forEach(btn => {
   btn.onclick = () => {
-    document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    filter = btn.dataset.f;
-    renderTable();
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'dashboard') renderDashboard();
+    if (btn.dataset.tab === 'vue') renderLearnerSelect();
+    if (btn.dataset.tab === 'progression') renderProgression();
   };
 });
 
-function render() {
-  if (DATA.length === 0) return;
-  document.getElementById('dashboard').style.display = 'block';
+/* =========================================================
+   RENDER GLOBAL
+   ========================================================= */
+function refreshAll(){
+  renderLearnerSelect();
+  if (document.getElementById('tab-dashboard').classList.contains('active')) renderDashboard();
+  if (document.getElementById('tab-vue').classList.contains('active')) renderVueApprenant();
+}
 
-  // Stats
-  const avg = Math.round(DATA.reduce((a, b) => a + (b.score_pct || 0), 0) / DATA.length);
-  const max = Math.max(...DATA.map(d => d.score_pct || 0));
-  const min = Math.min(...DATA.map(d => d.score_pct || 0));
-  const passed = DATA.filter(d => (d.score_pct || 0) >= 60).length;
+/* =========================================================
+   DASHBOARD (repris de l'ancienne version)
+   ========================================================= */
+function renderDashboard(){
+  const el = document.getElementById('dashboard-content');
+  if (DATA.length === 0){
+    el.innerHTML = '<div class="empty"><i class="fas fa-chart-bar"></i><p>Aucune donnée.</p></div>';
+    return;
+  }
+  
+  const withPre = DATA.filter(d => d.pre_score_pct !== undefined && d.pre_score_pct !== '');
+  const avgPre = withPre.length ? Math.round(withPre.reduce((a,b) => a + parseFloat(b.pre_score_pct||0), 0) / withPre.length) : 0;
+  const maxPre = withPre.length ? Math.max(...withPre.map(d => parseFloat(d.pre_score_pct||0))) : 0;
+  const withFinal = DATA.filter(d => d.score_pct !== undefined && d.score_pct !== '');
+  const avgFinal = withFinal.length ? Math.round(withFinal.reduce((a,b) => a + parseFloat(b.score_pct||0), 0) / withFinal.length) : 0;
 
-  document.getElementById('stats').innerHTML = `
-    <div class="stat"><div class="val">${DATA.length}</div><div class="lbl">Apprenants</div></div>
-    <div class="stat"><div class="val">${avg}%</div><div class="lbl">Score moyen</div></div>
-    <div class="stat"><div class="val">${max}%</div><div class="lbl">Score max</div></div>
-    <div class="stat"><div class="val">${passed}/${DATA.length}</div><div class="lbl">Validation (≥60%)</div></div>
+  const statHtml = `
+    <div class="stats">
+      <div class="stat"><div class="val">${DATA.length}</div><div class="lbl">Apprenants</div></div>
+      <div class="stat"><div class="val">${avgPre}%</div><div class="lbl">Pré-quiz moyen</div></div>
+      <div class="stat"><div class="val">${maxPre}%</div><div class="lbl">Pré-quiz max</div></div>
+      <div class="stat"><div class="val">${avgFinal}%</div><div class="lbl">Quiz final moyen</div></div>
+    </div>`;
+
+  const rows = DATA.map(d => {
+    const pre = d.pre_score_pct !== undefined && d.pre_score_pct !== '' ? Math.round(parseFloat(d.pre_score_pct)) : null;
+    const fin = d.score_pct !== undefined && d.score_pct !== '' ? Math.round(parseFloat(d.score_pct)) : null;
+    const prog = (pre !== null && fin !== null) ? (fin - pre) : null;
+    const colorFor = p => p >= 85 ? 'var(--success)' : p >= 70 ? 'var(--primary)' : p >= 50 ? 'var(--accent)' : 'var(--danger)';
+    return `
+      <tr>
+        <td><strong>${d.name || '—'}</strong><br><span style="font-size:11px;color:var(--text-light)">${d.email || ''}</span></td>
+        <td>${d.wave || '—'}</td>
+        <td>${pre !== null ? '<span class="mini-bar"><div style="width:'+pre+'%;background:'+colorFor(pre)+'"></div></span><strong style="color:'+colorFor(pre)+'">'+pre+'%</strong>' : '—'}</td>
+        <td>${fin !== null ? '<span class="mini-bar"><div style="width:'+fin+'%;background:'+colorFor(fin)+'"></div></span><strong style="color:'+colorFor(fin)+'">'+fin+'%</strong>' : '—'}</td>
+        <td style="color:${prog !== null ? (prog >= 15 ? 'var(--success)' : prog >= 5 ? 'var(--primary)' : prog >= 0 ? 'var(--accent)' : 'var(--danger)') : 'var(--text-light)'};font-weight:700">${prog !== null ? (prog >= 0 ? '+' : '') + prog + 'pts' : '—'}</td>
+        <td>${d.verdict ? '<span class="badge '+verdictClass(d.verdict)+'">'+d.verdict+'</span>' : '—'}</td>
+      </tr>`;
+  }).join('');
+
+  const tableHtml = `
+    <div class="panel" style="padding:0;overflow:hidden">
+      <table>
+        <thead><tr>
+          <th>Apprenant</th><th>Vague</th><th>Pré-quiz</th><th>Quiz final</th><th>Progression</th><th>Verdict</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+
+  el.innerHTML = statHtml + tableHtml;
+}
+
+function verdictClass(v){
+  v = (v||'').toLowerCase();
+  if (v.includes('expert')) return 'expert';
+  if (v.includes('maîtrise') || v.includes('maitrise')) return 'maitrise';
+  if (v.includes('consolidation')) return 'consolidation';
+  if (v.includes('renforcer') || v.includes('débutant')) return 'renforcer';
+  if (v.includes('avancé') || v.includes('avance')) return 'avance';
+  if (v.includes('intermédiaire') || v.includes('intermediaire')) return 'intermediaire';
+  return 'renforcer';
+}
+
+/* =========================================================
+   VUE APPRENANT
+   ========================================================= */
+function renderLearnerSelect(){
+  const sel = document.getElementById('select-learner');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— Sélectionnez un apprenant —</option>';
+  DATA.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = makeKey(d);
+    const label = (d.name || '—') + (d.wave ? ' (' + d.wave + ')' : '');
+    opt.textContent = label;
+    sel.appendChild(opt);
+  });
+  if (current && DATA.find(d => makeKey(d) === current)) sel.value = current;
+}
+
+function parseScore(str){
+  if (!str) return { score: 0, max: 0, pct: 0 };
+  const parts = str.toString().split('/');
+  const s = parseFloat(parts[0]) || 0;
+  const m = parseFloat(parts[1]) || 0;
+  return { score: s, max: m, pct: m > 0 ? Math.round(s/m*100) : 0 };
+}
+
+function renderVueApprenant(){
+  const key = document.getElementById('select-learner').value;
+  const el = document.getElementById('vue-render');
+  if (!key){
+    el.innerHTML = '<div class="empty"><i class="fas fa-user-graduate"></i><p>Sélectionnez un apprenant dans la liste ci-dessus.</p></div>';
+    return;
+  }
+  const d = DATA.find(x => makeKey(x) === key);
+  if (!d){ el.innerHTML = ''; return; }
+
+  // Choix : on privilégie le quiz final s'il existe, sinon le pré-quiz
+  const hasFinal = d.score_pct !== undefined && d.score_pct !== '';
+  const hasPre = d.pre_score_pct !== undefined && d.pre_score_pct !== '';
+  
+  if (!hasFinal && !hasPre){
+    // Pas de score, afficher seulement les infos de base
+    el.innerHTML = `
+      <div class="vue-apprenant">
+        <h2>Profil de ${d.name || '—'}</h2>
+        <p style="text-align:center;color:var(--text-light);margin-bottom:20px">${d.email || ''} · ${d.wave || ''}</p>
+        <div class="axes">
+          <h3>Informations disponibles</h3>
+          <ul>
+            <li><i class="fas fa-user"></i><span><strong>Nom :</strong> ${d.name || '—'}</span></li>
+            <li><i class="fas fa-envelope"></i><span><strong>Email :</strong> ${d.email || '—'}</span></li>
+            <li><i class="fas fa-phone"></i><span><strong>Téléphone :</strong> ${d.phone || '—'}</span></li>
+            <li><i class="fas fa-flag"></i><span><strong>Vague :</strong> ${d.wave || '—'}</span></li>
+            <li><i class="fas fa-clock"></i><span><strong>Ancienneté :</strong> ${d.seniority || '—'}</span></li>
+            <li><i class="fas fa-chart-line"></i><span><strong>Niveau auto-évalué :</strong> ${d.niveau_recouvrement_pct ? d.niveau_recouvrement_pct + '%' : '—'}</span></li>
+            <li><i class="fas fa-language"></i><span><strong>Langues :</strong> ${d.langues || '—'}</span></li>
+          </ul>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Choix du score à afficher
+  const isFinal = hasFinal;
+  const scorePct = isFinal ? Math.round(parseFloat(d.score_pct)) : Math.round(parseFloat(d.pre_score_pct));
+  const j1 = parseScore(isFinal ? d.score_j1 : d.pre_score_j1);
+  const j2 = parseScore(isFinal ? d.score_j2 : d.pre_score_j2);
+  const j3 = parseScore(isFinal ? d.score_j3 : d.pre_score_j3);
+  const j4 = parseScore(isFinal ? d.score_j4 : d.pre_score_j4);
+  const axesRaw = isFinal ? (d.axes_amelioration || '') : (d.pre_axes || '');
+  const axes = axesRaw.split('|').map(s => s.trim()).filter(Boolean);
+
+  let verdict, vc;
+  if (scorePct >= 85){ verdict = "Niveau avancé"; vc = "expert"; }
+  else if (scorePct >= 65){ verdict = "Niveau intermédiaire avancé"; vc = "avance"; }
+  else if (scorePct >= 45){ verdict = "Niveau intermédiaire"; vc = "intermediaire"; }
+  else { verdict = "Niveau débutant"; vc = "debutant"; }
+
+  const labels = {1:'Relation Client', 2:'Communication', 3:'Recouvrement', 4:'Situations complexes'};
+  const colors = {1:'#0d47a1', 2:'#ffa900', 3:'#096475', 4:'#7c4dff'};
+  const scores = [j1, j2, j3, j4];
+  const weakest = scores.map((s,i) => ({d:i+1, pct:s.pct})).sort((a,b) => a.pct - b.pct)[0];
+
+  el.innerHTML = `
+    <div class="vue-apprenant">
+      <h2>${isFinal ? 'Résultat final' : 'Profil de départ'} — ${d.name || '—'}</h2>
+      <p style="text-align:center;color:var(--text-light);font-size:14px;margin-bottom:16px">${d.email || ''} ${d.wave ? '· ' + d.wave : ''}</p>
+      <p class="verdict ${vc}">${verdict}</p>
+      <div class="score-big">${scorePct}<small>%</small></div>
+      <p style="text-align:center;color:var(--text-light);margin-bottom:18px">${scores.reduce((a,s) => a + s.score, 0)} pts sur ${scores.reduce((a,s) => a + s.max, 0)}</p>
+
+      <div class="domains">
+        ${[1,2,3,4].map(i => `
+          <div class="domain">
+            <h4>${labels[i]}</h4>
+            <div class="val" style="color:${colors[i]}">${scores[i-1].pct}%</div>
+            <div class="bar"><div class="bar-fill" style="width:${scores[i-1].pct}%;background:${colors[i]}"></div></div>
+            <p style="font-size:11px;color:var(--text-light);margin-top:4px">${scores[i-1].score}/${scores[i-1].max} pts</p>
+          </div>
+        `).join('')}
+      </div>
+
+      ${axes.length > 0 ? `
+        <div class="axes">
+          <h3><i class="fas fa-compass"></i> Axes de progression prioritaires</h3>
+          <ul>${axes.map(a => '<li><i class="fas fa-arrow-right"></i><span>' + a + '</span></li>').join('')}</ul>
+        </div>
+      ` : `
+        <div class="axes" style="background:linear-gradient(135deg,#e8f5e9,#fff);border-left-color:var(--success)">
+          <h3 style="color:var(--success)"><i class="fas fa-star"></i> Profil confirmé</h3>
+          <p style="font-size:15px;color:var(--text-medium)">Aucun axe critique détecté sur les échelles évaluées.</p>
+        </div>
+      `}
+
+      <div style="background:#f9f9f9;border-radius:14px;padding:20px;margin-top:18px">
+        <h4 style="font-size:13px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Zone à renforcer en priorité</h4>
+        <p style="font-size:18px;font-weight:700;color:${colors[weakest.d]}">${labels[weakest.d]} — ${weakest.pct}%</p>
+      </div>
+    </div>
   `;
-
-  renderTable();
-  renderAggregate();
-  renderRecommendations();
 }
 
-function renderTable() {
-  const tbody = document.getElementById('tbody');
-  tbody.innerHTML = '';
-
-  const filtered = filter === 'all' ? DATA : DATA.filter(d => (d.verdict || '').toLowerCase().includes(filter) || (filter === 'expert' && d.verdict === 'Expert') || (filter === 'maitrise' && d.verdict === 'Maîtrise') || (filter === 'consolidation' && d.verdict === 'En consolidation') || (filter === 'renforcer' && d.verdict === 'À renforcer'));
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-light)">Aucun résultat pour ce filtre.</td></tr>';
+/* =========================================================
+   PROGRESSION (placeholder)
+   ========================================================= */
+function renderProgression(){
+  const el = document.getElementById('progression-content');
+  if (DATA.length === 0){
+    el.innerHTML = '<div class="empty"><i class="fas fa-arrow-trend-up"></i><p>Aucune donnée.</p></div>';
     return;
   }
-
-  const colorFor = pct => pct >= 85 ? 'var(--success)' : pct >= 70 ? 'var(--primary)' : pct >= 50 ? 'var(--accent)' : 'var(--danger)';
-  const badgeClass = v => {
-    if (v === 'Expert') return 'expert';
-    if (v === 'Maîtrise') return 'maitrise';
-    if (v === 'En consolidation') return 'consolidation';
-    return 'renforcer';
-  };
-
-  filtered.forEach(d => {
-    const tr = document.createElement('tr');
-    const pct = d.score_pct || 0;
-    const j1 = parseInt((d.score_j1 || '0/15').split('/')[0]);
-    const j2 = parseInt((d.score_j2 || '0/15').split('/')[0]);
-    const j3 = parseInt((d.score_j3 || '0/15').split('/')[0]);
-    const j4 = parseInt((d.score_j4 || '0/15').split('/')[0]);
-    const pctOf = n => Math.round(n / 15 * 100);
-    const axes = (d.axes_amelioration || '').split('|').map(s => s.trim()).filter(Boolean);
-    const axesHtml = axes.length > 0 ? axes.slice(0, 3).map(a => '• ' + a).join('<br>') : '—';
-
-    tr.innerHTML = `
-      <td><strong>${d.name || '—'}</strong><br><span style="font-size:12px;color:var(--text-light)">${d.email || ''}</span></td>
-      <td><span class="mini-bar"><div style="width:${pct}%;background:${colorFor(pct)}"></div></span><strong style="color:${colorFor(pct)}">${pct}%</strong></td>
-      <td><span class="badge ${badgeClass(d.verdict)}">${d.verdict || '—'}</span></td>
-      <td style="color:${colorFor(pctOf(j1))}">${j1}/15</td>
-      <td style="color:${colorFor(pctOf(j2))}">${j2}/15</td>
-      <td style="color:${colorFor(pctOf(j3))}">${j3}/15</td>
-      <td style="color:${colorFor(pctOf(j4))}">${j4}/15</td>
-      <td class="axes-cell">${axesHtml}</td>
-      <td style="font-size:12px;color:var(--text-light)">${d.date || '—'}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-function renderAggregate() {
-  const domainColors = {j1:'#0d47a1', j2:'#ffa900', j3:'#096475', j4:'#7c4dff'};
-  const domainLabels = {j1:'Relation Client', j2:'Communication', j3:'Recouvrement', j4:'Situations complexes'};
-  const agg = {j1:0, j2:0, j3:0, j4:0};
-
-  DATA.forEach(d => {
-    ['j1','j2','j3','j4'].forEach(k => {
-      const val = parseInt((d['score_' + k] || '0/15').split('/')[0]);
-      agg[k] += val;
-    });
-  });
-
-  const avgPerDomain = {};
-  const maxPerDomain = DATA.length * 15;
-  ['j1','j2','j3','j4'].forEach(k => {
-    avgPerDomain[k] = maxPerDomain > 0 ? Math.round((agg[k] / maxPerDomain) * 100) : 0;
-  });
-
-  document.getElementById('aggregate').innerHTML = ['j1','j2','j3','j4'].map(k => `
-    <div class="agg-item">
-      <h4>${domainLabels[k]}</h4>
-      <div class="cnt" style="color:${domainColors[k]}">${avgPerDomain[k]}%</div>
-      <div class="mini-bar" style="width:100%;height:8px;margin-top:8px"><div style="width:${avgPerDomain[k]}%;background:${domainColors[k]}"></div></div>
-      <div class="list">Moyenne du groupe sur ce domaine</div>
-    </div>
-  `).join('');
-}
-
-function renderRecommendations() {
-  const axesCount = {};
-  DATA.forEach(d => {
-    const axes = (d.axes_amelioration || '').split('|').map(s => s.trim()).filter(Boolean);
-    axes.forEach(a => {
-      axesCount[a] = (axesCount[a] || 0) + 1;
-    });
-  });
-
-  const sorted = Object.entries(axesCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
-
-  if (sorted.length === 0) {
-    document.getElementById('recommendations').innerHTML = '<p style="color:var(--text-light)">Aucun axe d\'amélioration à signaler.</p>';
+  const withBoth = DATA.filter(d => 
+    (d.pre_score_pct !== undefined && d.pre_score_pct !== '') && 
+    (d.score_pct !== undefined && d.score_pct !== '')
+  );
+  if (withBoth.length === 0){
+    el.innerHTML = '<div class="empty"><i class="fas fa-arrow-trend-up"></i><p>Aucune donnée avec pré-quiz ET quiz final. Le quiz final doit être branché pour alimenter cette vue.</p></div>';
     return;
   }
-
-  const html = sorted.map(([axe, count]) => `
-    <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #f0f0f0">
-      <div style="width:40px;height:40px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0">${count}</div>
-      <div style="flex:1;font-size:15px;color:var(--text-medium)">${axe}</div>
+  const avgPre = Math.round(withBoth.reduce((a,b) => a + parseFloat(b.pre_score_pct||0), 0) / withBoth.length);
+  const avgFin = Math.round(withBoth.reduce((a,b) => a + parseFloat(b.score_pct||0), 0) / withBoth.length);
+  const prog = avgFin - avgPre;
+  el.innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="val">${withBoth.length}</div><div class="lbl">Apprenants suivis</div></div>
+      <div class="stat"><div class="val">${avgPre}%</div><div class="lbl">Pré-quiz moyen</div></div>
+      <div class="stat"><div class="val">${avgFin}%</div><div class="lbl">Quiz final moyen</div></div>
+      <div class="stat"><div class="val" style="color:${prog>=0?'var(--success)':'var(--danger)'}">${prog>=0?'+':''}${prog}pts</div><div class="lbl">Progression moyenne</div></div>
     </div>
-  `).join('');
-
-  document.getElementById('recommendations').innerHTML = html;
+  `;
 }
+
+/* Initialisation de l'interface */
+refreshAll();
 </script>
 </body>
 </html>
