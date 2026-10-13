@@ -123,39 +123,30 @@ tr:hover td{background:#fafafa}
 .axes li{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:15px;color:var(--text-medium);align-items:flex-start}
 .axes li:last-child{border-bottom:none}
 .axes li i{color:var(--sapphire);font-size:16px;margin-top:3px}
-.logo-print{
-  display:inline-block;
-  width:220px;
-  height:50px;
-  background-color:#fff;
-  background-image:url('data:image/svg+xml;base64,COLLE_ICI_LA_MEME_CHAINE_BASE64');
-  background-repeat:no-repeat;
-  background-size:280px 280px;
-  background-position:-28px -109px;
-  border-radius:8px;
-}
+
+/* IMPRESSION */
 /* IMPRESSION */
 @media print{
   @page {
     size: A4;
-    margin: 8mm;
+    margin: 10mm;
   }
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
   }
-  body{background:#fff;font-size:11px;line-height:1.35}
+  body{background:#fff;font-size:14px;line-height:1.4}
   .top-bar,.tabs,.btn,.no-print{display:none!important}
   .wrap{padding:0;max-width:100%}
   .panel{box-shadow:none;padding:0;margin:0}
   .logo-print{
     background-color:transparent!important;
-    width:150px;
-    height:34px;
-    background-size:191px 191px;
-    background-position:-19px -74px;
-    margin-bottom:8px;
+    width:200px;
+    height:46px;
+    background-size:255px 255px;
+    background-position:-25px -99px;
+    margin-bottom:16px;
   }
   .vue-apprenant{
     box-shadow:none;
@@ -163,22 +154,25 @@ tr:hover td{background:#fafafa}
     max-width:100%;
     page-break-inside:avoid;
   }
-  .vue-apprenant h2{font-size:18px;margin-bottom:2px}
-  .vue-apprenant .verdict{font-size:14px;margin-bottom:8px}
-  .score-big{font-size:44px;margin-bottom:0}
-  .score-big + p{font-size:11px;margin-bottom:8px!important}
-  .domains{gap:8px;margin:10px 0;page-break-inside:avoid}
-  .domain{padding:8px 6px;page-break-inside:avoid}
-  .domain h4{font-size:9px;margin-bottom:2px}
-  .domain .val{font-size:15px}
-  .domain .bar{height:5px;margin:3px 0}
-  .domain p{font-size:9px!important;margin-top:2px!important}
-  .axes{padding:10px 12px;margin-top:8px;page-break-inside:avoid}
-  .axes h3{font-size:12px;margin-bottom:4px}
+  .vue-apprenant h2{font-size:26px;margin-bottom:4px}
+  .vue-apprenant .verdict{font-size:18px;margin-bottom:14px}
+  .score-big{font-size:68px;margin-bottom:4px}
+  .score-big + p{font-size:14px;margin-bottom:16px!important}
+  .domains{gap:14px;margin:18px 0;page-break-inside:avoid}
+  .domain{padding:14px 10px;page-break-inside:avoid}
+  .domain h4{font-size:11px;margin-bottom:4px}
+  .domain .val{font-size:24px}
+  .domain .bar{height:8px;margin:6px 0}
+  .domain p{font-size:12px!important;margin-top:4px!important}
+  .axes{padding:16px 20px;margin-top:14px;page-break-inside:avoid}
+  .axes h3{font-size:17px;margin-bottom:10px}
   .axes ul{margin:0;padding:0}
-  .axes li{font-size:11px;padding:2px 0;border-bottom:none}
-  .axes li i{font-size:10px}
-  .axes p{font-size:10px!important;margin-top:4px!important}
+  .axes li{font-size:14px;padding:5px 0;border-bottom:none}
+  .axes li i{font-size:13px}
+  .axes p{font-size:13px!important;margin-top:6px!important}
+  .vue-apprenant > div:last-child{padding:18px!important}
+  .vue-apprenant > div:last-child h4{font-size:12px!important}
+  .vue-apprenant > div:last-child p{font-size:22px!important}
 }
 @media(max-width:640px){
   .wrap{padding:20px 14px}
