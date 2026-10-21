@@ -109,6 +109,13 @@ body{font-family:'Mada',sans-serif;background:linear-gradient(135deg,#0d47a1 0%,
       <input type="hidden" id="f-wave" value="">
     </div>
 
+    <!-- NOUVEAU CHAMP POSITION ICI -->
+    <div class="field">
+      <label>Poste occupé <span class="req">*</span></label>
+      <input type="text" id="f-position" placeholder="Ex. Agent de recouvrement, Superviseur..." required>
+    </div>
+    <!-- FIN NOUVEAU CHAMP -->
+
     <div class="field">
       <label>Ancienneté au poste <span class="req">*</span></label>
       <select id="f-seniority" required>
@@ -236,6 +243,7 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
   const email = document.getElementById('f-email').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const wave = document.getElementById('f-wave').value;
+  const position = document.getElementById('f-position').value.trim(); // <-- RÉCUPÉRATION DU POSTE
   const seniority = document.getElementById('f-seniority').value;
   const rcForm = document.querySelector('input[name="rc-form"]:checked');
   const level = document.getElementById('f-level').value;
@@ -245,13 +253,16 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
   if (!name) return showStatus('Merci de renseigner votre nom.', 'err');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showStatus('Email invalide.', 'err');
   if (!wave) return showStatus('Merci de sélectionner votre vague.', 'err');
+  if (!position) return showStatus('Merci de renseigner votre poste.', 'err'); // <-- VALIDATION
   if (!seniority) return showStatus('Merci de renseigner votre ancienneté.', 'err');
   if (!rcForm) return showStatus('Merci d\'indiquer si vous avez déjà suivi une formation relation client.', 'err');
   if (langs.length === 0) return showStatus('Merci de cocher au moins une langue.', 'err');
 
   const payload = {
     type: "diagnostic",
-    name, email, phone, wave, seniority,
+    name, email, phone, wave, 
+    position, // <-- AJOUT DANS LE PAYLOAD JSON
+    seniority,
     deja_formation_rc: rcForm.value,
     details_formation_rc: rcDetails,
     niveau_recouvrement_pct: level,
