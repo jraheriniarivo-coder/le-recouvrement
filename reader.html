@@ -312,8 +312,11 @@ function detectType(item){
   if (item.type === 'diagnostic') return 'diagnostic';
   if (item.type === 'pre-quiz' || item.type === 'prequiz') return 'pre-quiz';
   if (item.type === 'quiz-final' || item.type === 'quiz') return 'quiz-final';
+  if (item.type === 'evaluation' || item.type === 'simulation') return 'simulation';
+  
   // Détection par champs
   if (item.pre_score_pct !== undefined) return 'pre-quiz';
+  if (item.sim_score_pct !== undefined) return 'simulation';
   if (item.score_pct !== undefined && item.verdict !== undefined) return 'quiz-final';
   if (item.niveau_recouvrement_pct !== undefined || item.wave) return 'diagnostic';
   return 'unknown';
@@ -441,15 +444,25 @@ function importCompilationFile(event){
 
 function loadDemo(){
   document.getElementById('import-json').value = JSON.stringify([
-    {name:"Rakoto Andrianina",email:"rakoto@ex.com",wave:"Première vague",niveau_recouvrement_pct:"55",
-     pre_score_pct:62,pre_score_j1:"5/9",pre_score_j2:"6/9",pre_score_j3:"5/9",pre_score_j4:"5/9",
-     pre_axes:"Élargir la vision au-delà de la réclamation | Approfondir la distinction satisfaction/fidélité"},
-    {name:"Rasoa Marie",email:"rasoa@ex.com",wave:"Première vague",niveau_recouvrement_pct:"35",
-     pre_score_pct:44,pre_score_j1:"3/9",pre_score_j2:"4/9",pre_score_j3:"5/9",pre_score_j4:"4/9",
-     pre_axes:"Passer de l'écoute passive à l'écoute active | Retenir la répartition mots/ton"},
-    {name:"Rabe Jean",email:"rabe@ex.com",wave:"Deuxième vague",niveau_recouvrement_pct:"80",
-     pre_score_pct:87,pre_score_j1:"8/9",pre_score_j2:"8/9",pre_score_j3:"8/9",pre_score_j4:"7/9",
-     pre_axes:""}
+    {
+      name:"Rakoto Andrianina", email:"rakoto@ex.com", wave:"Première vague", niveau_recouvrement_pct:"55",
+      pre_score_pct:62, pre_score_j1:"5/9", pre_score_j2:"6/9", pre_score_j3:"5/9", pre_score_j4:"5/9",
+      score_pct: 85, verdict: "Acquis", // Quiz final simulé
+      sim_score_pct: 75, sim_verdict: "Acquis", sim_comment: "Très bonne écoute active. Doit travailler la conclusion.", // Simulation simulée
+      pre_axes:"Élargir la vision au-delà de la réclamation | Approfondir la distinction satisfaction/fidélité"
+    },
+    {
+      name:"Rasoa Marie", email:"rasoa@ex.com", wave:"Première vague", niveau_recouvrement_pct:"35",
+      pre_score_pct:44, pre_score_j1:"3/9", pre_score_j2:"4/9", pre_score_j3:"5/9", pre_score_j4:"4/9",
+      sim_score_pct: 45, sim_verdict: "Non acquis", sim_comment: "Trop passive face aux objections.",
+      pre_axes:"Passer de l'écoute passive à l'écoute active | Retenir la répartition mots/ton"
+    },
+    {
+      name:"Rabe Jean", email:"rabe@ex.com", wave:"Deuxième vague", niveau_recouvrement_pct:"80",
+      pre_score_pct:87, pre_score_j1:"8/9", pre_score_j2:"8/9", pre_score_j3:"8/9", pre_score_j4:"7/9",
+      sim_score_pct: 92, sim_verdict: "Acquis", sim_comment: "Excellente maîtrise, très assertif.",
+      pre_axes:""
+    }
   ], null, 2);
 }
 
@@ -478,7 +491,7 @@ function refreshAll(){
 }
 
 /* =========================================================
-   DASHBOARD (repris de l'ancienne version)
+   DASHBOARD (MIS À JOUR AVEC SIMULATION)
    ========================================================= */
 function renderDashboard(){
   const el = document.getElementById('dashboard-content');
@@ -489,39 +502,63 @@ function renderDashboard(){
   
   const withPre = DATA.filter(d => d.pre_score_pct !== undefined && d.pre_score_pct !== '');
   const avgPre = withPre.length ? Math.round(withPre.reduce((a,b) => a + parseFloat(b.pre_score_pct||0), 0) / withPre.length) : 0;
-  const maxPre = withPre.length ? Math.max(...withPre.map(d => parseFloat(d.pre_score_pct||0))) : 0;
+  
   const withFinal = DATA.filter(d => d.score_pct !== undefined && d.score_pct !== '');
   const avgFinal = withFinal.length ? Math.round(withFinal.reduce((a,b) => a + parseFloat(b.score_pct||0), 0) / withFinal.length) : 0;
 
+  // NOUVEAU : Calcul de la moyenne de simulation
+  const withSim = DATA.filter(d => d.sim_score_pct !== undefined && d.sim_score_pct !== '');
+  const avgSim = withSim.length ? Math.round(withSim.reduce((a,b) => a + parseFloat(b.sim_score_pct||0), 0) / withSim.length) : 0;
+
+  // Les 4 cartes de statistiques (on remplace le "Max" par la "Simulation")
   const statHtml = `
     <div class="stats">
       <div class="stat"><div class="val">${DATA.length}</div><div class="lbl">Apprenants</div></div>
       <div class="stat"><div class="val">${avgPre}%</div><div class="lbl">Pré-quiz moyen</div></div>
-      <div class="stat"><div class="val">${maxPre}%</div><div class="lbl">Pré-quiz max</div></div>
       <div class="stat"><div class="val">${avgFinal}%</div><div class="lbl">Quiz final moyen</div></div>
+      <div class="stat"><div class="val">${avgSim}%</div><div class="lbl">Simulation moyenne</div></div>
     </div>`;
 
   const rows = DATA.map(d => {
     const pre = d.pre_score_pct !== undefined && d.pre_score_pct !== '' ? Math.round(parseFloat(d.pre_score_pct)) : null;
     const fin = d.score_pct !== undefined && d.score_pct !== '' ? Math.round(parseFloat(d.score_pct)) : null;
+    const sim = d.sim_score_pct !== undefined && d.sim_score_pct !== '' ? Math.round(parseFloat(d.sim_score_pct)) : null;
+    
     const prog = (pre !== null && fin !== null) ? (fin - pre) : null;
     const colorFor = p => p >= 85 ? 'var(--success)' : p >= 70 ? 'var(--primary)' : p >= 50 ? 'var(--accent)' : 'var(--danger)';
+    
     return `
       <tr>
         <td><strong>${d.name || '—'}</strong><br><span style="font-size:11px;color:var(--text-light)">${d.email || ''}</span></td>
         <td>${d.wave || '—'}</td>
         <td>${pre !== null ? '<span class="mini-bar"><div style="width:'+pre+'%;background:'+colorFor(pre)+'"></div></span><strong style="color:'+colorFor(pre)+'">'+pre+'%</strong>' : '—'}</td>
         <td>${fin !== null ? '<span class="mini-bar"><div style="width:'+fin+'%;background:'+colorFor(fin)+'"></div></span><strong style="color:'+colorFor(fin)+'">'+fin+'%</strong>' : '—'}</td>
+        
+        <!-- NOUVELLE COLONNE SIMULATION -->
+        <td>
+          ${sim !== null ? `
+            <span class="mini-bar"><div style="width:${sim}%;background:${colorFor(sim)}"></div></span>
+            <strong style="color:${colorFor(sim)}">${sim}%</strong>
+            <br><span style="font-size:11px;color:var(--text-light)">${d.sim_verdict || ''}</span>
+          ` : '—'}
+        </td>
+
         <td style="color:${prog !== null ? (prog >= 15 ? 'var(--success)' : prog >= 5 ? 'var(--primary)' : prog >= 0 ? 'var(--accent)' : 'var(--danger)') : 'var(--text-light)'};font-weight:700">${prog !== null ? (prog >= 0 ? '+' : '') + prog + 'pts' : '—'}</td>
         <td>${d.verdict ? '<span class="badge '+verdictClass(d.verdict)+'">'+d.verdict+'</span>' : '—'}</td>
       </tr>`;
   }).join('');
 
   const tableHtml = `
-    <div class="panel" style="padding:0;overflow:hidden">
+    <div class="panel" style="padding:0;overflow:auto">
       <table>
         <thead><tr>
-          <th>Apprenant</th><th>Vague</th><th>Pré-quiz</th><th>Quiz final</th><th>Progression</th><th>Verdict</th>
+          <th>Apprenant</th>
+          <th>Vague</th>
+          <th>Pré-quiz</th>
+          <th>Quiz final</th>
+          <th>Simulation</th> <!-- NOUVELLE COLONNE -->
+          <th>Progression</th>
+          <th>Verdict</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -561,13 +598,8 @@ function renderLearnerSelect(){
 function parseScore(str){
   if (!str) return { score: 0, max: 0, pct: 0, invalid: true };
   const s = str.toString();
-  // Détecte si c'est une date ISO (bug Google Sheet) ou une valeur non "x/y"
-  if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
-    return { score: 0, max: 0, pct: 0, invalid: true };
-  }
-  if (!s.includes('/')) {
-    return { score: 0, max: 0, pct: 0, invalid: true };
-  }
+  if (/^\d{4}-\d{2}-\d{2}T/.test(s)) return { score: 0, max: 0, pct: 0, invalid: true };
+  if (!s.includes('/')) return { score: 0, max: 0, pct: 0, invalid: true };
   const parts = s.split('/');
   const score = parseFloat(parts[0]) || 0;
   const max = parseFloat(parts[1]) || 0;
@@ -584,12 +616,12 @@ function renderVueApprenant(){
   const d = DATA.find(x => makeKey(x) === key);
   if (!d){ el.innerHTML = ''; return; }
 
-  // Choix : on privilégie le quiz final s'il existe, sinon le pré-quiz
   const hasFinal = d.score_pct !== undefined && d.score_pct !== '';
   const hasPre = d.pre_score_pct !== undefined && d.pre_score_pct !== '';
+  const hasSim = d.sim_score_pct !== undefined && d.sim_score_pct !== '';
   
-  if (!hasFinal && !hasPre){
-    // Pas de score, afficher seulement les infos de base
+  if (!hasFinal && !hasPre && !hasSim){
+    // Affichage basique si pas de scores
     el.innerHTML = `
       <div class="vue-apprenant">
         <h2>Profil de ${d.name || '—'}</h2>
@@ -610,9 +642,9 @@ function renderVueApprenant(){
     return;
   }
 
-  // Choix du score à afficher
+  // Choix du score principal
   const isFinal = hasFinal;
-  const scorePct = isFinal ? Math.round(parseFloat(d.score_pct)) : Math.round(parseFloat(d.pre_score_pct));
+  const scorePct = isFinal ? Math.round(parseFloat(d.score_pct)) : (hasPre ? Math.round(parseFloat(d.pre_score_pct)) : 0);
   const j1 = parseScore(isFinal ? d.score_j1 : d.pre_score_j1);
   const j2 = parseScore(isFinal ? d.score_j2 : d.pre_score_j2);
   const j3 = parseScore(isFinal ? d.score_j3 : d.pre_score_j3);
@@ -628,16 +660,18 @@ function renderVueApprenant(){
 
   const labels = {1:'Relation Client', 2:'Communication', 3:'Recouvrement', 4:'Situations complexes'};
   const colors = {1:'#0d47a1', 2:'#ffa900', 3:'#096475', 4:'#7c4dff'};
- const scores = [j1, j2, j3, j4].map(s => s.invalid ? { score: 0, max: 0, pct: 0, invalid: true } : s);
+  const scores = [j1, j2, j3, j4].map(s => s.invalid ? { score: 0, max: 0, pct: 0, invalid: true } : s);
   const weakest = scores.map((s,i) => ({d:i+1, pct:s.pct})).sort((a,b) => a.pct - b.pct)[0];
 
-el.innerHTML = `
+  el.innerHTML = `
     <div class="vue-apprenant">
       <div style="text-align:center;margin-bottom:24px">
         <div class="logo-print" aria-label="Connecteo"></div>
       </div>
       <h2>${isFinal ? 'Résultat final' : 'Profil de départ'} — ${d.name || '—'}</h2>
       <p style="text-align:center;color:var(--text-light);font-size:14px;margin-bottom:16px">${d.email || ''} ${d.wave ? '· ' + d.wave : ''}</p>
+      
+      ${(hasPre || hasFinal) ? `
       <p class="verdict ${vc}">${verdict}</p>
       <div class="score-big">${scorePct}<small>%</small></div>
       <p style="text-align:center;color:var(--text-light);margin-bottom:18px">${scores.reduce((a,s) => a + s.score, 0)} pts sur ${scores.reduce((a,s) => a + s.max, 0)}</p>
@@ -652,29 +686,39 @@ el.innerHTML = `
           </div>
         `).join('')}
       </div>
+      ` : ''}
+
+      <!-- NOUVEAU BLOC SIMULATION -->
+      ${hasSim ? `
+        <div class="axes" style="background:linear-gradient(135deg,#fff4e6,#fff);border-left-color:var(--accent);margin-top:18px">
+          <h3 style="color:var(--accent)"><i class="fas fa-headset"></i> Évaluation de la Simulation</h3>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+            <p style="font-size:18px;font-weight:900;color:var(--text-dark);margin:0;">Score : ${Math.round(parseFloat(d.sim_score_pct))}%</p>
+            <span class="badge ${d.sim_verdict === 'Acquis' ? 'expert' : 'intermediaire'}">${d.sim_verdict || ''}</span>
+          </div>
+          ${d.sim_comment ? `<p style="font-size:14px;color:var(--text-medium);font-style:italic;">"${d.sim_comment}"</p>` : ''}
+        </div>
+      ` : ''}
 
       ${axes.length > 0 ? `
         <div class="axes">
           <h3><i class="fas fa-compass"></i> Axes de progression prioritaires</h3>
           <ul>${axes.map(a => '<li><i class="fas fa-arrow-right"></i><span>' + a + '</span></li>').join('')}</ul>
         </div>
-      ` : `
-        <div class="axes" style="background:linear-gradient(135deg,#e8f5e9,#fff);border-left-color:var(--success)">
-          <h3 style="color:var(--success)"><i class="fas fa-star"></i> Profil confirmé</h3>
-          <p style="font-size:15px;color:var(--text-medium)">Aucun axe critique détecté sur les échelles évaluées.</p>
-        </div>
-      `}
+      ` : ''}
 
+      ${(hasPre || hasFinal) ? `
       <div style="background:#f9f9f9;border-radius:14px;padding:20px;margin-top:18px">
         <h4 style="font-size:13px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Zone à renforcer en priorité</h4>
         <p style="font-size:18px;font-weight:700;color:${colors[weakest.d]}">${labels[weakest.d]} — ${weakest.pct}%</p>
       </div>
+      ` : ''}
     </div>
   `;
 }
 
 /* =========================================================
-   PROGRESSION (placeholder)
+   PROGRESSION
    ========================================================= */
 function renderProgression(){
   const el = document.getElementById('progression-content');
@@ -693,6 +737,7 @@ function renderProgression(){
   const avgPre = Math.round(withBoth.reduce((a,b) => a + parseFloat(b.pre_score_pct||0), 0) / withBoth.length);
   const avgFin = Math.round(withBoth.reduce((a,b) => a + parseFloat(b.score_pct||0), 0) / withBoth.length);
   const prog = avgFin - avgPre;
+  
   el.innerHTML = `
     <div class="stats">
       <div class="stat"><div class="val">${withBoth.length}</div><div class="lbl">Apprenants suivis</div></div>
