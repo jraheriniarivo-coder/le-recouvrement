@@ -166,7 +166,7 @@ body{
 .card:nth-child(2){animation-delay:.15s}
 .card:nth-child(3){animation-delay:.25s}
 .card:nth-child(4){animation-delay:.35s}
-.card:nth-child(5){animation-delay:.45s} /* Nouvelle carte */
+.card:nth-child(5){animation-delay:.45s}
 
 .card::before{
   content:'';
@@ -212,7 +212,7 @@ body{
 .card.dashboard .icon-wrap{background:linear-gradient(135deg,#7c4dff,#9c27b0);box-shadow:0 8px 24px rgba(124,77,255,.3)}
 .card.itineraire .icon-wrap{background:linear-gradient(135deg,#ffa900,#ff8f00);box-shadow:0 8px 24px rgba(255,169,0,.3)}
 .card.quiz .icon-wrap{background:linear-gradient(135deg,#00afa9,#008a86);box-shadow:0 8px 24px rgba(0,175,169,.3)}
-.card.evaluation .icon-wrap{background:linear-gradient(135deg,#e91e63,#c2185b);box-shadow:0 8px 24px rgba(233,30,99,.3)} /* Nouvelle couleur */
+.card.evaluation .icon-wrap{background:linear-gradient(135deg,#e91e63,#c2185b);box-shadow:0 8px 24px rgba(233,30,99,.3)}
 
 .card h3{
   font-size:21px;font-weight:900;
@@ -237,7 +237,7 @@ body{
 .card.dashboard .cta{background:linear-gradient(135deg,#7c4dff,#9c27b0)}
 .card.itineraire .cta{background:linear-gradient(135deg,#ffa900,#ff8f00)}
 .card.quiz .cta{background:linear-gradient(135deg,#00afa9,#008a86)}
-.card.evaluation .cta{background:linear-gradient(135deg,#e91e63,#c2185b)} /* Nouvelle couleur */
+.card.evaluation .cta{background:linear-gradient(135deg,#e91e63,#c2185b)}
 
 .card .cta i{transition:transform .3s ease;font-size:12px}
 .card:hover .cta i{transform:translateX(5px)}
@@ -366,16 +366,17 @@ body{
     <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
   </a>
 
+  <!-- CARTE MISE À JOUR -->
   <a href="quiz.html" class="card quiz">
     <div class="icon-wrap">
-      <i class="fas fa-brain"></i>
+      <i class="fas fa-list-check"></i>
     </div>
-    <h3>Quiz final</h3>
-    <p>Testez le quiz de fin de formation avant de le distribuer aux apprenants. Vérifiez questions, structure et résultats.</p>
+    <h3>Gestion des Quiz</h3>
+    <p>Consultez la version mère du quiz, vérifiez les questions et les réponses attendues avant de le distribuer aux participants.</p>
     <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
   </a>
 
-  <!-- NOUVELLE CARTE : ÉVALUATION SIMULATION -->
+  <!-- CARTE ÉVALUATION -->
   <a href="evaluation.html" class="card evaluation">
     <div class="icon-wrap">
       <i class="fas fa-headset"></i>
