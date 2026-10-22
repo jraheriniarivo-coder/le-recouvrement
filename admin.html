@@ -10,7 +10,7 @@
 :root{
   --primary:#00afa9;--primary-dark:#008a86;
   --accent:#ffa900;--sapphire:#0d47a1;--violet:#7c4dff;
-  --success:#096475;--danger:#c62828;--pink:#e91e63;
+  --success:#096475;--danger:#c62828;--pink:#e91e63;--indigo:#3f51b5;
   --text-dark:#212121;--text-medium:#424242;--text-light:#757575;
   --white:#fff;
 }
@@ -167,6 +167,7 @@ body{
 .card:nth-child(3){animation-delay:.25s}
 .card:nth-child(4){animation-delay:.35s}
 .card:nth-child(5){animation-delay:.45s}
+.card:nth-child(6){animation-delay:.55s}
 
 .card::before{
   content:'';
@@ -213,6 +214,7 @@ body{
 .card.itineraire .icon-wrap{background:linear-gradient(135deg,#ffa900,#ff8f00);box-shadow:0 8px 24px rgba(255,169,0,.3)}
 .card.quiz .icon-wrap{background:linear-gradient(135deg,#00afa9,#008a86);box-shadow:0 8px 24px rgba(0,175,169,.3)}
 .card.evaluation .icon-wrap{background:linear-gradient(135deg,#e91e63,#c2185b);box-shadow:0 8px 24px rgba(233,30,99,.3)}
+.card.manager .icon-wrap{background:linear-gradient(135deg,#3f51b5,#1a237e);box-shadow:0 8px 24px rgba(63,81,181,.3)}
 
 .card h3{
   font-size:21px;font-weight:900;
@@ -238,6 +240,7 @@ body{
 .card.itineraire .cta{background:linear-gradient(135deg,#ffa900,#ff8f00)}
 .card.quiz .cta{background:linear-gradient(135deg,#00afa9,#008a86)}
 .card.evaluation .cta{background:linear-gradient(135deg,#e91e63,#c2185b)}
+.card.manager .cta{background:linear-gradient(135deg,#3f51b5,#1a237e)}
 
 .card .cta i{transition:transform .3s ease;font-size:12px}
 .card:hover .cta i{transform:translateX(5px)}
@@ -366,7 +369,6 @@ body{
     <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
   </a>
 
-  <!-- CARTE MISE À JOUR -->
   <a href="quiz.html" class="card quiz">
     <div class="icon-wrap">
       <i class="fas fa-list-check"></i>
@@ -376,13 +378,22 @@ body{
     <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
   </a>
 
-  <!-- CARTE ÉVALUATION -->
   <a href="evaluation.html" class="card evaluation">
     <div class="icon-wrap">
       <i class="fas fa-headset"></i>
     </div>
     <h3>Grille d'évaluation</h3>
     <p>Évaluez les mises en pratique et simulations d'appels de recouvrement. Saisissez les notes et générez le verdict de compétences.</p>
+    <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
+  </a>
+
+  <!-- NOUVELLE CARTE : DIAGNOSTIC MANAGER -->
+  <a href="manager-diagnostic.html" class="card manager">
+    <div class="icon-wrap">
+      <i class="fas fa-user-tie"></i>
+    </div>
+    <h3>Diagnostic Manager</h3>
+    <p>Recueillez les attentes, les défis et les objectifs des managers pour aligner la formation sur leurs réalités terrain.</p>
     <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
   </a>
 
