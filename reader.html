@@ -125,35 +125,15 @@ tr:hover td{background:#fafafa}
 .axes li i{color:var(--sapphire);font-size:16px;margin-top:3px}
 
 /* IMPRESSION */
-/* IMPRESSION */
 @media print{
-  @page {
-    size: A4;
-    margin: 10mm;
-  }
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
+  @page { size: A4; margin: 10mm; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
   body{background:#fff;font-size:14px;line-height:1.4}
   .top-bar,.tabs,.btn,.no-print{display:none!important}
   .wrap{padding:0;max-width:100%}
   .panel{box-shadow:none;padding:0;margin:0}
-  .logo-print{
-    background-color:transparent!important;
-    width:200px;
-    height:46px;
-    background-size:255px 255px;
-    background-position:-25px -99px;
-    margin-bottom:16px;
-  }
-  .vue-apprenant{
-    box-shadow:none;
-    padding:0;
-    max-width:100%;
-    page-break-inside:avoid;
-  }
+  .logo-print{background-color:transparent!important;width:200px;height:46px;background-size:255px 255px;background-position:-25px -99px;margin-bottom:16px;}
+  .vue-apprenant{box-shadow:none;padding:0;max-width:100%;page-break-inside:avoid;}
   .vue-apprenant h2{font-size:26px;margin-bottom:4px}
   .vue-apprenant .verdict{font-size:18px;margin-bottom:14px}
   .score-big{font-size:68px;margin-bottom:4px}
@@ -192,22 +172,12 @@ tr:hover td{background:#fafafa}
     <div class="sub">Compilation multi-sources · Connecteo 2026</div>
   </div>
   <div class="nav">
-    <!-- On ne garde que l'accueil -->
     <a href="admin.html"><i class="fas fa-house"></i> Accueil</a>
   </div>
 </div>
-  
-  <!-- Tes onglets (Import, Dashboard, etc.) -->
-  <div class="tabs">
-    <button class="tab active" data-tab="import"><i class="fas fa-file-import"></i> Import</button>
-    <button class="tab" data-tab="dashboard"><i class="fas fa-chart-bar"></i> Tableau de bord</button>
-    <button class="tab" data-tab="vue"><i class="fas fa-user-graduate"></i> Vue apprenant</button>
-    <button class="tab" data-tab="progression"><i class="fas fa-arrow-trend-up"></i> Progression</button>
-  </div>
-  
-  <!-- Le reste de ta page (tab-panel, etc.) reste inchangé... -->
 
 <div class="wrap">
+  <!-- On a supprimé le bloc .tabs en doublon ici -->
 
   <div class="tabs">
     <button class="tab active" data-tab="import"><i class="fas fa-file-import"></i> Import</button>
@@ -221,21 +191,7 @@ tr:hover td{background:#fafafa}
     <div class="panel">
       <h2><i class="fas fa-file-import"></i> Importer des données</h2>
       <p>Collez le JSON d'une source (Diagnostic, Pré-quiz ou Quiz final). Les données sont <strong>fusionnées par Nom + Email</strong> — un même apprenant peut ainsi recevoir ses données de plusieurs sources.</p>
-      <textarea id="import-json" placeholder='Collez votre JSON ici (tableau ou objet unique)…
-
-Exemple :
-[
-  {
-    "name": "Rakoto Andrianina",
-    "email": "rakoto@ex.com",
-    "pre_score_pct": 62,
-    "pre_score_j1": "5/9",
-    "pre_score_j2": "6/9",
-    "pre_score_j3": "5/9",
-    "pre_score_j4": "5/9",
-    "pre_axes": "Élargir la vision au-delà de la réclamation | Approfondir la distinction satisfaction/fidélité"
-  }
-]'></textarea>
+      <textarea id="import-json" placeholder='Collez votre JSON ici (tableau ou objet unique)…'></textarea>
       <div class="row">
         <button class="btn" onclick="handleAdd()"><i class="fas fa-plus"></i> Ajouter / Fusionner</button>
         <button class="btn secondary" onclick="handleReplace()"><i class="fas fa-sync"></i> Remplacer tout</button>
