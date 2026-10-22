@@ -57,7 +57,7 @@ body{font-family:'Mada',sans-serif;background:var(--bg);color:var(--text-dark);l
     <p class="lead">Copiez ce lien et envoyez-le à vos managers pour qu'ils remplissent leur diagnostic avant la formation.</p>
     
     <div class="input-group">
-      <input type="text" id="manager-link" value="https://connecteo.vercel.app/manager-diagnostic.html" readonly>
+      <input type="text" id="manager-link" readonly>
       <button onclick="copyLink()"><i class="fas fa-copy"></i> Copier</button>
     </div>
     <div id="copy-status" style="font-size:13px;color:var(--success);margin-top:8px;font-weight:700;"></div>
@@ -81,6 +81,9 @@ body{font-family:'Mada',sans-serif;background:var(--bg);color:var(--text-dark);l
 </div>
 
 <script>
+    // Génère automatiquement le lien en fonction du domaine actuel (Vercel, Localhost, etc.)
+document.getElementById('manager-link').value = window.location.origin + "/manager-diagnostic.html";
+
 function copyLink() {
   const input = document.getElementById('manager-link');
   input.select();
