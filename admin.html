@@ -168,6 +168,7 @@ body{
 .card:nth-child(4){animation-delay:.35s}
 .card:nth-child(5){animation-delay:.45s}
 .card:nth-child(6){animation-delay:.55s}
+.card:nth-child(7){animation-delay:.65s}
 
 .card::before{
   content:'';
@@ -216,6 +217,9 @@ body{
 .card.evaluation .icon-wrap{background:linear-gradient(135deg,#e91e63,#c2185b);box-shadow:0 8px 24px rgba(233,30,99,.3)}
 .card.manager .icon-wrap{background:linear-gradient(135deg,#3f51b5,#1a237e);box-shadow:0 8px 24px rgba(63,81,181,.3)}
 
+/* AJOUT : Style pour la nouvelle carte Fiche de présence */
+.card.presence .icon-wrap{background:linear-gradient(135deg,#008a86,#00afa9);box-shadow:0 8px 24px rgba(0,138,134,.3)}
+
 .card h3{
   font-size:21px;font-weight:900;
   color:var(--sapphire);
@@ -241,6 +245,9 @@ body{
 .card.quiz .cta{background:linear-gradient(135deg,#00afa9,#008a86)}
 .card.evaluation .cta{background:linear-gradient(135deg,#e91e63,#c2185b)}
 .card.manager .cta{background:linear-gradient(135deg,#3f51b5,#1a237e)}
+
+/* AJOUT : Style pour le bouton de la nouvelle carte Fiche de présence */
+.card.presence .cta{background:linear-gradient(135deg,#008a86,#00afa9)}
 
 .card .cta i{transition:transform .3s ease;font-size:12px}
 .card:hover .cta i{transform:translateX(5px)}
@@ -318,6 +325,13 @@ body{
     <a href="admin.html" class="logo" aria-label="Connecteo — Accueil formateur"></a>
     <span class="title">Espace <span>Formateur</span></span>
     <span class="spacer"></span>
+    
+    <!-- AJOUT : Lien vers la fiche de présence dans la navbar -->
+    <a href="fiche-presence.html" class="nav-link" style="margin-right:10px; background:rgba(255,169,0,.1); color:var(--accent);">
+      <i class="fas fa-file-signature"></i>
+      <span>Fiche de présence</span>
+    </a>
+
     <a href="admin.html" class="nav-link">
       <i class="fas fa-house"></i>
       <span>Accueil Admin</span>
@@ -387,7 +401,16 @@ body{
     <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
   </a>
 
-  <!-- Carte modifiée -->
+  <!-- AJOUT : Nouvelle carte Fiche de présence -->
+  <a href="fiche-presence.html" class="card presence">
+    <div class="icon-wrap">
+      <i class="fas fa-file-signature"></i>
+    </div>
+    <h3>Fiche de présence</h3>
+    <p>Importez le JSON pour générer et imprimer la liste d'émargement officielle au format SMQ.</p>
+    <span class="cta">Ouvrir <i class="fas fa-arrow-right"></i></span>
+  </a>
+
   <a href="manager-tools.html" class="card manager">
     <div class="icon-wrap">
       <i class="fas fa-user-tie"></i>
