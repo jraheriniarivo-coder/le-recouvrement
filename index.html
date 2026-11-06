@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Espace Formateur — Connecteo</title>
   
+  <!-- ✅ SCRIPT DE SÉCURITÉ : Redirige vers login.html si pas connecté -->
+  <script>
+    if (sessionStorage.getItem('connecteo_auth') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
   <!-- Polices et Icônes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -97,6 +104,10 @@
     .btn:hover { background: var(--bg-main); }
     .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
     .btn-primary:hover { background: var(--primary-hover); }
+    
+    /* STYLE BOUTON DECO */
+    .btn-logout { color: #ef4444; border-color: #fee2e2; background: #fef2f2; }
+    .btn-logout:hover { background: #ef4444; color: white; border-color: #ef4444; }
 
     .page-content { flex: 1; overflow-y: auto; padding: 40px; }
     .page-header { margin-bottom: 40px; max-width: 1400px; margin-left: auto; margin-right: auto; }
@@ -152,7 +163,7 @@
   
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <a class="brand" href="admin.html">
+    <a class="brand" href="index.html">
       <div class="brand-logo"></div>
       Connecteo <span style="color:var(--accent)">Hub</span>
     </a>
@@ -189,6 +200,11 @@
       <div class="top-actions">
         <a href="fiche-presence.html" class="btn" style="color:var(--accent); border-color:var(--accent-light);"><i class="fas fa-file-signature"></i> Fiche de présence</a>
         <a href="index.html" class="btn btn-primary"><i class="fas fa-house"></i> Accueil Public</a>
+        
+        <!-- ✅ BOUTON DE DÉCONNEXION AJOUTÉ ICI -->
+        <button onclick="logout()" class="btn btn-logout">
+          <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </button>
       </div>
     </header>
 
@@ -258,6 +274,14 @@
     </div>
   </main>
 </div>
+
+<!-- ✅ SCRIPT POUR LA DÉCONNEXION -->
+<script>
+  function logout() {
+    sessionStorage.removeItem('connecteo_auth');
+    window.location.href = 'login.html';
+  }
+</script>
 
 </body>
 </html>
