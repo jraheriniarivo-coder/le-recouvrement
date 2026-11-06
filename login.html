@@ -25,8 +25,12 @@
   <h1>Accès sécurisé</h1>
   <p>Veuillez entrer le code d'accès pour continuer.</p>
   
-  <input type="password" id="password" placeholder="••••••" onkeypress="if(event.key === 'Enter') login()" autofocus>
-  <button onclick="login()">Déverrouiller</button>
+  <!-- ✅ AJOUT DE LA BALISE FORM -->
+  <form id="login-form" onsubmit="event.preventDefault(); login();">
+    <input type="password" id="password" placeholder="••••••" autofocus>
+    <button type="submit">Déverrouiller</button>
+  </form>
+  
   <div class="error" id="error-msg">Code incorrect.</div>
 </div>
 
