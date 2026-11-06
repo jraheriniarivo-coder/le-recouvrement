@@ -96,19 +96,24 @@
     .page-title { font-family: var(--font-heading); font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 12px; letter-spacing: -0.5px;}
     .page-subtitle { font-size: 16px; color: var(--text-muted); line-height: 1.6;}
 
-    /* PANNEAU DE PARTAGE */
+    /* PANNEAU DE PARTAGE MULTI-LIENS */
     .share-panel {
       background: var(--surface); border-radius: var(--radius-lg); padding: 24px;
       border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 32px;
     }
     .share-panel h3 { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 10px;}
-    .share-panel p { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
+    .share-panel > p { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+    
+    .link-block { margin-bottom: 20px; }
+    .link-block:last-child { margin-bottom: 0; }
+    .link-block label { font-size: 13px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 8px; }
+    
     .input-group { display: flex; gap: 12px; }
     .input-group input {
       flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
       font-family: var(--font-main); font-size: 14px; background: var(--bg-main); color: var(--text-muted);
     }
-    .share-status { font-size: 13px; font-weight: 600; color: var(--success); margin-top: 12px; min-height: 18px; }
+    .share-status { font-size: 13px; font-weight: 600; color: var(--success); margin-top: 8px; min-height: 18px; }
 
     /* BLOCS DE QUESTIONS */
     .question-block {
@@ -203,7 +208,7 @@
   <main class="main">
     <header class="topbar">
       <div class="breadcrumb">
-        <span>Espace Formateur</span> <span>/</span> <strong>Quiz (Version Mère)</strong>
+        <span>Espace Formateur</span> <span>/</span> <strong>Gestion des Quiz</strong>
       </div>
       <div class="top-actions">
         <a href="index.html" class="btn"><i class="fas fa-arrow-left"></i> Retour au Hub</a>
@@ -213,19 +218,41 @@
     <div class="page-content">
       <div class="container">
         
-        <!-- PANNEAU DE PARTAGE -->
+        <!-- PANNEAU DE PARTAGE MULTI-LIENS -->
         <div class="share-panel">
-          <h3><i class="fas fa-paper-plane" style="color:var(--accent)"></i> Diffuser le Quiz final</h3>
-          <p>Copiez ce lien et envoyez-le à vos apprenants pour qu'ils puissent réaliser leur quiz de fin de formation.</p>
-          <div class="input-group">
-            <input type="text" id="quiz-link" readonly>
-            <button class="btn btn-primary" onclick="copyQuizLink()"><i class="fas fa-copy"></i> Copier le lien</button>
+          <h3><i class="fas fa-link" style="color:var(--accent)"></i> Liens de diffusion</h3>
+          <p>Copiez ces liens et envoyez-les à vos apprenants selon l'étape de leur parcours.</p>
+          
+          <div class="link-block">
+            <label>1. Fiche de pré-requis (Diagnostic)</label>
+            <div class="input-group">
+              <input type="text" id="link-diagnostic" readonly>
+              <button class="btn btn-primary" onclick="copyLink('link-diagnostic', 'status-diagnostic')"><i class="fas fa-copy"></i> Copier</button>
+            </div>
+            <div class="share-status" id="status-diagnostic"></div>
           </div>
-          <div class="share-status" id="copy-status"></div>
+
+          <div class="link-block">
+            <label>2. Pré-quiz de positionnement</label>
+            <div class="input-group">
+              <input type="text" id="link-prequiz" readonly>
+              <button class="btn btn-primary" onclick="copyLink('link-prequiz', 'status-prequiz')"><i class="fas fa-copy"></i> Copier</button>
+            </div>
+            <div class="share-status" id="status-prequiz"></div>
+          </div>
+
+          <div class="link-block">
+            <label>3. Quiz final d'évaluation</label>
+            <div class="input-group">
+              <input type="text" id="link-quiz" readonly>
+              <button class="btn btn-primary" onclick="copyLink('link-quiz', 'status-quiz')"><i class="fas fa-copy"></i> Copier</button>
+            </div>
+            <div class="share-status" id="status-quiz"></div>
+          </div>
         </div>
 
         <div class="page-header">
-          <h1 class="page-title">Version Mère du Quiz</h1>
+          <h1 class="page-title">Version Mère du Quiz Final</h1>
           <p class="page-subtitle">Consultez les 20 questions, les réponses attendues et les axes d'amélioration avant diffusion.</p>
         </div>
 
@@ -238,23 +265,31 @@
 </div>
 
 <script>
-// Génère automatiquement le lien en fonction du domaine actuel
-document.getElementById('quiz-link').value = window.location.origin + "/quiz-participant.html";
+// ============================================
+// GESTION DES LIENS DYNAMIQUES
+// ============================================
+const baseUrl = window.location.origin;
 
-function copyQuizLink() {
-  const input = document.getElementById('quiz-link');
+// Attribution des liens aux champs
+document.getElementById('link-diagnostic').value = baseUrl + "/diagnostic.html";
+document.getElementById('link-prequiz').value = baseUrl + "/pre-quiz.html";
+document.getElementById('link-quiz').value = baseUrl + "/quiz-participant.html";
+
+// Fonction générique pour copier un lien
+function copyLink(inputId, statusId) {
+  const input = document.getElementById(inputId);
   input.select();
   input.setSelectionRange(0, 99999);
   navigator.clipboard.writeText(input.value);
   
-  const status = document.getElementById('copy-status');
+  const status = document.getElementById(statusId);
   status.textContent = '✅ Lien copié dans le presse-papier !';
   setTimeout(() => { status.textContent = ''; }, 3000);
 }
 
-/* ============================================ */
-/* DONNÉES DU QUIZ (Intactes)                   */
-/* ============================================ */
+// ============================================
+// DONNÉES DU QUIZ FINAL (Intactes)
+// ============================================
 const QUESTIONS = [
   {day:1, tag:"Jour 1 — Relation Client", q:"Selon la définition de référence, la relation client est...", opts:[{t:"Le service après-vente de l'entreprise", w:1, r:"Vision partielle.", g:"Élargir la vision au-delà du SAV"}, {t:"L'ensemble des échanges entre une entreprise et son public", w:3, r:"Exacte.", g:null}, {t:"Un coût à minimiser", w:0, r:"Vision court-termiste.", g:"Reconnaître l'actif stratégique"}, {t:"Uniquement les réclamations", w:1, r:"Vision partielle.", g:"Élargir le périmètre"}]},
   {day:1, tag:"Jour 1 — Relation Client", q:"Un client appelle pour une réclamation. Votre mission :", opts:[{t:"Informer", w:1, r:"Insuffisant.", g:"Intégrer les 3 piliers"}, {t:"Conseiller", w:1, r:"Insuffisant.", g:"Intégrer les 3 piliers"}, {t:"Informer, conseiller ET établir une relation de qualité", w:3, r:"Exacte.", g:null}, {t:"Résoudre vite", w:2, r:"Insuffisant.", g:"Ajouter la dimension relationnelle"}]},
@@ -278,9 +313,9 @@ const QUESTIONS = [
   {day:4, tag:"Jour 4 — Situations complexes", q:"Client raccroche brutalement. Vous :", opts:[{t:"Notez, reprogrammez, changez de canal", w:3, r:"Exacte.", g:null}, {t:"Rappelez immédiatement", w:0, r:"Aggrave.", g:"Comprendre le rythme"}, {t:"Considérez perdu", w:0, r:"Abandon.", g:"Explorer canaux"}, {t:"Attendez qu'il rappelle", w:1, r:"Passif.", g:"Reprendre l'initiative"}]}
 ];
 
-/* ============================================ */
-/* GÉNÉRATION DE LA VUE MASTER                  */
-/* ============================================ */
+// ============================================
+// GÉNÉRATION DE LA VUE MASTER
+// ============================================
 function renderMasterView() {
   const container = document.getElementById('quiz-container');
   let html = '';
