@@ -13,7 +13,7 @@
   h1 { font-family: 'Manrope', sans-serif; color: var(--primary); font-size: 24px; font-weight: 800; margin-bottom: 10px; }
   p { color: #718096; font-size: 14px; margin-bottom: 30px; }
   
-  input { width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; outline: none; font-family: inherit; letter-spacing: 2px; text-align: center; transition: 0.2s; }
+  input { width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 24px; outline: none; font-family: inherit; letter-spacing: 8px; text-align: center; transition: 0.2s; }
   input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
   
   .error { color: #ef4444; font-size: 14px; margin-top: 15px; display: none; font-weight: 500; }
@@ -23,10 +23,10 @@
 
 <div class="login-card">
   <h1>Accès sécurisé</h1>
-  <p>Tapez votre code d'accès puis appuyez sur <strong>Entrée</strong>.</p>
+  <p>Entrez votre code à 6 chiffres.</p>
   
-  <!-- ✅ On écoute directement la touche Entrée -->
-  <input type="password" id="password" placeholder="••••••" autofocus onkeydown="if(event.key === 'Enter') login()">
+  <!-- ✅ On limite à 6 caractères et on vérifie à chaque frappe -->
+  <input type="password" id="password" placeholder="••••••" maxlength="6" autofocus oninput="if(this.value.length === 6) login()">
   
   <div class="error" id="error-msg">Code incorrect.</div>
 </div>
@@ -39,11 +39,21 @@ function login() {
   const MOT_DE_PASSE_SECRET = "220721"; 
 
   if (password === MOT_DE_PASSE_SECRET) {
+    // Si c'est bon, on change la couleur en vert et on redirige
+    document.getElementById('password').style.borderColor = '#10b981';
+    document.getElementById('password').style.color = '#10b981';
     sessionStorage.setItem('connecteo_auth', 'true');
-    window.location.href = 'index.html';
+    
+    // Petite pause d'une demi-seconde pour l'effet visuel
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 500);
+    
   } else {
+    // Si c'est faux, on affiche l'erreur et on vide le champ
     document.getElementById('error-msg').style.display = 'block';
     document.getElementById('password').value = '';
+    document.getElementById('password').focus();
   }
 }
 </script>
