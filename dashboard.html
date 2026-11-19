@@ -199,6 +199,116 @@ tr:hover td{background:#fafafa}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   .wave-bar{display:none!important}
 }
+
+/* ===== CONNECTEO UI REFACTOR — couche visuelle ===== */
+/* Logo : conserver strictement le dimensionnement et le recadrage du fichier source. */
+:root{
+  --primary:#00afa9;
+  --accent:#ffa900;
+  --sapphire:#096475;
+  --violet:#7200a9;
+  --success:#096475;
+  --danger:#c62828;
+  --warning:#ffa900;
+  --text-dark:#24343a;
+  --text-medium:#52636a;
+  --text-light:#718187;
+  --bg:#f3f7f8;
+  --surface:#ffffff;
+  --border:#e3ebed;
+  --shadow-sm:0 2px 8px rgba(18,55,65,.05);
+  --shadow-md:0 10px 28px rgba(18,55,65,.08);
+  --radius:16px;
+}
+html{scroll-behavior:smooth}
+body{min-width:320px;background:linear-gradient(180deg,#f5f9fa 0%,#eef4f5 100%);color:var(--text-dark)}
+button,input,select,textarea{font:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(0,175,169,.28);outline-offset:2px}
+.top-bar-unified{padding:14px clamp(16px,3vw,42px);background:linear-gradient(115deg,#084b5b 0%,#096475 48%,#00afa9 100%);box-shadow:0 6px 24px rgba(9,70,83,.18)}
+.top-bar-unified .brand{min-width:0;gap:20px}
+.top-bar-unified .titles h1{font-size:clamp(18px,2vw,24px);line-height:1.2;letter-spacing:.1px}
+.top-bar-unified .titles .sub{margin-top:4px;font-size:12px;opacity:.86;letter-spacing:.3px}
+.top-bar-unified .btn-home-unified{white-space:nowrap;border-radius:999px;padding:10px 17px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);transition:background .2s,transform .2s}
+.top-bar-unified .btn-home-unified:hover{background:rgba(255,255,255,.24);transform:translateY(-1px)}
+.wrap{width:min(100% - 48px,1440px);margin:0 auto;padding:30px 0 72px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px;padding:7px;background:#e8f0f1;border:1px solid #dce8e9;border-radius:16px}
+.tab{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:10px 20px;border:1px solid transparent;border-radius:11px;background:transparent;color:#52636a;font-size:14px;font-weight:700;transition:all .2s}
+.tab:hover:not(.active){background:rgba(255,255,255,.75);color:var(--sapphire)}
+.tab.active{background:#fff;color:var(--sapphire);border-color:#dce8e9;box-shadow:var(--shadow-sm)}
+.wave-bar,.panel,.stat,.learner-card,.report-preview{border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.wave-bar{gap:14px;padding:14px 18px;border-radius:14px;background:var(--surface)}
+.wave-bar label{color:var(--sapphire)}
+.wave-bar select{min-width:260px;max-width:100%}
+.panel{padding:clamp(20px,2.5vw,30px);border-radius:var(--radius);margin-bottom:20px}
+.panel h2{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:19px;color:var(--sapphire)}
+.panel h2 i{color:var(--primary)}
+.panel p{max-width:950px;line-height:1.65}
+textarea,input[type=text],input[type=email],select{border:1px solid #d6e1e3;border-radius:10px;background:#fff;color:var(--text-dark);transition:border-color .2s,box-shadow .2s}
+textarea{min-height:170px;padding:15px;line-height:1.55}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,175,169,.12);background:#fff}
+.obs-field textarea{min-height:90px}
+.btn{min-height:42px;padding:10px 19px;border-radius:10px;box-shadow:0 2px 5px rgba(9,70,83,.08)}
+.btn:hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 5px 12px rgba(9,70,83,.12)}
+.btn.ghost{background:#edf3f4;color:#43565d}
+.stats{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.stat{border-radius:14px;text-align:left;padding:22px;border-top:0;border-left:4px solid var(--primary)}
+.stat .val{font-size:clamp(28px,3vw,36px);color:var(--sapphire)}
+.stat .lbl{font-size:11px;letter-spacing:.8px}
+.learner-card{border-radius:14px;padding:22px;border-left:4px solid var(--primary)}
+.learner-card h3{color:var(--sapphire)}
+.mini-stat{background:#f2f7f8;border:1px solid #e7eff0}
+.badge{border-radius:999px;padding:4px 10px;letter-spacing:.2px}
+table{display:table;width:100%;border:1px solid var(--border);border-radius:12px;box-shadow:none;overflow:hidden}
+thead{background:#096475}
+th{padding:14px 13px;font-size:11px;white-space:nowrap}
+td{padding:13px;border-bottom:1px solid #edf1f2}
+tbody tr:nth-child(even) td{background:#fbfdfd}
+tbody tr:hover td{background:#eff8f8}
+.report-preview{padding:clamp(24px,4vw,54px);border-radius:18px;box-shadow:var(--shadow-md)}
+.report-preview h1{font-size:clamp(26px,3vw,34px)}
+.report-preview h2{color:var(--sapphire)}
+.report-preview .day-block{background:#f2f8f8}
+.empty{border:1px dashed #d4e1e3;border-radius:14px;background:#fbfdfd}
+/* Responsive : navigation, filtres, tableaux et cartes */
+@media(max-width:900px){
+  .wrap{width:min(100% - 32px,100%);padding-top:22px}
+  .top-bar-unified{padding:12px 18px}
+  .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tab{width:100%}
+  .report-preview{padding:26px}
+}
+@media(max-width:600px){
+  .top-bar-unified{align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .top-bar-unified .brand{gap:10px;flex:1 1 100%}
+  .top-bar-unified .titles h1{font-size:17px}
+  .top-bar-unified .titles .sub{font-size:11px}
+  .top-bar-unified .btn-home-unified{margin-left:auto;padding:8px 12px}
+  .wrap{width:calc(100% - 24px);padding:16px 0 42px}
+  .tabs{gap:6px;padding:5px;border-radius:12px}
+  .tab{min-height:42px;padding:9px 8px;font-size:12px;gap:6px}
+  .wave-bar{align-items:stretch;flex-direction:column;padding:14px}
+  .wave-bar select{width:100%;min-width:0}
+  .panel{padding:18px}
+  .row{align-items:stretch}
+  .row .btn{flex:1 1 100%;justify-content:center}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .stat{padding:15px}
+  .stat .val{font-size:27px}
+  .stat .lbl{font-size:9px}
+  .learner-card{padding:16px}
+  .learner-card .scores{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .report-preview{padding:18px}
+  .report-preview .progression-bar{align-items:flex-start;flex-wrap:wrap}
+  table{display:block;max-width:100%;overflow-x:auto;white-space:nowrap}
+  .report-preview table{display:table;white-space:normal}
+}
+@media print{
+  body{background:#fff!important}
+  .wrap{width:100%;padding:0}
+  .report-preview{border:0;box-shadow:none;border-radius:0;padding:0;max-width:100%}
+  .report-preview .learner-report{break-inside:avoid}
+}
+
 </style>
 </head>
 <body>
@@ -224,7 +334,7 @@ tr:hover td{background:#fafafa}
     <button class="tab" data-tab="observations"><i class="fas fa-edit"></i> Observations</button>
     <button class="tab" data-tab="report"><i class="fas fa-file-alt"></i> Rapport client</button>
   </div>
-    <div class="wave-bar" id="wave-bar">
+  <div class="wave-bar" id="wave-bar">
     <label for="wave-select"><i class="fas fa-filter"></i> Groupe / vague</label>
     <select id="wave-select" onchange="setWave(this.value)"></select>
     <span class="count" id="wave-count"></span>
@@ -316,11 +426,27 @@ tr:hover td{background:#fafafa}
   </symbol>
 </svg>
 
+<script>
+
 const STORAGE_KEY='connecteo_dashboard_v1';
 const LOGO_COLOR='#0d47a1'; // couleur des lettres du logo dans le rapport (blanc = invisible sur fond blanc)
 
-let LEARNERS=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
-let OBSERVATIONS=JSON.parse(localStorage.getItem(STORAGE_KEY+'_obs')||'{}');
+let LEARNERS=[];
+let OBSERVATIONS={};
+try{
+  LEARNERS=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+  if(!Array.isArray(LEARNERS))LEARNERS=[];
+}catch(error){
+  console.warn('Données apprenants illisibles : réinitialisation en mémoire.',error);
+  LEARNERS=[];
+}
+try{
+  OBSERVATIONS=JSON.parse(localStorage.getItem(STORAGE_KEY+'_obs')||'{}');
+  if(!OBSERVATIONS||typeof OBSERVATIONS!=='object'||Array.isArray(OBSERVATIONS))OBSERVATIONS={};
+}catch(error){
+  console.warn('Observations illisibles : réinitialisation en mémoire.',error);
+  OBSERVATIONS={};
+}
 let WAVE_FILTER=localStorage.getItem(STORAGE_KEY+'_wave')||'all';
 
 /* =========================================================
@@ -755,5 +881,6 @@ function downloadReportHTML(){
    INIT
    ========================================================= */
 refreshActive();
+</script>
 </body>
 </html>
