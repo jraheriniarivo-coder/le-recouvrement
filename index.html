@@ -154,7 +154,21 @@
       transition: gap 0.2s ease;
     }
     .card:hover .cta { gap: 12px; }
-
+/* ===== LOGO HUB (même technique de recadrage que le dashboard) ===== */
+.brand{
+  padding: 18px 20px;
+  background: linear-gradient(115deg,#084b5b 0%,#096475 48%,#00afa9 100%);
+  border-bottom: none;
+  justify-content: flex-start;
+}
+.brand-logo{
+  width: 205px;
+  height: 48px;
+  background-size: 260px 260px;
+  background-position: -26px -102px;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
   </style>
 </head>
 <body>
@@ -163,9 +177,8 @@
   
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <a class="brand" href="index.html">
+        <a class="brand" href="index.html" aria-label="Connecteo Hub">
       <div class="brand-logo"></div>
-      Connecteo <span style="color:var(--accent)">Hub</span>
     </a>
     
     <div class="workspace-label">Espace Formateur</div>
