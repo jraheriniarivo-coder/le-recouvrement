@@ -1,0 +1,79 @@
+/* =====================================================================
+   AJOUTS À FAIRE DANS TON FICHIER .gs EXISTANT (v3 → v4)
+   ===================================================================== */
+
+/* ① Dans doPost(), juste APRÈS la ligne  const t = normType(data.type);  ajoute : */
+//    if (t === "satisfaction" || t === "enquete-satisfaction") {
+//      return writeSatisfaction(ss, data);
+//    }
+
+/* ② Dans doGet(), juste APRÈS la ligne  if (action === "export") ... ajoute : */
+//    if (action === "satisfaction") return exportSatisfaction();
+
+/* ③ Colle ces deux fonctions à la fin du fichier : */
+
+// Onglet "Satisfaction" — colonnes :
+// Date | Nom | Email | Session | Formateur | Note globale | NPS |
+// Moy. Contenu | Moy. Formateur | Moy. Logistique | Moy. Environnement | Moy. Impact |
+// Points forts | Axes d'amélioration | Commentaire | Témoignage autorisé | Détail scores (JSON)
+function writeSatisfaction(ss, data) {
+  const sheet = ss.getSheetByName("Satisfaction");
+  if (!sheet) return jsonOut({ success: false, error: "Onglet 'Satisfaction' introuvable." });
+
+  const scores = data.scores || {};
+  const groups = {};
+  Object.keys(scores).forEach(function (k) {
+    const g = k.split("_")[0], v = parseFloat(scores[k]);
+    if (isNaN(v)) return;
+    (groups[g] = groups[g] || []).push(v);
+  });
+  const moy = function (g) {
+    const a = groups[g] || [];
+    return a.length ? Math.round(a.reduce(function (x, y) { return x + y; }, 0) / a.length * 100) / 100 : "";
+  };
+
+  sheet.appendRow([
+    data.date || new Date().toLocaleString("fr-FR"),
+    data.name || "",
+    (data.email || "").toString().toLowerCase().trim(),
+    data.session || "",
+    data.trainer || "",
+    data.global === undefined ? "" : data.global,
+    data.nps === undefined ? "" : data.nps,
+    moy("contenu"), moy("formateur"), moy("logistique"), moy("environnement"), moy("impact"),
+    data.strengths || "",
+    data.improve || "",
+    data.comment || "",
+    data.consent || "Non",
+    JSON.stringify(scores)
+  ]);
+
+  return jsonOut({ success: true, action: "created", type: "satisfaction" });
+}
+
+// JSON consommé par satisfaction-admin.html :  ...exec?action=satisfaction
+function exportSatisfaction() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Satisfaction");
+  if (!sheet) return jsonOut([]);
+
+  const out = sheetToObjects(sheet).map(function (r) {
+    let scores = {};
+    try { scores = JSON.parse(pick(r, ["Détail scores (JSON)", "Detail scores"]) || col(r, 16) || "{}"); } catch (e) {}
+    return {
+      date: String(pick(r, ["Date"]) || col(r, 0)),
+      name: pick(r, ["Nom"]) || col(r, 1),
+      email: pick(r, ["Email"]) || col(r, 2),
+      session: String(pick(r, ["Session"]) || col(r, 3)),
+      trainer: String(pick(r, ["Formateur"]) || col(r, 4)),
+      global: pick(r, ["Note globale"]) || col(r, 5),
+      nps: (function () { const v = pick(r, ["NPS"]); return v === "" ? col(r, 6) : v; })(),
+      strengths: pick(r, ["Points forts"]) || col(r, 12),
+      improve: pick(r, ["Axes d'amélioration", "Axes d'amelioration"]) || col(r, 13),
+      comment: pick(r, ["Commentaire"]) || col(r, 14),
+      consent: pick(r, ["Témoignage autorisé", "Temoignage autorise"]) || col(r, 15),
+      scores: scores
+    };
+  });
+  return jsonOut(out);
+}
