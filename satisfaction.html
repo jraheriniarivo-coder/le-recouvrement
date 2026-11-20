@@ -1,79 +1,479 @@
-/* =====================================================================
-   AJOUTS À FAIRE DANS TON FICHIER .gs EXISTANT (v3 → v4)
-   ===================================================================== */
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enquête de satisfaction — Connecteo</title>
+<script>
+  /* Mode : sans paramètre = enquête publique ; ?mode=admin = espace formateur (protégé) */
+  (function () {
+    var admin = new URLSearchParams(location.search).get('mode') === 'admin';
+    if (admin && sessionStorage.getItem('connecteo_auth') !== 'true') { location.replace('login.html'); }
+    document.documentElement.setAttribute('data-mode', admin ? 'admin' : 'survey');
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#f4f7fb;--surface:#fff;--text:#1a202c;--muted:#718096;--border:#e2e8f0;--primary:#0f172a;--primary-hover:#1e293b;--accent:#0ea5e9;--accent-light:rgba(14,165,233,.1);--ok:#10b981;--warn:#f59e0b;--bad:#ef4444;--r:16px;--sh:0 1px 3px rgba(0,0,0,.05);--sh2:0 10px 15px -3px rgba(0,0,0,.06);--f:'DM Sans',sans-serif;--fh:'Manrope',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--f);background:var(--bg);color:var(--text);line-height:1.5}
+html[data-mode=survey] #admin,html[data-mode=admin] #survey{display:none!important}
+html[data-mode=admin],html[data-mode=admin] body{height:100%;overflow:hidden}
+.hidden{display:none!important}
+.brand-logo{width:205px;height:48px;background-size:260px 260px;background-position:-26px -102px;background-repeat:no-repeat;flex-shrink:0;color:#fff;font:800 20px var(--fh);display:flex;align-items:center;padding-left:26px;letter-spacing:.5px}
+.brand-bar{background:linear-gradient(115deg,#084b5b 0%,#096475 48%,#00afa9 100%)}
 
-/* ① Dans doPost(), juste APRÈS la ligne  const t = normType(data.type);  ajoute : */
-//    if (t === "satisfaction" || t === "enquete-satisfaction") {
-//      return writeSatisfaction(ss, data);
-//    }
+/* ================= ENQUÊTE PUBLIQUE ================= */
+#survey .brand-bar{padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+#survey .brand-bar small{color:rgba(255,255,255,.85);font-weight:600;font-size:13px}
+#survey .progress{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted);font-weight:600}
+#survey .bar{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+#survey .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#00afa9);transition:width .3s}
+#survey .wrap{max-width:820px;margin:0 auto;padding:36px 20px 80px}
+#survey h1{font-family:var(--fh);font-size:30px;font-weight:800;color:var(--primary);letter-spacing:-.5px;margin-bottom:10px}
+#survey .lead{color:var(--muted);font-size:15px;margin-bottom:28px}
+#survey .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:22px;box-shadow:var(--sh)}
+#survey .card h2{font-family:var(--fh);font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+#survey .ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px}
+#survey .legend{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin:-8px 0 14px}
+#survey .q{padding:14px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:16px;border-radius:8px}
+#survey .legend+.q{border-top:none}
+#survey .q p{font-size:14.5px;font-weight:500;flex:1}
+#survey .q.missing{background:#fef2f2;box-shadow:0 0 0 6px #fef2f2}
+#survey .rate{display:flex;gap:6px;flex-shrink:0}
+#survey .rate label{cursor:pointer}
+#survey .rate input{position:absolute;opacity:0;pointer-events:none}
+#survey .rate span{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;border:1px solid var(--border);font-weight:700;font-size:14px;color:var(--muted);transition:.15s;background:#fff}
+#survey .rate label:hover span{border-color:var(--accent);color:var(--accent)}
+#survey .rate input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff;transform:scale(1.06)}
+#survey .rate input:focus-visible+span{outline:2px solid var(--primary);outline-offset:2px}
+#survey .nps{display:grid;grid-template-columns:repeat(11,1fr);gap:6px;width:100%}
+#survey .nps span{width:100%;height:46px}
+#survey label.f{display:block;font-size:13px;font-weight:700;margin:16px 0 6px}
+#survey label.f em{font-weight:500;color:var(--muted);font-style:normal}
+#survey input[type=text],#survey input[type=email],#survey textarea{width:100%;font:inherit;font-size:14px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;transition:.15s}
+#survey textarea{min-height:96px;resize:vertical}
+#survey input:focus,#survey textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+#survey .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#survey .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin-top:16px;cursor:pointer}
+#survey .check input{margin-top:4px;accent-color:var(--accent)}
+#survey .note{font-size:12.5px;color:var(--muted);margin-top:14px;display:flex;gap:8px}
+#survey .btn{font:inherit;font-weight:700;font-size:15px;padding:15px 28px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:.2s}
+#survey .btn:hover{background:var(--primary-hover);transform:translateY(-1px);box-shadow:var(--sh2)}
+#survey .btn:disabled{opacity:.6;cursor:wait;transform:none}
+#survey .err{color:var(--bad);font-weight:600;font-size:14px;margin:0 0 14px;display:none}
+#survey .done{text-align:center;padding:60px 28px}
+#survey .done .big{width:84px;height:84px;border-radius:50%;background:rgba(16,185,129,.12);color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 22px}
+@media(max-width:640px){#survey .q{flex-direction:column;align-items:flex-start}#survey .rate span{width:46px}#survey .grid2{grid-template-columns:1fr}#survey .brand-bar small{display:none}#survey .card{padding:20px}#survey h1{font-size:25px}#survey .nps{grid-template-columns:repeat(6,1fr)}}
 
-/* ② Dans doGet(), juste APRÈS la ligne  if (action === "export") ... ajoute : */
-//    if (action === "satisfaction") return exportSatisfaction();
+/* ================= ESPACE FORMATEUR ================= */
+#admin .app-shell{display:flex;height:100vh;width:100vw}
+#admin .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:10;flex-shrink:0}
+#admin .brand{padding:18px 20px;display:flex;align-items:center;text-decoration:none}
+#admin .workspace-label{padding:24px 24px 10px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+#admin .nav{flex:1;display:flex;flex-direction:column;padding:0 12px;gap:4px;overflow-y:auto}
+#admin .nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;color:var(--muted);font-size:14px;font-weight:500;transition:.2s;text-decoration:none}
+#admin .nav-item:hover{background:var(--bg);color:var(--text)}
+#admin .nav-item.active{background:var(--accent-light);color:var(--accent);font-weight:600}
+#admin .nav-item i{width:20px;text-align:center;font-size:16px}
+#admin .sidebar-bottom{padding:20px;border-top:1px solid var(--border)}
+#admin .user-mini{display:flex;align-items:center;gap:12px}
+#admin .avatar{width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+#admin .user-info strong{display:block;font-size:13px}#admin .user-info small{font-size:11px;color:var(--muted)}
+#admin .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#admin .topbar{height:72px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+#admin .breadcrumb{font-size:14px;color:var(--muted);display:flex;gap:8px}#admin .breadcrumb strong{color:var(--text)}
+#admin .top-actions{display:flex;gap:12px}
+#admin .btn{font-family:var(--f);font-weight:600;font-size:13px;padding:10px 18px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.2s;text-decoration:none;white-space:nowrap}
+#admin .btn:hover{background:var(--bg)}
+#admin .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}#admin .btn-primary:hover{background:var(--primary-hover)}
+#admin .btn-logout{color:#ef4444;border-color:#fee2e2;background:#fef2f2}#admin .btn-logout:hover{background:#ef4444;color:#fff;border-color:#ef4444}
+#admin .page-content{flex:1;overflow-y:auto;padding:40px}
+#admin .wrap{max-width:1400px;margin:0 auto}
+#admin .page-title{font-family:var(--fh);font-size:32px;font-weight:800;color:var(--primary);margin-bottom:10px;letter-spacing:-.5px}
+#admin .page-subtitle{font-size:16px;color:var(--muted);max-width:640px;line-height:1.6;margin-bottom:32px}
+#admin .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px;box-shadow:var(--sh);margin-bottom:24px}
+#admin .card h3{font-family:var(--fh);font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+#admin .card h3 i{color:var(--accent)}
+#admin .share{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;border-color:var(--accent);background:linear-gradient(135deg,#fff 60%,var(--accent-light))}
+#admin .share-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+#admin .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);display:block;margin-bottom:5px}
+#admin input[type=text],#admin select{width:100%;font:inherit;font-size:14px;padding:11px 13px;border:1px solid var(--border);border-radius:8px;background:#fff}
+#admin input:focus,#admin select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+#admin .linkrow{display:flex;gap:10px}#admin .linkrow input{font-family:ui-monospace,monospace;font-size:13px;background:var(--bg)}
+#admin #qr{width:132px;height:132px;padding:8px;background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center}
+#admin .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:24px}
+#admin .toolbar>div{min-width:200px}
+#admin .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:24px}
+#admin .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--sh)}
+#admin .kpi small{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+#admin .kpi b{display:block;font-family:var(--fh);font-size:34px;font-weight:800;margin-top:6px;color:var(--primary)}
+#admin .kpi span{font-size:12px;color:var(--muted)}
+#admin .charts{display:grid;grid-template-columns:2fr 1fr;gap:24px}
+#admin .charts2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+#admin .chartbox{position:relative;height:300px}
+#admin .crit{display:grid;grid-template-columns:1fr 160px 44px;gap:14px;align-items:center;padding:9px 0;border-top:1px solid var(--border);font-size:13.5px}
+#admin .pbar{height:8px;background:var(--border);border-radius:99px;overflow:hidden}#admin .pbar i{display:block;height:100%;border-radius:99px}
+#admin .crit b{text-align:right}
+#admin .sec-h{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin:18px 0 4px}
+#admin .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+#admin .tab{border:1px solid var(--border);background:#fff;border-radius:99px;padding:7px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+#admin .tab.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+#admin .cmt{padding:14px 16px;border-left:3px solid var(--accent);background:var(--bg);border-radius:0 10px 10px 0;margin-bottom:10px;font-size:14px}
+#admin .cmt small{display:block;color:var(--muted);font-size:11.5px;margin-top:6px}
+#admin .empty{text-align:center;color:var(--muted);padding:40px 0;font-size:14px}
+#admin .status{font-size:13px;color:var(--muted);margin-bottom:16px}
+@media(max-width:1000px){#admin .sidebar{display:none}#admin .share,#admin .charts,#admin .charts2{grid-template-columns:1fr}#admin .page-content{padding:20px}#admin .topbar{padding:0 16px}}
+</style>
+</head>
+<body>
 
-/* ③ Colle ces deux fonctions à la fin du fichier : */
+<!-- ===================== ENQUÊTE PUBLIQUE ===================== -->
+<div id="survey">
+  <header class="brand-bar"><div class="brand-logo" role="img" aria-label="Connecteo"><span>CONNECTEO</span></div><small>Enquête de satisfaction</small></header>
+  <div class="progress" id="progress"><span id="pTxt">0%</span><div class="bar"><i id="pBar"></i></div></div>
+  <div class="wrap">
+    <div id="formView">
+      <h1>Votre avis compte.</h1>
+      <p class="lead">Quelques minutes pour évaluer votre formation. Vos réponses nous aident à améliorer nos contenus, notre animation et votre expérience. <strong>Échelle : 1 = Insuffisant · 5 = Excellent.</strong></p>
+      <form id="form" novalidate>
+        <div class="card" id="ctx">
+          <h2><span class="ico" style="background:rgba(100,116,139,.12);color:#475569"><i class="fas fa-id-card"></i></span>Gestion de la relation client appliqué au Recouvrement</h2>
+          <div class="grid2" id="ctxSel">
+            <div><label class="f" for="session">Session / vague</label><input type="text" id="session" placeholder="Ex : Vague 12"></div>
+            <div><label class="f" for="trainer">Formateur</label><input type="text" id="trainer" placeholder="Ex : Dylan"></div>
+          </div>
+          <div class="grid2">
+            <div><label class="f" for="name">Nom <em>(facultatif)</em></label><input type="text" id="name" autocomplete="name"></div>
+            <div><label class="f" for="email">Email <em>(facultatif)</em></label><input type="email" id="email" autocomplete="email"></div>
+          </div>
+          <p class="note"><i class="fas fa-shield-halved"></i>Vous pouvez répondre anonymement : nom et email sont facultatifs.</p>
+        </div>
+        <div id="sections"></div>
+        <div class="card">
+          <h2><span class="ico" style="background:rgba(99,102,241,.1);color:#6366f1"><i class="fas fa-star"></i></span>Bilan global</h2>
+          <div class="q" data-key="global"><p>Dans l'ensemble, quelle est votre satisfaction ?</p><div class="rate" id="rateGlobal"></div></div>
+          <div class="q" data-key="nps" style="display:block">
+            <p style="margin-bottom:12px">Recommanderiez-vous cette formation à un collègue ? <em style="color:var(--muted);font-style:normal">(0 = Pas du tout · 10 = Absolument)</em></p>
+            <div class="rate nps" id="rateNps"></div>
+          </div>
+          <label class="f" for="strengths">Ce qui vous a le plus plu <em>(facultatif)</em></label>
+          <textarea id="strengths" placeholder="Points forts de la formation…"></textarea>
+          <label class="f" for="improve">Ce que nous pourrions améliorer <em>(facultatif)</em></label>
+          <textarea id="improve" placeholder="Axes d'amélioration, ce qui a manqué…"></textarea>
+          <label class="f" for="comment">Autre commentaire <em>(facultatif)</em></label>
+          <textarea id="comment" placeholder="Un mot libre pour l'équipe…"></textarea>
+          <label class="check"><input type="checkbox" id="consent"><span>J'autorise Connecteo à utiliser mes commentaires comme témoignage (de façon anonyme).</span></label>
+        </div>
+        <p class="err" id="err"></p>
+        <button class="btn" id="submit" type="submit"><i class="fas fa-paper-plane"></i> Envoyer mon avis</button>
+      </form>
+    </div>
+    <div id="doneView" class="card done hidden">
+      <div class="big"><i class="fas fa-check"></i></div>
+      <h1>Merci pour votre retour !</h1>
+      <p class="lead" style="margin:0">Vos réponses ont bien été enregistrées. Vous pouvez fermer cette page.</p>
+    </div>
+  </div>
+</div>
 
-// Onglet "Satisfaction" — colonnes :
-// Date | Nom | Email | Session | Formateur | Note globale | NPS |
-// Moy. Contenu | Moy. Formateur | Moy. Logistique | Moy. Environnement | Moy. Impact |
-// Points forts | Axes d'amélioration | Commentaire | Témoignage autorisé | Détail scores (JSON)
-function writeSatisfaction(ss, data) {
-  const sheet = ss.getSheetByName("Satisfaction");
-  if (!sheet) return jsonOut({ success: false, error: "Onglet 'Satisfaction' introuvable." });
+<!-- ===================== ESPACE FORMATEUR ===================== -->
+<div id="admin">
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand brand-bar" href="index.html" aria-label="Connecteo Hub"><div class="brand-logo"><span>CONNECTEO</span></div></a>
+    <div class="workspace-label">Espace Formateur</div>
+    <nav class="nav">
+      <a href="reader.html" class="nav-item"><i class="fas fa-chart-line"></i> Résultats</a>
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-clipboard-list"></i> Tableau de bord</a>
+      <a href="itineraire.html" class="nav-item"><i class="fas fa-route"></i> Itinéraire</a>
+      <a href="quiz.html" class="nav-item"><i class="fas fa-list-check"></i> Quiz</a>
+      <a href="evaluation.html" class="nav-item"><i class="fas fa-headset"></i> Évaluations</a>
+      <a href="satisfaction.html?mode=admin" class="nav-item active"><i class="fas fa-face-smile"></i> Satisfaction</a>
+      <a href="fiche-presence.html" class="nav-item"><i class="fas fa-file-signature"></i> Fiche de présence</a>
+      <a href="manager-tools.html" class="nav-item"><i class="fas fa-user-tie"></i> Espace Manager</a>
+    </nav>
+    <div class="sidebar-bottom"><div class="user-mini"><div class="avatar">DY</div><div class="user-info"><strong>Dylan</strong><small>Formateur</small></div></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb"><span>Espace Formateur</span><span>/</span><strong>Satisfaction</strong></div>
+      <div class="top-actions">
+        <a href="index.html" class="btn"><i class="fas fa-house"></i> Vue d'ensemble</a>
+        <button id="logoutBtn" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+      </div>
+    </header>
+    <div class="page-content"><div class="wrap">
+      <h1 class="page-title">Enquête de satisfaction.</h1>
+      <p class="page-subtitle">Partagez le lien de l'enquête aux apprenants en fin de formation, puis analysez les résultats en temps réel.</p>
 
-  const scores = data.scores || {};
-  const groups = {};
-  Object.keys(scores).forEach(function (k) {
-    const g = k.split("_")[0], v = parseFloat(scores[k]);
-    if (isNaN(v)) return;
-    (groups[g] = groups[g] || []).push(v);
-  });
-  const moy = function (g) {
-    const a = groups[g] || [];
-    return a.length ? Math.round(a.reduce(function (x, y) { return x + y; }, 0) / a.length * 100) / 100 : "";
-  };
+      <section class="card share">
+        <div>
+          <h3><i class="fas fa-link"></i> Lien à partager aux apprenants</h3>
+          <div class="share-fields">
+            <div><label class="lbl" for="shSession">Session / vague (facultatif)</label><input type="text" id="shSession" placeholder="Ex : Vague 12"></div>
+            <div><label class="lbl" for="shTrainer">Formateur (facultatif)</label><input type="text" id="shTrainer" placeholder="Ex : Dylan"></div>
+          </div>
+          <div class="linkrow">
+            <input type="text" id="shLink" readonly>
+            <button class="btn btn-primary" id="copyBtn"><i class="fas fa-copy"></i> Copier</button>
+            <a class="btn" id="openBtn" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Aperçu</a>
+          </div>
+        </div>
+        <div id="qr" title="QR code à projeter en salle"></div>
+      </section>
 
-  sheet.appendRow([
-    data.date || new Date().toLocaleString("fr-FR"),
-    data.name || "",
-    (data.email || "").toString().toLowerCase().trim(),
-    data.session || "",
-    data.trainer || "",
-    data.global === undefined ? "" : data.global,
-    data.nps === undefined ? "" : data.nps,
-    moy("contenu"), moy("formateur"), moy("logistique"), moy("environnement"), moy("impact"),
-    data.strengths || "",
-    data.improve || "",
-    data.comment || "",
-    data.consent || "Non",
-    JSON.stringify(scores)
-  ]);
+      <div class="toolbar">
+        <div><label class="lbl">Session</label><select id="fSession"><option value="">Toutes les sessions</option></select></div>
+        <div><label class="lbl">Formateur</label><select id="fTrainer"><option value="">Tous les formateurs</option></select></div>
+        <button class="btn" id="reload"><i class="fas fa-rotate"></i> Actualiser</button>
+        <label class="btn" for="file"><i class="fas fa-file-import"></i> Importer un JSON</label><input type="file" id="file" accept=".json" hidden>
+        <button class="btn" id="csv"><i class="fas fa-file-csv"></i> Export CSV</button>
+      </div>
+      <p class="status" id="status">Chargement…</p>
 
-  return jsonOut({ success: true, action: "created", type: "satisfaction" });
-}
+      <div id="results" class="hidden">
+        <div class="kpis">
+          <div class="kpi"><small>Réponses</small><b id="kN">0</b><span>apprenants</span></div>
+          <div class="kpi"><small>Satisfaction globale</small><b id="kG">–</b><span>moyenne sur 5</span></div>
+          <div class="kpi"><small>Taux de satisfaits</small><b id="kS">–</b><span>notes globales 4 ou 5</span></div>
+          <div class="kpi"><small>NPS</small><b id="kNps">–</b><span id="kNpsD">promoteurs − détracteurs</span></div>
+        </div>
+        <div class="charts">
+          <div class="card"><h3><i class="fas fa-chart-column"></i> Moyenne par thématique (/5)</h3><div class="chartbox"><canvas id="cSec"></canvas></div></div>
+          <div class="card"><h3><i class="fas fa-thumbs-up"></i> Recommandation (NPS)</h3><div class="chartbox"><canvas id="cNps"></canvas></div></div>
+        </div>
+        <div class="charts2">
+          <div class="card"><h3><i class="fas fa-star"></i> Répartition des notes globales</h3><div class="chartbox"><canvas id="cDist"></canvas></div></div>
+          <div class="card"><h3><i class="fas fa-bolt"></i> Points forts &amp; points de vigilance</h3><div id="topflop"></div></div>
+        </div>
+        <div class="card"><h3><i class="fas fa-list-ol"></i> Détail par critère</h3><div id="crit"></div></div>
+        <div class="card"><h3><i class="fas fa-comments"></i> Verbatims</h3>
+          <div class="tabs"><button class="tab on" data-k="strengths">Points forts</button><button class="tab" data-k="improve">À améliorer</button><button class="tab" data-k="comment">Commentaires</button></div>
+          <div id="cmts"></div>
+        </div>
+      </div>
+    </div></div>
+  </main>
+</div>
+</div>
 
-// JSON consommé par satisfaction-admin.html :  ...exec?action=satisfaction
-function exportSatisfaction() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName("Satisfaction");
-  if (!sheet) return jsonOut([]);
+<script>
+/* ============================ CONFIGURATION ============================ */
+const API_URL = "COLLE_ICI_L_URL_DE_TON_APPS_SCRIPT/exec";   // URL /exec de ton déploiement Apps Script
+const LOGO_DATA_URI = "";   // Optionnel. Laisse vide : le logo est lu automatiquement depuis index.html
 
-  const out = sheetToObjects(sheet).map(function (r) {
-    let scores = {};
-    try { scores = JSON.parse(pick(r, ["Détail scores (JSON)", "Detail scores"]) || col(r, 16) || "{}"); } catch (e) {}
-    return {
-      date: String(pick(r, ["Date"]) || col(r, 0)),
-      name: pick(r, ["Nom"]) || col(r, 1),
-      email: pick(r, ["Email"]) || col(r, 2),
-      session: String(pick(r, ["Session"]) || col(r, 3)),
-      trainer: String(pick(r, ["Formateur"]) || col(r, 4)),
-      global: pick(r, ["Note globale"]) || col(r, 5),
-      nps: (function () { const v = pick(r, ["NPS"]); return v === "" ? col(r, 6) : v; })(),
-      strengths: pick(r, ["Points forts"]) || col(r, 12),
-      improve: pick(r, ["Axes d'amélioration", "Axes d'amelioration"]) || col(r, 13),
-      comment: pick(r, ["Commentaire"]) || col(r, 14),
-      consent: pick(r, ["Témoignage autorisé", "Temoignage autorise"]) || col(r, 15),
-      scores: scores
+const SCALE = ["Insuffisant", "Moyen", "Correct", "Bon", "Excellent"];
+const SECTIONS = [
+  { id: "contenu", title: "Qualité de la formation", icon: "fa-book-open", color: "#0ea5e9", items: [
+    "Les objectifs étaient clairs dès le début de la formation",
+    "Le contenu correspond à mes besoins métier",
+    "Le rythme et l'alternance théorie / pratique étaient adaptés",
+    "Les exercices et mises en situation étaient utiles",
+    "Les supports pédagogiques sont clairs et exploitables"] },
+  { id: "formateur", title: "Le formateur", icon: "fa-chalkboard-user", color: "#7c4dff", items: [
+    "Maîtrise du sujet et crédibilité",
+    "Clarté des explications",
+    "Écoute et disponibilité",
+    "Animation dynamique, implication du groupe",
+    "Qualité des retours individuels"] },
+  { id: "logistique", title: "Organisation & logistique", icon: "fa-calendar-check", color: "#f59e0b", items: [
+    "Informations reçues avant la formation (convocation, programme)",
+    "Respect des horaires et du planning",
+    "Durée adaptée au contenu",
+    "Accueil, pauses et restauration"] },
+  { id: "environnement", title: "Environnement & matériel", icon: "fa-laptop-house", color: "#0d9488", items: [
+    "Salle de formation (confort, espace, luminosité)",
+    "Matériel et outils techniques (poste, casque, connexion)",
+    "Ambiance et cohésion du groupe"] },
+  { id: "impact", title: "Impact & mise en application", icon: "fa-bullseye", color: "#ec4899", items: [
+    "Mes objectifs personnels ont été atteints",
+    "Je me sens capable d'appliquer ce que j'ai appris",
+    "Cette formation va améliorer ma performance au poste"] }
+];
+
+/* ============================ OUTILS ============================ */
+const $ = s => document.querySelector(s);
+const MODE = document.documentElement.getAttribute('data-mode');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+const f1 = n => n.toFixed(1).replace('.', ',');
+const col = v => v >= 4 ? 'var(--ok)' : v >= 3 ? 'var(--warn)' : 'var(--bad)';
+const loadScript = src => new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
+
+/* Logo : lu depuis index.html (même dossier) pour éviter de dupliquer le SVG */
+(async function logo() {
+  let u = LOGO_DATA_URI;
+  if (!u) {
+    try {
+      const t = await (await fetch('index.html')).text();
+      const m = t.match(/url\('(data:image\/svg\+xml;base64,[^']+)'\)/);
+      if (m) u = m[1];
+    } catch (e) {}
+  }
+  if (u) document.querySelectorAll('.brand-logo').forEach(el => { el.style.backgroundImage = `url("${u}")`; el.innerHTML = ''; });
+})();
+
+/* ============================ ENQUÊTE ============================ */
+function initSurvey() {
+  const qs = new URLSearchParams(location.search);
+  $('#session').value = qs.get('s') || ''; $('#trainer').value = qs.get('f') || '';
+  if (qs.get('s') && qs.get('f')) $('#ctxSel').classList.add('hidden');
+
+  const rate = (key, from, to) => { let h = ''; for (let n = from; n <= to; n++) h += `<label><input type="radio" name="${key}" value="${n}"><span>${n}</span></label>`; return h; };
+  $('#sections').innerHTML = SECTIONS.map(s => `
+    <div class="card">
+      <h2><span class="ico" style="background:${s.color}1a;color:${s.color}"><i class="fas ${s.icon}"></i></span>${s.title}</h2>
+      <div class="legend"><span>1 · ${SCALE[0]}</span><span>5 · ${SCALE[4]}</span></div>
+      ${s.items.map((t, i) => `<div class="q" data-key="${s.id}_${i + 1}"><p>${t}</p><div class="rate">${rate(`${s.id}_${i + 1}`, 1, 5)}</div></div>`).join('')}
+    </div>`).join('');
+  $('#rateGlobal').innerHTML = rate('global', 1, 5);
+  $('#rateNps').innerHTML = rate('nps', 0, 10);
+
+  const keys = [...document.querySelectorAll('#survey .q[data-key]')].map(q => q.dataset.key);
+  const val = k => (document.querySelector(`#survey input[name="${k}"]:checked`) || {}).value;
+  const progress = () => { const p = Math.round(keys.filter(val).length / keys.length * 100); $('#pBar').style.width = p + '%'; $('#pTxt').textContent = p + '%'; };
+  $('#survey').addEventListener('change', e => { if (e.target.type === 'radio') e.target.closest('.q').classList.remove('missing'); progress(); });
+
+  $('#form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const missing = keys.filter(k => !val(k)), err = $('#err');
+    document.querySelectorAll('#survey .q').forEach(q => q.classList.toggle('missing', missing.includes(q.dataset.key)));
+    if (missing.length) {
+      err.style.display = 'block'; err.textContent = `Merci de répondre aux ${missing.length} question(s) en surbrillance.`;
+      document.querySelector(`#survey .q[data-key="${missing[0]}"]`).scrollIntoView({ behavior: 'smooth', block: 'center' }); return;
+    }
+    err.style.display = 'none';
+    const scores = {}; keys.forEach(k => { if (k !== 'global' && k !== 'nps') scores[k] = +val(k); });
+    const payload = {
+      type: 'satisfaction', date: new Date().toLocaleString('fr-FR'),
+      name: $('#name').value.trim(), email: $('#email').value.trim().toLowerCase(),
+      session: $('#session').value.trim(), trainer: $('#trainer').value.trim(),
+      global: +val('global'), nps: +val('nps'), scores,
+      strengths: $('#strengths').value.trim(), improve: $('#improve').value.trim(), comment: $('#comment').value.trim(),
+      consent: $('#consent').checked ? 'Oui' : 'Non'
     };
+    const btn = $('#submit'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi…';
+    try {
+      await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+      $('#formView').classList.add('hidden'); $('#progress').classList.add('hidden'); $('#doneView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (x) {
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer mon avis';
+      err.style.display = 'block'; err.textContent = "L'envoi a échoué. Vérifiez votre connexion et réessayez.";
+    }
   });
-  return jsonOut(out);
 }
+
+/* ============================ ESPACE FORMATEUR ============================ */
+function initAdmin() {
+  $('#logoutBtn').onclick = () => { sessionStorage.removeItem('connecteo_auth'); location.href = 'login.html'; };
+
+  /* --- lien à partager --- */
+  let qrReady = null;
+  function buildLink() {
+    const u = new URL(location.href); u.search = ''; u.hash = '';
+    if ($('#shSession').value.trim()) u.searchParams.set('s', $('#shSession').value.trim());
+    if ($('#shTrainer').value.trim()) u.searchParams.set('f', $('#shTrainer').value.trim());
+    $('#shLink').value = u.href; $('#openBtn').href = u.href;
+    (qrReady = qrReady || loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')).then(() => {
+      $('#qr').innerHTML = ''; new QRCode($('#qr'), { text: u.href, width: 116, height: 116 });
+    }).catch(() => { $('#qr').textContent = 'QR indisponible'; });
+  }
+  ['#shSession', '#shTrainer'].forEach(s => $(s).addEventListener('input', buildLink));
+  $('#copyBtn').onclick = async () => {
+    try { await navigator.clipboard.writeText($('#shLink').value); } catch { $('#shLink').select(); document.execCommand('copy'); }
+    $('#copyBtn').innerHTML = '<i class="fas fa-check"></i> Copié !';
+    setTimeout(() => $('#copyBtn').innerHTML = '<i class="fas fa-copy"></i> Copier', 1800);
+  };
+  buildLink();
+
+  /* --- données --- */
+  let ALL = [], charts = {}, tab = 'strengths', chartReady = loadScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js');
+  async function load() {
+    $('#status').textContent = 'Chargement des réponses…';
+    try {
+      ALL = await (await fetch(API_URL + '?action=satisfaction')).json();
+      if (!Array.isArray(ALL)) throw new Error(ALL.error || 'Réponse invalide');
+      init();
+    } catch (e) { $('#status').textContent = 'Impossible de charger les données (' + e.message + '). Vous pouvez importer un fichier JSON.'; }
+  }
+  $('#reload').onclick = load;
+  $('#file').onchange = e => {
+    const rd = new FileReader();
+    rd.onload = () => { try { ALL = JSON.parse(rd.result); init(); } catch { $('#status').textContent = 'Fichier JSON invalide.'; } };
+    rd.readAsText(e.target.files[0]);
+  };
+  function fillSel(sel, key, label) {
+    const cur = sel.value, vals = [...new Set(ALL.map(r => r[key]).filter(Boolean))].sort();
+    sel.innerHTML = `<option value="">${label}</option>` + vals.map(v => `<option>${esc(v)}</option>`).join('');
+    sel.value = vals.includes(cur) ? cur : '';
+  }
+  function init() { fillSel($('#fSession'), 'session', 'Toutes les sessions'); fillSel($('#fTrainer'), 'trainer', 'Tous les formateurs'); render(); }
+  $('#fSession').onchange = $('#fTrainer').onchange = render;
+  const filtered = () => ALL.filter(r => (!$('#fSession').value || r.session === $('#fSession').value) && (!$('#fTrainer').value || r.trainer === $('#fTrainer').value));
+
+  /* --- rendu --- */
+  const mk = (id, cfg) => { if (charts[id]) charts[id].destroy(); charts[id] = new Chart($('#' + id), cfg); };
+  async function render() {
+    const rows = filtered();
+    $('#results').classList.toggle('hidden', !rows.length);
+    $('#status').textContent = rows.length ? `${rows.length} réponse(s) affichée(s) sur ${ALL.length}.` : 'Aucune réponse pour le moment.';
+    if (!rows.length) return;
+    await chartReady;
+    const G = rows.map(r => +r.global).filter(n => n > 0), N = rows.map(r => r.nps).filter(v => v !== '' && v != null).map(Number);
+    const prom = N.filter(n => n >= 9).length, det = N.filter(n => n <= 6).length, pas = N.length - prom - det;
+    const nps = N.length ? Math.round((prom - det) / N.length * 100) : null;
+    $('#kN').textContent = rows.length; $('#kG').textContent = G.length ? f1(avg(G)) : '–';
+    $('#kS').textContent = G.length ? Math.round(G.filter(n => n >= 4).length / G.length * 100) + '%' : '–';
+    $('#kNps').textContent = nps === null ? '–' : (nps > 0 ? '+' : '') + nps;
+    $('#kNpsD').textContent = `${prom} promoteurs · ${pas} passifs · ${det} détracteurs`;
+
+    const sc = (r, s, i) => +(r.scores || {})[`${s.id}_${i + 1}`];
+    const secAvg = SECTIONS.map(s => avg(rows.flatMap(r => s.items.map((_, i) => sc(r, s, i)).filter(n => n > 0))));
+    mk('cSec', { type: 'bar', data: { labels: SECTIONS.map(s => s.title), datasets: [{ data: secAvg.map(v => +v.toFixed(2)), backgroundColor: SECTIONS.map(s => s.color), borderRadius: 8 }] },
+      options: { maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { min: 0, max: 5 } } } });
+    mk('cNps', { type: 'doughnut', data: { labels: ['Promoteurs (9-10)', 'Passifs (7-8)', 'Détracteurs (0-6)'], datasets: [{ data: [prom, pas, det], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], borderWidth: 0 }] },
+      options: { maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'bottom' } } } });
+    mk('cDist', { type: 'bar', data: { labels: ['1', '2', '3', '4', '5'], datasets: [{ label: 'Réponses', data: [1, 2, 3, 4, 5].map(n => G.filter(g => g === n).length), backgroundColor: '#0ea5e9', borderRadius: 8 }] },
+      options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
+
+    const crits = []; let html = '';
+    SECTIONS.forEach(s => {
+      html += `<div class="sec-h" style="color:${s.color}">${esc(s.title)}</div>`;
+      s.items.forEach((t, i) => {
+        const v = avg(rows.map(r => sc(r, s, i)).filter(n => n > 0)); crits.push({ t, v });
+        html += `<div class="crit"><span>${esc(t)}</span><div class="pbar"><i style="width:${v / 5 * 100}%;background:${col(v)}"></i></div><b>${f1(v)}</b></div>`;
+      });
+    });
+    $('#crit').innerHTML = html;
+    const sorted = [...crits].sort((a, b) => b.v - a.v);
+    const li = (c, ic) => `<div class="crit" style="grid-template-columns:1fr 44px"><span><i class="fas ${ic}" style="color:${col(c.v)};margin-right:8px"></i>${esc(c.t)}</span><b>${f1(c.v)}</b></div>`;
+    $('#topflop').innerHTML = `<div class="sec-h" style="color:var(--ok);margin-top:0">Top 3</div>${sorted.slice(0, 3).map(c => li(c, 'fa-arrow-up')).join('')}<div class="sec-h" style="color:var(--bad)">À surveiller</div>${sorted.slice(-3).reverse().map(c => li(c, 'fa-arrow-down')).join('')}`;
+    cmts();
+  }
+  function cmts() {
+    const l = filtered().filter(r => r[tab]);
+    $('#cmts').innerHTML = l.length
+      ? l.map(r => `<div class="cmt">${esc(r[tab])}<small>${esc(r.name || 'Anonyme')} · ${esc(r.session || '—')} · note ${esc(r.global)}/5${r.consent === 'Oui' ? ' · témoignage autorisé' : ''}</small></div>`).join('')
+      : '<p class="empty">Aucun commentaire.</p>';
+  }
+  document.querySelectorAll('#admin .tab').forEach(b => b.onclick = () => { document.querySelectorAll('#admin .tab').forEach(x => x.classList.remove('on')); b.classList.add('on'); tab = b.dataset.k; cmts(); });
+
+  $('#csv').onclick = () => {
+    const rows = filtered(); if (!rows.length) return;
+    const sk = SECTIONS.flatMap(s => s.items.map((_, i) => `${s.id}_${i + 1}`));
+    const head = ['Date', 'Nom', 'Email', 'Session', 'Formateur', 'Global', 'NPS', ...sk, 'Points forts', 'À améliorer', 'Commentaire', 'Témoignage'];
+    const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const csv = [head.map(q).join(';'), ...rows.map(r => [r.date, r.name, r.email, r.session, r.trainer, r.global, r.nps, ...sk.map(k => (r.scores || {})[k]), r.strengths, r.improve, r.comment, r.consent].map(q).join(';'))].join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' })); a.download = 'satisfaction.csv'; a.click();
+  };
+  load();
+}
+
+MODE === 'admin' ? initAdmin() : initSurvey();
+</script>
+</body>
+</html>
