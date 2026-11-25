@@ -126,6 +126,48 @@ html[data-mode=admin],html[data-mode=admin] body{height:100%;overflow:hidden}
 #admin .empty{text-align:center;color:var(--muted);padding:40px 0;font-size:14px}
 #admin .status{font-size:13px;color:var(--muted);margin-bottom:16px}
 @media(max-width:1000px){#admin .sidebar{display:none}#admin .share,#admin .charts,#admin .charts2{grid-template-columns:1fr}#admin .page-content{padding:20px}#admin .topbar{padding:0 16px}}
+
+/* ================= RAPPORT PDF (visible uniquement à l'impression) ================= */
+#pdfReport{display:none}
+#pdfReport .pr-band{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-radius:12px;color:#fff}
+#pdfReport .pr-band small{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;opacity:.9}
+#pdfReport h1{font-family:var(--fh);font-size:30px;font-weight:800;color:#084b5b;letter-spacing:-.5px;margin:22px 0 4px}
+#pdfReport .pr-sub{font-size:14px;color:#52636a;font-weight:600;margin-bottom:12px}
+#pdfReport .pr-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+#pdfReport .pr-chip{font-size:11.5px;font-weight:700;color:#096475;background:#e6f4f4;border:1px solid #cfe6e6;border-radius:99px;padding:4px 12px}
+#pdfReport .pr-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+#pdfReport .pr-kpi{border:1px solid #e2e8f0;border-top:4px solid #00afa9;border-radius:10px;padding:12px 14px;break-inside:avoid}
+#pdfReport .pr-kpi small{display:block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#718096}
+#pdfReport .pr-kpi b{display:block;font-family:var(--fh);font-size:26px;font-weight:800;color:#084b5b;line-height:1.2;margin-top:3px}
+#pdfReport .pr-kpi span{font-size:10px;color:#718096}
+#pdfReport h2{font-family:var(--fh);font-size:15px;font-weight:800;color:#096475;margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid #00afa9;break-after:avoid}
+#pdfReport .pr-row{display:grid;grid-template-columns:200px 1fr 40px;gap:12px;align-items:center;padding:6px 0;font-size:12px;break-inside:avoid}
+#pdfReport .pr-crit{display:grid;grid-template-columns:1fr 140px 36px;gap:12px;align-items:center;padding:5px 0;border-top:1px solid #edf1f2;font-size:11.5px;break-inside:avoid}
+#pdfReport .pr-row b,#pdfReport .pr-crit b{text-align:right;color:#084b5b}
+#pdfReport .pr-bar{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+#pdfReport .pr-bar i{display:block;height:100%;border-radius:99px}
+#pdfReport .pr-nps{display:flex;height:22px;border-radius:99px;overflow:hidden;background:#e2e8f0;margin:6px 0 8px}
+#pdfReport .pr-nps i{display:block;height:100%}
+#pdfReport .pr-leg{display:flex;gap:18px;font-size:11.5px;color:#52636a;flex-wrap:wrap}
+#pdfReport .pr-leg b{color:#1a202c}
+#pdfReport .pr-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+#pdfReport .pr-dist{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:end;height:90px;margin-top:6px}
+#pdfReport .pr-dist div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:11px;color:#52636a;font-weight:700}
+#pdfReport .pr-dist i{display:block;width:70%;background:#00afa9;border-radius:6px 6px 0 0;min-height:2px;margin-bottom:4px}
+#pdfReport .pr-grp{margin-bottom:12px;break-inside:avoid}
+#pdfReport .pr-gh{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:4px 0;border-bottom:2px solid;margin-bottom:2px}
+#pdfReport .pr-two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+#pdfReport .pr-two h3{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin:0 0 4px}
+#pdfReport .pr-vh{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px;color:#096475;break-after:avoid}
+#pdfReport blockquote{border-left:3px solid #00afa9;background:#f4f9f9;border-radius:0 8px 8px 0;padding:8px 12px;margin:0 0 6px;font-size:11.5px;color:#334;break-inside:avoid}
+#pdfReport .pr-foot{margin-top:26px;padding-top:10px;border-top:1px solid #e2e8f0;text-align:center;font-size:10px;color:#718096;letter-spacing:1px}
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important}
+  #survey,#admin{display:none!important}
+  #pdfReport{display:block!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 </style>
 </head>
 <body>
@@ -231,6 +273,7 @@ html[data-mode=admin],html[data-mode=admin] body{height:100%;overflow:hidden}
         <button class="btn" id="reload"><i class="fas fa-rotate"></i> Actualiser</button>
         <label class="btn" for="file"><i class="fas fa-file-import"></i> Importer un JSON</label><input type="file" id="file" accept=".json" hidden>
         <button class="btn" id="csv"><i class="fas fa-file-csv"></i> Export CSV</button>
+        <button class="btn btn-primary" id="pdf"><i class="fas fa-file-pdf"></i> Export PDF</button>
       </div>
       <p class="status" id="status">Chargement…</p>
 
@@ -259,6 +302,9 @@ html[data-mode=admin],html[data-mode=admin] body{height:100%;overflow:hidden}
   </main>
 </div>
 </div>
+
+<!-- Rapport PDF : rempli par le bouton « Export PDF », visible uniquement à l'impression -->
+<div id="pdfReport"></div>
 
 <script>
 /* ============================ CONFIGURATION ============================ */
@@ -469,6 +515,84 @@ function initAdmin() {
     const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
     const csv = [head.map(q).join(';'), ...rows.map(r => [r.date, r.name, r.email, r.session, r.trainer, r.global, r.nps, ...sk.map(k => (r.scores || {})[k]), r.strengths, r.improve, r.comment, r.consent].map(q).join(';'))].join('\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' })); a.download = 'satisfaction.csv'; a.click();
+  };
+
+  /* --- export PDF : construit un rapport A4 puis ouvre « Enregistrer au format PDF » --- */
+  $('#pdf').onclick = () => {
+    const rows = filtered();
+    if (!rows.length) { alert('Aucune réponse à exporter.'); return; }
+    const sc = (r, s, i) => +(r.scores || {})[`${s.id}_${i + 1}`];
+    const G = rows.map(r => +r.global).filter(n => n > 0);
+    const N = rows.map(r => r.nps).filter(v => v !== '' && v != null).map(Number);
+    const prom = N.filter(n => n >= 9).length, det = N.filter(n => n <= 6).length, pas = N.length - prom - det;
+    const pc = n => N.length ? Math.round(n / N.length * 100) : 0;
+    const nps = N.length ? Math.round((prom - det) / N.length * 100) : null;
+    const secAvg = SECTIONS.map(s => avg(rows.flatMap(r => s.items.map((_, i) => sc(r, s, i)).filter(n => n > 0))));
+    const crits = [];
+    const critHtml = SECTIONS.map(s => {
+      const items = s.items.map((t, i) => {
+        const v = avg(rows.map(r => sc(r, s, i)).filter(n => n > 0)); crits.push({ t, v });
+        return `<div class="pr-crit"><span>${esc(t)}</span><div class="pr-bar"><i style="width:${v / 5 * 100}%;background:${col(v)}"></i></div><b>${f1(v)}</b></div>`;
+      }).join('');
+      return `<div class="pr-grp"><div class="pr-gh" style="color:${s.color};border-color:${s.color}">${esc(s.title)}</div>${items}</div>`;
+    }).join('');
+    const sorted = [...crits].sort((a, b) => b.v - a.v);
+    const li = c => `<div class="pr-crit" style="grid-template-columns:1fr 36px"><span>${esc(c.t)}</span><b style="color:${col(c.v)}">${f1(c.v)}</b></div>`;
+    const dist = [1, 2, 3, 4, 5].map(n => G.filter(g => g === n).length), maxD = Math.max(...dist, 1);
+    const vb = (k, label) => {
+      const l = rows.map(r => r[k]).filter(Boolean);
+      return l.length ? `<div class="pr-vh">${label} (${l.length})</div>${l.map(t => `<blockquote>${esc(t).replace(/\n/g, '<br>')}</blockquote>`).join('')}` : '';
+    };
+    const verb = vb('strengths', 'Ce qui a le plus plu') + vb('improve', 'Axes d\'amélioration suggérés') + vb('comment', 'Autres commentaires');
+    const sessLabel = $('#fSession').value || 'Toutes les sessions', trLabel = $('#fTrainer').value || 'Tous les formateurs';
+    const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const pr = $('#pdfReport');
+    pr.innerHTML = `
+      <div class="pr-band brand-bar"><div class="brand-logo"><span>CONNECTEO</span></div><small>Rapport de formation</small></div>
+      <h1>Training Satisfaction Survey</h1>
+      <div class="pr-sub">Gestion de la relation client appliqué au Recouvrement</div>
+      <div class="pr-meta">
+        <span class="pr-chip">Session : ${esc(sessLabel)}</span>
+        <span class="pr-chip">Formateur : ${esc(trLabel)}</span>
+        <span class="pr-chip">${rows.length} réponse(s)</span>
+        <span class="pr-chip">Édité le ${esc(today)}</span>
+      </div>
+      <div class="pr-kpis">
+        <div class="pr-kpi"><small>Réponses</small><b>${rows.length}</b><span>apprenants</span></div>
+        <div class="pr-kpi"><small>Satisfaction globale</small><b>${G.length ? f1(avg(G)) : '–'}<span> / 5</span></b><span>moyenne</span></div>
+        <div class="pr-kpi"><small>Taux de satisfaits</small><b>${G.length ? Math.round(G.filter(n => n >= 4).length / G.length * 100) + '%' : '–'}</b><span>notes de 4 ou 5</span></div>
+        <div class="pr-kpi"><small>NPS</small><b>${nps === null ? '–' : (nps > 0 ? '+' : '') + nps}</b><span>promoteurs − détracteurs</span></div>
+      </div>
+      <h2>Moyenne par thématique</h2>
+      ${SECTIONS.map((s, i) => `<div class="pr-row"><span>${esc(s.title)}</span><div class="pr-bar"><i style="width:${secAvg[i] / 5 * 100}%;background:${s.color}"></i></div><b>${f1(secAvg[i])}</b></div>`).join('')}
+      <h2>Recommandation (NPS)</h2>
+      <div class="pr-nps"><i style="width:${pc(prom)}%;background:#10b981"></i><i style="width:${pc(pas)}%;background:#f59e0b"></i><i style="width:${pc(det)}%;background:#ef4444"></i></div>
+      <div class="pr-leg">
+        <span><span class="pr-dot" style="background:#10b981"></span>Promoteurs (9-10) : <b>${prom}</b> (${pc(prom)}%)</span>
+        <span><span class="pr-dot" style="background:#f59e0b"></span>Passifs (7-8) : <b>${pas}</b> (${pc(pas)}%)</span>
+        <span><span class="pr-dot" style="background:#ef4444"></span>Détracteurs (0-6) : <b>${det}</b> (${pc(det)}%)</span>
+      </div>
+      <h2>Répartition des notes globales</h2>
+      <div class="pr-dist">${dist.map((d, i) => `<div><i style="height:${d / maxD * 70}px"></i>${d}<span style="font-weight:600;color:#718096">Note ${i + 1}</span></div>`).join('')}</div>
+      <h2>Points forts &amp; points de vigilance</h2>
+      <div class="pr-two">
+        <div><h3 style="color:#10b981">Top 3</h3>${sorted.slice(0, 3).map(li).join('')}</div>
+        <div><h3 style="color:#ef4444">À surveiller</h3>${sorted.slice(-3).reverse().map(li).join('')}</div>
+      </div>
+      <h2>Détail par critère</h2>
+      ${critHtml}
+      ${verb ? `<h2>Verbatims (anonymisés)</h2>${verb}` : ''}
+      <div class="pr-foot">CONNECTEO · TRAINING SATISFACTION SURVEY · ${esc(today)}</div>`;
+
+    const bg = ($('#admin .brand-logo') || { style: {} }).style.backgroundImage;
+    const lg = pr.querySelector('.brand-logo');
+    if (bg) { lg.style.backgroundImage = bg; lg.innerHTML = ''; }
+
+    const oldTitle = document.title, slug = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '');
+    document.title = `Training_Satisfaction_Survey_${slug(sessLabel)}_${new Date().toISOString().slice(0, 10)}`;
+    window.addEventListener('afterprint', () => { document.title = oldTitle; }, { once: true });
+    setTimeout(() => window.print(), 200);
   };
   load();
 }
